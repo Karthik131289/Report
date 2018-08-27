@@ -4,6 +4,7 @@ Inc.//DTD Web Application 2.3//EN"
         "http://java.sun.com/j2ee/dtds/web-app_2_3.dtd">
 
 <web-app>
+    <display-name>HellooWorldWS</display-name>
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
@@ -14,9 +15,7 @@ Inc.//DTD Web Application 2.3//EN"
     </listener>
     <servlet>
         <servlet-name>venaqua-report</servlet-name>
-        <servlet-class>
-            com.sun.xml.ws.transport.http.servlet.WSServlet
-        </servlet-class>
+        <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>

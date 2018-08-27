@@ -1,0 +1,10 @@
+DB Access
+Mysql:  http://54.229.208.9/phpmyadmin/
+user: viewuser
+password: doHVN2@jfCtF8ViY
+
+*********************************************************
+NodeJS & SOAP services
+https://www.npmjs.com/package/soap
+*********************************************************
+
