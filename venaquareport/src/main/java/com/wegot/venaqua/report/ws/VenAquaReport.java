@@ -14,7 +14,7 @@ public interface VenAquaReport {
     /**
      * Get Site Consumption for water sources
      */
-    public String getSiteConsumptionByWaterSource(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) RequestInfo requestInfo);
+    public SiteConsumptionByWaterSourceResponse getSiteConsumptionByWaterSource(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) RequestInfo requestInfo);
 
     @WebMethod
     public String getResidenceConsumption(RequestInfo requestInfo);

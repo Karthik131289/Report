@@ -1,5 +1,6 @@
 package com.wegot.venaqua.report.ws;
 
+import javax.xml.bind.annotation.XmlElement;
 import java.util.Date;
 
 public class RequestInfo {
@@ -18,6 +19,7 @@ public class RequestInfo {
         this.toDate = toDate;
     }
 
+    @XmlElement(required = true)
     public String getUid() {
         return uid;
     }
@@ -26,6 +28,7 @@ public class RequestInfo {
         this.uid = uid;
     }
 
+    @XmlElement(required = true)
     public String getChartType() {
         return chartType;
     }
@@ -34,6 +37,7 @@ public class RequestInfo {
         this.chartType = chartType;
     }
 
+    @XmlElement(required = true)
     public Date getFromDate() {
         return fromDate;
     }
@@ -42,6 +46,7 @@ public class RequestInfo {
         this.fromDate = fromDate;
     }
 
+    @XmlElement(required = true)
     public Date getToDate() {
         return toDate;
     }
