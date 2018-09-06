@@ -1,50 +1,58 @@
 package com.wegot.venaqua.report.ws;
 
 import com.wegot.venaqua.report.json.JSONConverter;
+import sun.misc.IOUtils;
+import sun.nio.ch.IOUtil;
 
 import javax.jws.WebService;
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.io.InputStream;
 
 @WebService(endpointInterface = "com.wegot.venaqua.report.ws.VenAquaReport", serviceName = VenAquaReport.SERVICE_NAME,
         wsdlLocation = "localhost")
 public class VenAquaReportImpl implements VenAquaReport {
 
     @Override
-    public SiteConsumptionByWaterSourceResponse getSiteConsumptionByWaterSource(RequestInfo requestInfo) {
+    public String getSiteConsumptionByWaterSource(String requestInfo) {
+        String response = null;
         System.out.println("Processing...");
-        System.out.println("Uid : " + requestInfo.getUid());
-        System.out.println("ChartType : " + requestInfo.getChartType());
-        System.out.println("FromDate : " + requestInfo.getFromDate());
-        System.out.println("ToDate : " + requestInfo.getToDate());
         try {
-            List waterSource = JSONConverter.CovertJSONToObject(new File("SiteConsumptionByWaterSource.json"), List<WaterSource>.class);
-            SiteConsumptionByWaterSourceResponse response = new SiteConsumptionByWaterSourceResponse();
-            response.setWaterSourceList();
+            RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
+
+            System.out.println("Uid : " + requestInfoObj.getUid());
+            System.out.println("ChartType : " + requestInfoObj.getChartType());
+            System.out.println("FromDate : " + requestInfoObj.getFromDate());
+            System.out.println("ToDate : " + requestInfoObj.getToDate());
+
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteConsumptionByWaterSource.json");
+            if(resourceAsStream!=null) {
+
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
+            response = e.getMessage();
         }
         return response;
     }
 
     @Override
-    public String getResidenceConsumption(RequestInfo requestInfo) {
+    public String getResidenceConsumption(String requestInfo) {
         return "ResidenceConsumption";
     }
 
     @Override
-    public String getSiteDemandByWaterType(RequestInfo requestInfo) {
+    public String getSiteDemandByWaterType(String requestInfo) {
         return "SiteDemandByWaterType(";
     }
 
     @Override
-    public String getPumpStateAndYield(RequestInfo requestInfo) {
+    public String getPumpStateAndYield(String requestInfo) {
         return "PumpStateAndYield";
     }
 
     @Override
-    public String getYieldByWaterSource(RequestInfo requestInfo) {
+    public String getYieldByWaterSource(String requestInfo) {
         return "YieldByWaterSource";
     }
 }

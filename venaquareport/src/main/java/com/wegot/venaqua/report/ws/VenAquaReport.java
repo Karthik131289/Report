@@ -14,17 +14,17 @@ public interface VenAquaReport {
     /**
      * Get Site Consumption for water sources
      */
-    public SiteConsumptionByWaterSourceResponse getSiteConsumptionByWaterSource(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) RequestInfo requestInfo);
+    public String getSiteConsumptionByWaterSource(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
 
     @WebMethod
-    public String getResidenceConsumption(RequestInfo requestInfo);
+    public String getResidenceConsumption(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
 
     @WebMethod
-    public String getSiteDemandByWaterType(RequestInfo requestInfo);
+    public String getSiteDemandByWaterType(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
 
     @WebMethod
-    public String getPumpStateAndYield(RequestInfo requestInfo);
+    public String getPumpStateAndYield(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
 
     @WebMethod
-    public String getYieldByWaterSource(RequestInfo requestInfo);
+    public String getYieldByWaterSource(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
 }
