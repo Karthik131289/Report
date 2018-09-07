@@ -1,7 +1,8 @@
-package com.wegot.venaqua.report.ws;
+package com.wegot.venaqua.report.ws.response;
 
 import javax.xml.bind.annotation.XmlElement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SiteConsumptionByWaterSourceResponse {
     private List<WaterSource> waterSourceList = new ArrayList<WaterSource>();

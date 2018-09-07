@@ -1,4 +1,4 @@
-package com.wegot.venaqua.report.ws;
+package com.wegot.venaqua.report.ws.response;
 
 import javax.xml.bind.annotation.XmlElement;
 
