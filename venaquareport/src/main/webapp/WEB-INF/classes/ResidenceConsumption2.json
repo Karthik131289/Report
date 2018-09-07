@@ -1,0 +1,18 @@
+[
+  {
+    "id": "BlockA-House1",
+    "value": "200"
+  },
+  {
+    "id": "BlockA-House2",
+    "value": "300"
+  },
+  {
+    "id": "BlockB-House3",
+    "value": "400"
+  },
+  {
+    "id": "BlockC-House4",
+    "value": 500
+  }
+]

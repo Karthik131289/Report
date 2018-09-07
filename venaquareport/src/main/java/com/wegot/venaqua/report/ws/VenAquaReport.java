@@ -17,6 +17,9 @@ public interface VenAquaReport {
     public String getResidenceConsumption(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
 
     @WebMethod
+    public String getResidenceConsumption2(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
+
+    @WebMethod
     public String getSiteDemandByWaterType(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
 
     @WebMethod

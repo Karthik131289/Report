@@ -1,0 +1,17 @@
+[
+  {
+    "key": "BlockA",
+    "region": "House1",
+    "value": 25500100
+  },
+  {
+    "key": "BlockA",
+    "region": "House2",
+    "value": 1231231
+  },
+  {
+    "key": "BlockB",
+    "region": "House1",
+    "value": 1231231
+  }
+]
