@@ -10,7 +10,7 @@ import javax.jws.soap.SOAPBinding;
 public interface VenAquaReport {
     public static final String SERVICE_NAME = "VenAqua Report";
 
-    @WebMethod
+    @WebMethod()
     public String getSiteConsumptionByWaterSource(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
 
     @WebMethod
@@ -26,5 +26,11 @@ public interface VenAquaReport {
     public String getPumpStateAndYield(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
 
     @WebMethod
-    public String getYieldByWaterSource(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
+    public String getSitePerformanceByWaterSource(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
+
+    @WebMethod
+    public String getSiteConsumptionForRange(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
+
+    @WebMethod
+    public String getSiteConsumptionForDay(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
 }

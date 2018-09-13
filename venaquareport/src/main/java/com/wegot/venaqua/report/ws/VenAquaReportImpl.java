@@ -17,12 +17,12 @@ public class VenAquaReportImpl implements VenAquaReport {
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
         try {
-            RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
+            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
             System.out.println("**** Parsed Request Info ****");
             System.out.println("Uid : " + requestInfoObj.getUid());
             System.out.println("ChartType : " + requestInfoObj.getChartType());
             System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());
+            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
 
             InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteConsumptionByWaterSource.json");
             if (resourceAsStream != null) {
@@ -44,12 +44,12 @@ public class VenAquaReportImpl implements VenAquaReport {
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
         try {
-            RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
+            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
             System.out.println("**** Parsed Request Info ****");
             System.out.println("Uid : " + requestInfoObj.getUid());
             System.out.println("ChartType : " + requestInfoObj.getChartType());
             System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());
+            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
 
             InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("ResidenceConsumption.json");
             if (resourceAsStream != null) {
@@ -71,12 +71,12 @@ public class VenAquaReportImpl implements VenAquaReport {
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
         try {
-            RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
+            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
             System.out.println("**** Parsed Request Info ****");
             System.out.println("Uid : " + requestInfoObj.getUid());
             System.out.println("ChartType : " + requestInfoObj.getChartType());
             System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());
+            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
 
             InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("ResidenceConsumption2.json");
             if (resourceAsStream != null) {
@@ -98,12 +98,12 @@ public class VenAquaReportImpl implements VenAquaReport {
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
         try {
-            RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
+            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
             System.out.println("**** Parsed Request Info ****");
             System.out.println("Uid : " + requestInfoObj.getUid());
             System.out.println("ChartType : " + requestInfoObj.getChartType());
             System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());
+            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
 
             InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteDemandByWaterType.json");
             if (resourceAsStream != null) {
@@ -125,12 +125,12 @@ public class VenAquaReportImpl implements VenAquaReport {
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
         try {
-            RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
+            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
             System.out.println("**** Parsed Request Info ****");
             System.out.println("Uid : " + requestInfoObj.getUid());
             System.out.println("ChartType : " + requestInfoObj.getChartType());
             System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());
+            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
 
             InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("PumpStateAndYield.json");
             if (resourceAsStream != null) {
@@ -147,19 +147,73 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getYieldByWaterSource(String requestInfo) {
+    public String getSitePerformanceByWaterSource(String requestInfo) {
         String response = null;
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
         try {
-            RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
+            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
             System.out.println("**** Parsed Request Info ****");
             System.out.println("Uid : " + requestInfoObj.getUid());
             System.out.println("ChartType : " + requestInfoObj.getChartType());
             System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());
+            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
 
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("YieldByWaterSource.json");
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SitePerformanceByWaterSource.json");
+            if (resourceAsStream != null) {
+                response = IOUtils.toString(resourceAsStream);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            response = e.getMessage();
+        }
+        System.out.println("**** Response Info ****");
+        System.out.println(response);
+        return response;
+    }
+
+    @Override
+    public String getSiteConsumptionForRange(String requestInfo) {
+        String response = null;
+        System.out.println("**** Request Info ****");
+        System.out.println(requestInfo);
+        try {
+            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
+            System.out.println("**** Parsed Request Info ****");
+            System.out.println("Uid : " + requestInfoObj.getUid());
+            System.out.println("ChartType : " + requestInfoObj.getChartType());
+            System.out.println("FromDate : " + requestInfoObj.getFromDate());
+            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
+
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteConsumptionForRange.json");
+            if (resourceAsStream != null) {
+                response = IOUtils.toString(resourceAsStream);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            response = e.getMessage();
+        }
+        System.out.println("**** Response Info ****");
+        System.out.println(response);
+        return response;
+    }
+
+    @Override
+    public String getSiteConsumptionForDay(String requestInfo) {
+        String response = null;
+        System.out.println("**** Request Info ****");
+        System.out.println(requestInfo);
+        try {
+            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
+            System.out.println("**** Parsed Request Info ****");
+            System.out.println("Uid : " + requestInfoObj.getUid());
+            System.out.println("ChartType : " + requestInfoObj.getChartType());
+            System.out.println("FromDate : " + requestInfoObj.getFromDate());
+            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
+
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteConsumptionForDay.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
             }
