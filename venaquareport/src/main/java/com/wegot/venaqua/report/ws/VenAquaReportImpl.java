@@ -1,6 +1,5 @@
 package com.wegot.venaqua.report.ws;
 
-import com.wegot.venaqua.report.json.JSONConverter;
 import org.apache.commons.io.IOUtils;
 
 import javax.jws.WebService;
@@ -12,7 +11,7 @@ import java.io.InputStream;
 public class VenAquaReportImpl implements VenAquaReport {
 
     @Override
-    public String getSiteConsumptionByWaterSource(String requestInfo) {
+    public String getSiteUsageByWaterSource(String requestInfo) {
         String response = null;
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
@@ -24,7 +23,7 @@ public class VenAquaReportImpl implements VenAquaReport {
             System.out.println("FromDate : " + requestInfoObj.getFromDate());
             System.out.println("ToDate : " + requestInfoObj.getToDate());*/
 
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteConsumptionByWaterSource.json");
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteUsageByWaterSource.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
             }
@@ -39,7 +38,7 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getResidenceConsumption(String requestInfo) {
+    public String getSiteUsageByBlockLevel(String requestInfo) {
         String response = null;
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
@@ -51,7 +50,7 @@ public class VenAquaReportImpl implements VenAquaReport {
             System.out.println("FromDate : " + requestInfoObj.getFromDate());
             System.out.println("ToDate : " + requestInfoObj.getToDate());*/
 
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("ResidenceConsumption.json");
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteUsageByBlockLevel.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
             }
@@ -66,7 +65,7 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getResidenceConsumption2(String requestInfo) {
+    public String getHighUsers(String requestInfo) {
         String response = null;
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
@@ -78,7 +77,7 @@ public class VenAquaReportImpl implements VenAquaReport {
             System.out.println("FromDate : " + requestInfoObj.getFromDate());
             System.out.println("ToDate : " + requestInfoObj.getToDate());*/
 
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("ResidenceConsumption2.json");
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("HighUsers.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
             }
@@ -120,7 +119,7 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getPumpStateAndYield(String requestInfo) {
+    public String getPumpYield(String requestInfo) {
         String response = null;
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
@@ -132,7 +131,7 @@ public class VenAquaReportImpl implements VenAquaReport {
             System.out.println("FromDate : " + requestInfoObj.getFromDate());
             System.out.println("ToDate : " + requestInfoObj.getToDate());*/
 
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("PumpStateAndYield.json");
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("PumpYield.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
             }
@@ -147,7 +146,7 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getSitePerformanceByWaterSource(String requestInfo) {
+    public String getSiteTrendByWaterSource(String requestInfo) {
         String response = null;
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
@@ -159,7 +158,7 @@ public class VenAquaReportImpl implements VenAquaReport {
             System.out.println("FromDate : " + requestInfoObj.getFromDate());
             System.out.println("ToDate : " + requestInfoObj.getToDate());*/
 
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SitePerformanceByWaterSource.json");
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteTrendByWaterSource.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
             }
@@ -174,7 +173,7 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getSiteConsumptionForRange(String requestInfo) {
+    public String getSiteWaterMap(String requestInfo) {
         String response = null;
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
@@ -186,34 +185,7 @@ public class VenAquaReportImpl implements VenAquaReport {
             System.out.println("FromDate : " + requestInfoObj.getFromDate());
             System.out.println("ToDate : " + requestInfoObj.getToDate());*/
 
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteConsumptionForRange.json");
-            if (resourceAsStream != null) {
-                response = IOUtils.toString(resourceAsStream);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            response = e.getMessage();
-        }
-        System.out.println("**** Response Info ****");
-        System.out.println(response);
-        return response;
-    }
-
-    @Override
-    public String getSiteConsumptionForDay(String requestInfo) {
-        String response = null;
-        System.out.println("**** Request Info ****");
-        System.out.println(requestInfo);
-        try {
-            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
-            System.out.println("**** Parsed Request Info ****");
-            System.out.println("Uid : " + requestInfoObj.getUid());
-            System.out.println("ChartType : " + requestInfoObj.getChartType());
-            System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
-
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteConsumptionForDay.json");
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteWaterMap.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
             }

@@ -11,26 +11,23 @@ public interface VenAquaReport {
     public static final String SERVICE_NAME = "VenAquaReport";
 
     @WebMethod()
-    public String getSiteConsumptionByWaterSource(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
+    public String getSiteUsageByWaterSource(@WebParam(name = "RequestInfo") String requestInfo);
 
     @WebMethod
-    public String getResidenceConsumption(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
+    public String getSiteUsageByBlockLevel(@WebParam(name = "RequestInfo") String requestInfo);
 
     @WebMethod
-    public String getResidenceConsumption2(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
+    public String getHighUsers(@WebParam(name = "RequestInfo") String requestInfo);
 
     @WebMethod
-    public String getSiteDemandByWaterType(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
+    public String getSiteDemandByWaterType(@WebParam(name = "RequestInfo") String requestInfo);
 
     @WebMethod
-    public String getPumpStateAndYield(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
+    public String getPumpYield(@WebParam(name = "RequestInfo") String requestInfo);
 
     @WebMethod
-    public String getSitePerformanceByWaterSource(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
+    public String getSiteTrendByWaterSource(@WebParam(name = "RequestInfo") String requestInfo);
 
     @WebMethod
-    public String getSiteConsumptionForRange(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
-
-    @WebMethod
-    public String getSiteConsumptionForDay(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
+    public String getSiteWaterMap(@WebParam(name = "RequestInfo") String requestInfo);
 }
