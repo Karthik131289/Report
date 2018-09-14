@@ -8,7 +8,7 @@ import javax.jws.soap.SOAPBinding;
 @WebService
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public interface VenAquaReport {
-    public static final String SERVICE_NAME = "VenAqua Report";
+    public static final String SERVICE_NAME = "VenAquaReport";
 
     @WebMethod()
     public String getSiteConsumptionByWaterSource(@WebParam(name = "RequestInfo", mode = WebParam.Mode.IN) String requestInfo);
