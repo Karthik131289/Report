@@ -1,12 +1,19 @@
 {
-    "name": "nodejs-wegot-venaqua-report",
-    "version": "1.0.0",
-    "description": "NodeJS based REST to SOAP service mapper",
-    "author": "Karthik",
-    "license": "",
-    "dependencies": {
-        "body-parser": "^1.18.3",
-        "express": "^4.16.3",
-        "soap": "^0.25.0"
-    }
+	"name": "venaqua-report-rest",
+	"version": "1.0.0",
+	"description": "NodeJS based REST to SOAP service mapper",
+	"main": "app.js",
+	"author": "Karthik",
+	"license": "",
+	"scripts": {
+		"start": "node app.js"
+	},
+	"dependencies": {
+		"body-parser": "^1.18.3",
+		"express": "^4.16.3",
+		"soap": "^0.25.0"
+	},
+	"engines": {
+		"node": "8.12.0"
+	}
 }
