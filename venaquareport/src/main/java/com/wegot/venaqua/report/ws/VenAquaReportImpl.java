@@ -1,13 +1,11 @@
 package com.wegot.venaqua.report.ws;
 
-import com.wegot.venaqua.report.json.JSONConverter;
-import com.wegot.venaqua.report.ws.response.PumpStateAndYieldResponse;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.LoggerFactory;
 
 import javax.jws.WebService;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 @WebService(endpointInterface = "com.wegot.venaqua.report.ws.VenAquaReport", serviceName = VenAquaReport.SERVICE_NAME,
         wsdlLocation = "localhost")
@@ -137,8 +135,8 @@ public class VenAquaReportImpl implements VenAquaReport {
             InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("PumpYield.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
-                List<PumpStateAndYieldResponse> pumpStateAndYieldResponses = JSONConverter.CovertToList(response, PumpStateAndYieldResponse.class);
-                System.out.println(pumpStateAndYieldResponses);
+                //List<PumpStateAndYieldResponse> pumpStateAndYieldResponses = JSONConverter.CovertToList(response, PumpStateAndYieldResponse.class);
+                //System.out.println(pumpStateAndYieldResponses);
             }
 
         } catch (IOException e) {
