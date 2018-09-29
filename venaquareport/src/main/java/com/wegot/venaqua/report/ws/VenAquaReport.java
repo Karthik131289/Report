@@ -1,5 +1,7 @@
 package com.wegot.venaqua.report.ws;
 
+import com.wegot.venaqua.report.ws.exception.ReportException;
+
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
@@ -11,7 +13,7 @@ public interface VenAquaReport {
     public static final String SERVICE_NAME = "VenAquaReport";
 
     @WebMethod()
-    public String getSiteUsageByWaterSource(@WebParam(name = "RequestInfo") String requestInfo);
+    public String getSiteUsageByWaterSource(@WebParam(name = "RequestInfo") String requestInfo) throws ReportException;
 
     @WebMethod
     public String getSiteUsageByBlockLevel(@WebParam(name = "RequestInfo") String requestInfo);

@@ -1,6 +1,8 @@
 package com.wegot.venaqua.report.ws;
 
+import com.wegot.venaqua.report.ws.exception.ReportException;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jws.WebService;
@@ -10,31 +12,30 @@ import java.io.InputStream;
 @WebService(endpointInterface = "com.wegot.venaqua.report.ws.VenAquaReport", serviceName = VenAquaReport.SERVICE_NAME,
         wsdlLocation = "localhost")
 public class VenAquaReportImpl implements VenAquaReport {
+    private final Logger log = LoggerFactory.getLogger(VenAquaReportImpl.class);
 
     @Override
-    public String getSiteUsageByWaterSource(String requestInfo) {
+    public String getSiteUsageByWaterSource(String requestInfo) throws ReportException {
         String response = null;
-        System.out.println("**** Request Info ****");
-        System.out.println(requestInfo);
+        log.debug("**** Request Info ****");
+        log.debug(requestInfo);
         try {
-            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
-            System.out.println("**** Parsed Request Info ****");
-            System.out.println("Uid : " + requestInfoObj.getUid());
-            System.out.println("ChartType : " + requestInfoObj.getChartType());
-            System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
+            RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
+            InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
 
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteUsageByWaterSource.json");
-            if (resourceAsStream != null) {
-                response = IOUtils.toString(resourceAsStream);
-            }
 
+
+
+
+            response = VenAquaReportHelper.dummyResponse();
         } catch (IOException e) {
             e.printStackTrace();
             response = e.getMessage();
+        } catch (ReportException e) {
+            throw e;
         }
-        System.out.println("**** Response Info ****");
-        System.out.println(response);
+        log.debug("**** Response Info ****");
+        log.debug(response);
         return response;
     }
 

@@ -1,4 +1,4 @@
-package com.wegot.venaqua.report.ws;
+package com.wegot.venaqua.report.ws.hello;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
