@@ -1,0 +1,134 @@
+Get Site Id based on site name
+	>>>	w2_site_qa1
+	Site Id : site_id
+
+**** PIE CHART ****
+	Get Water Source type
+		>>> w2_water_source_type
+		
+	### WTP ###
+	Get WTP Id based on site Id
+		>>> w2_wtp 
+	Get Day total for a date range based on WTP Id 
+		>>> w2_wtp_component_day_total
+		
+	### TANKER ###
+	Get TANKER Id based on site Id
+		>>> w2_tankers
+	Get Day total for a date range based on TANKER Id 
+		>>>	w2_tanker_day_total
+		
+	### MUNICIPAL ###
+	Get MUNICIPAL Id based on site Id
+		>>>	w2_municipal
+	Get Day total for a date range based on MUNICIPAL Id 
+		>>>	w2_municipal_day_total
+		
+	### FLUSH ###
+	Get FLUSH Id based on site Id
+		>>>	w2_flush
+	Get Day total for a date range based on FLUSH Id 
+		>>>	w2_flush_day_total
+
+	### DOMESTIC ###
+	Get DOMESTIC Id based on site Id
+		>>>	w2_domestic
+	Get Day total for a date range based on DOMESTIC Id 
+		>>>	w2_domestic_day_total
+		
+	### GROUND WATER ###
+	Get BOREWELL Id based on site Id
+		>>>	w2_borewells
+		BOREWELL Id	:	column name 'id'.
+	Get Day total for a date range based on BOREWELL Id 
+		>>>	w2_bwell_day_total
+		BOREWELL Id	:	column name 'bwell_id'.
+		date		:	column name 'dt'.
+		day total	:	column name 'agg_total'.
+		
+	### RAIN WATER ###
+	Get RAIN WATER Id based on site Id
+		>>>	
+	Get Day total for a date range based on RAIN WATER Id
+		>>>	
+		Note : Table not available in MySQL. Sriram to get back with new table
+		
+**** TREE MAP ****
+	Get Block Ids and names based on Site Id
+		>>>	w2_block
+		Block Id	:	column name 'id'.
+		Block Name	: 	column name 'block_name'.
+		
+	Get House Ids and names based on Block Id
+		>>> w2_apart_master
+		Block Id	:	column name 'block_id'.
+		House Id	:	column name 'id'.
+		House Name	:	column name 'cust_name'.
+		
+	Get House's day consumption based on house id for a date range
+		>>>	w2_apart_day_total
+		House Id	:	column name 'apart_id'.
+		day total	:	column name 'agg_total'.
+		date		:	column name 'dt'.
+		
+**** BUBBLE CHART ****
+	Get Block Ids based on Site Id
+		>>>	w2_block
+		Block Id	:	column name 'id'.
+		Block Name	: 	column name 'block_name'.
+		
+	Get House Ids and names based on Block Id
+		>>> w2_apart_master
+		Block Id	:	column name 'block_id'.
+		House Id	:	column name 'id'.
+		House Name	:	column name 'cust_name'.
+		
+	Get House's day consumption based on house id for a date range
+		>>>	w2_apart_day_total
+		House Id	:	column name 'apart_id'.
+		day total	:	column name 'agg_total'.
+		date		:	column name 'dt'.
+		
+**** USAGE CHART - water type & demand ****
+	Get Water type name and id.
+		>>>	w2_water_type
+		
+	Get usage of RAW water type for date range and time range and site id
+		>>>	
+		
+	Get usage of RO water type for date range and time range and site id
+		>>>	
+		
+	Get usage of HOT water type for date range and time range and site id
+		>>>	
+		
+	Get usage of STP water type for date range and time range and site id
+		>>>	
+		
+	water usage unit ??? eg. kl or litre
+	Note : Table not available in MySQL. Sriram to get back with new table
+	
+**** GANTT CHART ****
+	Get pump id and name based on site id
+		>>>	w2_pumps
+		pump id column name pump_id or id ??
+		
+	Get pump ON & OFF timestamp and YIELD value for that duration for a given date.
+		>>>	
+		ON timestamp 	: 	
+		OFF timestamp 	:	
+		YIELD value   	:	
+		yieldPercentage : 	???
+		partialFill		: 	??? (yieldPercentage/100 as mentioned by yaseen )
+				
+**** HEAT MAP & HISTOGRAM CHART ****
+
+	Get site usage for a date & time range based on site id.
+		>>>	
+		Date column :	
+		Time column :	
+		usage column:	
+		
+all date & time column in which timezone???
+
+is that utc to local time conversion and vice versa required??? 
