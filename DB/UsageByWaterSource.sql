@@ -27,9 +27,37 @@ SELECT * FROM prod_we2db.w2_domestic where site_id=4;
 /** Get Domestic Day Total between date range 2018-01-09 to 2018-01-12**/
 SELECT * FROM prod_we2db.w2_domestic_day_total WHERE domestic_id=1 AND (dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' );
 
-/** Ground water not available **/
+/** Ground water - Get BoreWell id for site-4**/
+SELECT * FROM prod_we2db.w2_borewells where site_id=4;
+/** Get BoreWell Day Total between date range 2018-01-09 to 2018-01-12**/
+SELECT * FROM prod_we2db.w2_bwell_day_total WHERE bwell_id=1 AND (dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' );
+
 /** Rain Water not available **/
 
 
+/** Get Block Ids and names for site-4 **/
+SELECT * FROM prod_we2db.w2_block WHERE site_id=4;
+/** Get House Ids and names based on Block Id **/
+SELECT * FROM prod_we2db.w2_apart_master WHERE block_id=7;
+SELECT id, cust_name, block_id FROM prod_we2db.w2_apart_master WHERE block_id=8;
+/** Get House's day consumption based on house id for a date range **/
+SELECT * FROM prod_we2db.w2_apart_day_total WHERE apart_id=20 AND (dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' );
 
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT * FROM prod_we2db.w2_pump_status_log where pump_id = 6 and (dt BETWEEN '2018-09-01 00:01:00' and '2018-09-02 00:01:00');
+
+select * from w2_bwell_day_total where bwell_id =6;
+
+ 
 

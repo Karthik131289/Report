@@ -1,6 +1,7 @@
 package com.wegot.venaqua.report.ws;
 
 import com.wegot.venaqua.report.ws.exception.ReportException;
+import com.wegot.venaqua.report.ws.handler.auth.AuthenticationHandler;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,11 @@ import java.io.InputStream;
         wsdlLocation = "localhost")
 public class VenAquaReportImpl implements VenAquaReport {
     private final Logger log = LoggerFactory.getLogger(VenAquaReportImpl.class);
+    private AuthenticationHandler authHandler = null;
+
+    public VenAquaReportImpl() {
+        this.authHandler = VenAquaReportHelper.getAuthHandler();
+    }
 
     @Override
     public String getSiteUsageByWaterSource(String requestInfo) throws ReportException {
@@ -22,9 +28,10 @@ public class VenAquaReportImpl implements VenAquaReport {
         try {
             RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
+            boolean authenticate = this.authHandler.authenticate(invocationInfo);
+            if (authenticate) {
 
-
-
+            }
 
 
             response = VenAquaReportHelper.dummyResponse();
