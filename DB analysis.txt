@@ -1,3 +1,0 @@
-water types -> w2_water_type
-water source types -> w2_water_source_type
-water source quantity -> ??
