@@ -39,7 +39,7 @@ SELECT * FROM prod_we2db.w2_bwell_day_total WHERE bwell_id=1 AND (dt BETWEEN '20
 SELECT * FROM prod_we2db.w2_block WHERE site_id=4;
 /** Get House Ids and names based on Block Id **/
 SELECT * FROM prod_we2db.w2_apart_master WHERE block_id=7;
-SELECT id, cust_name, block_id FROM prod_we2db.w2_apart_master WHERE block_id=8;
+SELECT id, cust_name, block_id FROM prod_we2db.w2_apart_master WHERE block_id=16;
 /** Get House's day consumption based on house id for a date range **/
 SELECT * FROM prod_we2db.w2_apart_day_total WHERE apart_id=20 AND (dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' );
 
