@@ -1,3 +1,5 @@
+/** Get site_id based on site_name **/
+SELECT site_id FROM prod_we2db.w2_site_qa1 WHERE site_name='Ahad Euphoria';
 
 /** Get sources **/
 SELECT * FROM prod_we2db.w2_water_source_type;
