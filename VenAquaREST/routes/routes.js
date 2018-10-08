@@ -22,8 +22,9 @@
 
 module.exports = appRouter; */
 
-var appRouter = function (app, soap) {
-    var url = 'http://venaqua-report.herokuapp.com/report?wsdl';
+var appRouter = function (app, soap, prop) {
+
+    var url = prop.get('soap-server.url');
 
     app.get("/", function (req, res) {
         res.status(200);

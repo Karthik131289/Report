@@ -29,6 +29,10 @@ var soap = require("soap");
 var express = require("express");
 var cors = require("cors");
 var bodyParser = require("body-parser");
+const PropertiesReader = require('properties-reader');
+
+/*** Read application.properties ***/
+const prop = PropertiesReader('./resources/application.properties');
 
 var app = express();
 app.use(cors());
@@ -42,7 +46,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
     next();
 }); */
 
-var routes = require("./routes/routes.js")(app, soap);
+var routes = require("./routes/routes.js")(app, soap, prop);
 
 var server = app.listen(process.env.PORT || 3000, function () {
     console.log("Listening on port %s...", server.address().port);
