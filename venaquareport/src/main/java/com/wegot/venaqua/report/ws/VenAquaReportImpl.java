@@ -1,5 +1,6 @@
 package com.wegot.venaqua.report.ws;
 
+import com.wegot.venaqua.report.ws.db.DBManager;
 import com.wegot.venaqua.report.ws.exception.ReportException;
 import com.wegot.venaqua.report.ws.handler.auth.AuthenticationHandler;
 import org.apache.commons.io.IOUtils;
@@ -15,13 +16,15 @@ import java.io.InputStream;
 public class VenAquaReportImpl implements VenAquaReport {
     private final Logger log = LoggerFactory.getLogger(VenAquaReportImpl.class);
     private AuthenticationHandler authHandler = null;
+    private DBManager dbManager;
 
-    public VenAquaReportImpl() {
+    public VenAquaReportImpl() throws ReportException {
         this.authHandler = VenAquaReportHelper.getAuthHandler();
+        this.dbManager = DBManager.getInstance();
     }
 
     @Override
-    public String getSiteUsageByWaterSource(String requestInfo) throws ReportException {
+    public String getSiteUsageByWaterSource(String requestInfo) {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
@@ -30,7 +33,7 @@ public class VenAquaReportImpl implements VenAquaReport {
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
-
+                dbManager.test();
             }
 
 
@@ -39,7 +42,8 @@ public class VenAquaReportImpl implements VenAquaReport {
             e.printStackTrace();
             response = e.getMessage();
         } catch (ReportException e) {
-            throw e;
+            //throw e;
+            e.printStackTrace();
         }
         log.debug("**** Response Info ****");
         log.debug(response);

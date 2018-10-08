@@ -13,7 +13,7 @@ public interface VenAquaReport {
     public static final String SERVICE_NAME = "VenAquaReport";
 
     @WebMethod()
-    public String getSiteUsageByWaterSource(@WebParam(name = "RequestInfo") String requestInfo) throws ReportException;
+    public String getSiteUsageByWaterSource(@WebParam(name = "RequestInfo") String requestInfo);
 
     @WebMethod
     public String getSiteUsageByBlockLevel(@WebParam(name = "RequestInfo") String requestInfo);
