@@ -9,6 +9,8 @@ SELECT * FROM prod_we2db.w2_wtp WHERE site_id=4;
 /** Get WTP Day Total between date range 2018-01-09 to 2018-01-12**/
 SELECT * FROM prod_we2db.w2_wtp_component_day_total WHERE wtp_id=1 AND (dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' );
 
+SELECT * FROM w2_wtp_component_day_total t1 JOIN (SELECT DISTINCT wtp_id FROM  w2_wtp WHERE w2_wtp.site_id=4) t2 ON t1.wtp_id=t2.wtp_id AND (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-02 23:59:59' );
+
 /** Get Tanker id for site-4 **/
 SELECT * FROM prod_we2db.w2_tankers where site_id=4;
 /** Get Tanker Day Total between date range 2018-01-09 to 2018-01-12**/
@@ -55,7 +57,7 @@ SELECT * FROM prod_we2db.w2_apart_day_total WHERE apart_id=20 AND (dt BETWEEN '2
 
 
 
-
+SELECT * FROM prod_we2db.w2_pumps WHERE site_id=4;
 
 SELECT * FROM prod_we2db.w2_pump_status_log where pump_id = 6 and (dt BETWEEN '2018-09-01 00:01:00' and '2018-09-02 00:01:00');
 
