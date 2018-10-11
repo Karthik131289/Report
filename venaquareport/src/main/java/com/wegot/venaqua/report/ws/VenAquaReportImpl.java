@@ -1,8 +1,12 @@
 package com.wegot.venaqua.report.ws;
 
+import com.wegot.venaqua.report.json.JSONConverter;
+import com.wegot.venaqua.report.ws.db.DBConnection;
 import com.wegot.venaqua.report.ws.db.DBManager;
+import com.wegot.venaqua.report.ws.db.query.SiteUsageByWaterSourceQuery;
 import com.wegot.venaqua.report.ws.exception.ReportException;
 import com.wegot.venaqua.report.ws.handler.auth.AuthenticationHandler;
+import com.wegot.venaqua.report.ws.response.WaterSourceUsageResponse;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,17 +37,21 @@ public class VenAquaReportImpl implements VenAquaReport {
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
-                dbManager.test();
+                DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
+                SiteUsageByWaterSourceQuery query = new SiteUsageByWaterSourceQuery(dbConnection.getConnection());
+                WaterSourceUsageResponse responseObj = query.execute(requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+
+                response = JSONConverter.CovertToJsonAsString(responseObj);
             }
 
 
-            response = VenAquaReportHelper.dummyResponse();
-        } catch (IOException e) {
-            e.printStackTrace();
-            response = e.getMessage();
+            //response = VenAquaReportHelper.dummyResponse();
         } catch (ReportException e) {
             //throw e;
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = e.getMessage();
         }
         log.debug("**** Response Info ****");
         log.debug(response);

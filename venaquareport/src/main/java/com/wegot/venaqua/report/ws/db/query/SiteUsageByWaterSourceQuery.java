@@ -1,6 +1,18 @@
 package com.wegot.venaqua.report.ws.db.query;
 
+import com.wegot.venaqua.report.ws.db.DBHelper;
+import com.wegot.venaqua.report.ws.exception.ReportException;
+import com.wegot.venaqua.report.ws.response.WaterSource;
+import com.wegot.venaqua.report.ws.response.WaterSourceUsageResponse;
+import org.apache.commons.dbutils.BaseResultSetHandler;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
 
 public class SiteUsageByWaterSourceQuery {
     private Connection connection;
@@ -9,46 +21,47 @@ public class SiteUsageByWaterSourceQuery {
         this.connection = connection;
     }
 
-    public void execute(String siteName, String fromDate, String toDate) {
-        final String SITE_ID_QUERY = "SELECT site_id FROM w2_site_qa1 WHERE site_name=" + siteName + ";";
-        final String WATER_SOURCE_QUERY = "SELECT * FROM w2_water_source_type;";
+    public WaterSourceUsageResponse execute(String siteName, Date fromDate, Date toDate) throws ReportException {
+        Integer siteId = DBHelper.getSiteId(this.connection, siteName);
+        List<WaterSource> waterSourceList = DBHelper.getWaterSourceObject(this.connection);
+        WaterSourceUsageResponse waterSourceUsageResponse = new WaterSourceUsageResponse(waterSourceList);
 
-        Integer siteId = null;
+        double wtpUsage = getWTPUsage(siteId, fromDate, toDate);
 
-        final String WTP_ID_QUERY = "SELECT * FROM w2_wtp WHERE site_id=" + siteId + ";";
-        Integer wtpId = null;
-        final String WTP_USAGE_QUERY = "SELECT * FROM w2_wtp_component_day_total WHERE wtp_id=" + wtpId +
-                " AND (dt BETWEEN '" + fromDate + "' and '" + toDate + "' );";
+        for (WaterSource source : waterSourceUsageResponse.getWaterSourceList()) {
+            if("WTP".equals(source.getName()))
+                source.setUsage(wtpUsage);
+        }
 
-        final String TANKERS_ID_QUERY = "SELECT * FROM w2_tankers WHERE site_id=" + siteId + ";";
-        Integer tankerId = null;
-        final String TANKERS_USAGE_QUERY = "SELECT * FROM w2_tanker_day_total WHERE tanker_id=" + tankerId +
-                " AND (dt BETWEEN '" + fromDate + "' and '" + toDate + "' );";
+        return waterSourceUsageResponse;
+    }
 
-        final String MUNICPAL_ID_QUERY = "SELECT * FROM w2_municipal WHERE site_id=" + siteId + ";";
-        Integer municipalId = null;
-        final String MUNICPAL_USAGE_QUERY = "SELECT * FROM w2_municipal_day_total WHERE municipal_id=" + municipalId +
-                " AND (dt BETWEEN '" + fromDate + "' and '" + toDate + "' );";
+    private double getWTPUsage(Integer siteId, Date fromDate, Date toDate) throws ReportException {
+        final String QUERY_STR = "SELECT t1.id, t1.wtp_id, t1.day_total, t1.dt FROM w2_wtp_component_day_total t1 " +
+                "JOIN (SELECT DISTINCT (wtp_id) FROM w2_wtp WHERE site_id=?) t2 " +
+                "ON t1.wtp_id=t2.wtp_id AND (t1.dt BETWEEN ? and ? )";
+        QueryRunner queryRunner = new QueryRunner();
+        ResultSetHandler<Double> resultHandler = new BaseResultSetHandler<Double>() {
+            Double res = 0.0;
+            @Override
+            protected Double handle() throws SQLException {
+                ResultSet resultSet = getAdaptedResultSet();
+                while (resultSet.next()) {
+                    res = res + resultSet.getDouble(3);
+                }
+                return res;
+            }
+        };
+        try {
+            return queryRunner.query(this.connection, QUERY_STR, resultHandler, siteId, fromDate, toDate);
+        } catch (SQLException e) {
+            throw new ReportException(e);
+        }
+    }
 
-        final String FLUSH_ID_QUERY = "SELECT * FROM w2_flush WHERE site_id=" + siteId + ";";
-        Integer flushId = null;
-        final String FLUSH_USAGE_QUERY = "SELECT * FROM w2_flush_day_total WHERE flush_id=" + flushId +
-                " AND (dt BETWEEN '" + fromDate + "' and '" + toDate + "' );";
-
-        final String DOMESTIC_ID_QUERY = "SELECT * FROM w2_domestic WHERE site_id=" + siteId + ";";
-        Integer domesticId = null;
-        final String DOMESTIC_USAGE_QUERY = "SELECT * FROM w2_domestic_day_total WHERE domestic_id=" + domesticId +
-                " AND (dt BETWEEN '" + fromDate + "' and '" + toDate + "' );";
-
-        final String BOREWELL_ID_QUERY = "SELECT * FROM w2_borewells WHERE site_id=" + siteId + ";";
-        Integer borewellId = null;
-        final String BOREWELL_USAGE_QUERY = "SELECT * FROM w2_bwell_day_total WHERE bwell_id=" + borewellId +
-                " AND (dt BETWEEN '" + fromDate + "' and '" + toDate + "' );";
-
-        final String RAIN_WATER_ID_QUERY = "SELECT * FROM w2_wtp WHERE site_id=" + siteId + ";";
-        Integer rainWaterId = null;
-        final String RAIN_WATER_USAGE_QUERY = "SELECT * FROM w2_water_source_type;";
-
-
+    public static void main(String[] args) {
+        System.out.println( new Date(2018,03,01,00,00,00).getTime());
+        System.out.println( new Date(2018,03,30,00,00,00).getTime());
+        //System.out.println( new Date("").getTime());
     }
 }

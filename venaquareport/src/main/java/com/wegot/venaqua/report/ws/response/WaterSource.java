@@ -2,14 +2,14 @@ package com.wegot.venaqua.report.ws.response;
 
 import javax.xml.bind.annotation.XmlElement;
 
-public class SiteUsageByWaterSource {
+public class WaterSource {
     private String name;
     private double usage;
 
-    public SiteUsageByWaterSource() {
+    public WaterSource() {
     }
 
-    public SiteUsageByWaterSource(String name, double usage) {
+    public WaterSource(String name, double usage) {
         this.name = name;
         this.usage = usage;
     }
