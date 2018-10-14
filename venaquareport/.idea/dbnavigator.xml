@@ -8,11 +8,11 @@
   <component name="DBNavigator.Project.DataExportManager">
     <export-instructions>
       <create-header value="true" />
-      <quote-values-containing-separator value="true" />
+      <quote-values-containing-separator value="false" />
       <quote-all-values value="false" />
       <value-separator value="" />
-      <file-name value="" />
-      <file-location value="" />
+      <file-name value="W2_WTP_COMPONENT_DAY_TOTAL, W2_WTP.xls" />
+      <file-location value="D:\Development\WegotProject\Report\WorkingDir\Report" />
       <scope value="GLOBAL" />
       <destination value="FILE" />
       <format value="EXCEL" />
@@ -25,7 +25,7 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11">
-        <schema name="prod_we2db" object-types="column, constraint, function, index, procedure, table, dataset trigger, view" />
+        <schema name="prod_we2db" object-types="column, function, procedure, table, view" />
       </connection>
     </loaded-nodes>
   </component>
@@ -39,6 +39,17 @@
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_roplants_flow" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_roplants" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_bwell_day_total" active-filter-id="9b178066-30f3-46fb-b294-3f46eb7805b4">
+      <filter id="9b178066-30f3-46fb-b294-3f46eb7805b4" name="0 and 8" temporary="false" custom-name="false" type="basic" join-type="AND">
+        <condition column="id" operator="between" value="0 and 8" active="true" />
+      </filter>
+    </filter-list>
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_builder_qa1" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_apart_master" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_apart_day_total" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_apart_month_total" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_block" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
