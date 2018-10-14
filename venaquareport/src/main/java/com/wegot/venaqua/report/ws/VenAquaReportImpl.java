@@ -38,10 +38,10 @@ public class VenAquaReportImpl implements VenAquaReport {
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
                 DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
-                SiteUsageByWaterSourceQuery query = new SiteUsageByWaterSourceQuery(dbConnection.getConnection());
-                WaterSourceUsageResponse responseObj = query.execute(requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+                SiteUsageByWaterSourceQuery query = new SiteUsageByWaterSourceQuery();
+                WaterSourceUsageResponse responseObj = query.execute(dbConnection.getConnection(), requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
 
-                response = JSONConverter.CovertToJsonAsString(responseObj);
+                response = JSONConverter.CovertToJsonAsString(responseObj.getWaterSourceList());
             }
 
 
@@ -49,6 +49,7 @@ public class VenAquaReportImpl implements VenAquaReport {
         } catch (ReportException e) {
             //throw e;
             e.printStackTrace();
+            response = e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
