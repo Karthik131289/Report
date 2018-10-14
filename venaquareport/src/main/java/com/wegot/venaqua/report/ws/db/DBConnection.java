@@ -37,7 +37,7 @@ public class DBConnection {
             String driver = dataSource.getConnectionDriver();
             Class.forName(driver);
 
-            String url = dataSource.getUrl();
+            String url = dataSource.getUrl() + "?autoReconnect=true&failOverReadOnly=false&maxReconnects=10";
             String username = dataSource.getUsername();
             String password = dataSource.getPassword();
             Connection connection = DriverManager.getConnection(url, username, password);
@@ -59,7 +59,14 @@ public class DBConnection {
         return dataSource;
     }
 
-    public Connection getConnection() {
+    public Connection getConnection() throws ReportException {
+        try {
+            if (connection.isClosed())
+                this.connection = getDBConnection(this.dataSource);
+
+        } catch (SQLException e) {
+            this.connection = getDBConnection(this.dataSource);
+        }
         return connection;
     }
 }
