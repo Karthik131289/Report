@@ -19,6 +19,20 @@ public class DateTimeUtils {
         return local;
     }
 
+    public static Date addDays(Date date, int count) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, count);
+        return c.getTime();
+    }
+
+    public static Date subDays(Date date, int count) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, -count);
+        return c.getTime();
+    }
+
     public static void main(String[] args) {
         Date date = new Date(2018, 9, 1, 6, 00, 00);
         System.out.println(LocalToUTC(date).getTime());

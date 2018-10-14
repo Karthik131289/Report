@@ -35,7 +35,7 @@ public class DBConnectionPool {
         return dbConnectionList;
     }
 
-    public DBConnection getConnection(String name) {
+    public DBConnection getDBConnection(String name) {
         for (DBConnection dbConnection : dbConnectionList) {
             if (dbConnection.getName().equals(name))
                 return dbConnection;

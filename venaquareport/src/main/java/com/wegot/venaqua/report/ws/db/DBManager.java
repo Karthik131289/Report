@@ -78,7 +78,7 @@ public class DBManager {
     }
 
     public DBConnection getDbConnection(String name) {
-        return dbConnectionPool.getConnection(name);
+        return dbConnectionPool.getDBConnection(name);
     }
 
     public void test() throws ReportException {
