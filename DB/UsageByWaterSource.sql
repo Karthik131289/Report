@@ -67,6 +67,8 @@ SELECT * FROM prod_we2db.w2_apart_day_total WHERE apart_id=20 AND (dt BETWEEN '2
 SELECT * FROM w2_apart_day_total t4 JOIN (SELECT * FROM w2_apart_master t1 JOIN (SELECT * FROM w2_block WHERE w2_block.site_id=4) t2 ON t1.block_id=t2.id) t3  ON t4.apart_id=t3.id AND (t4.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' );
 
 
+SELECT t1.id, t1.block_name, t1.site_id, t2.id as house_id, t2.cust_name, t3.id as usageId, t3.apart_id, t3.agg_total, t3.dt from w2_block t1 inner join w2_apart_master t2 on t1.site_id=4 and t2.block_id=t1.id INNER JOIN w2_apart_day_total t3 on t3.apart_id=t2.id and (t3.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' );
+
 
 
 
@@ -79,5 +81,5 @@ SELECT * FROM prod_we2db.w2_pump_status_log where pump_id = 6 and (dt BETWEEN '2
 
 select * from w2_bwell_day_total where bwell_id =6;
 
- 
+
 

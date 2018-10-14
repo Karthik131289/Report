@@ -119,7 +119,7 @@ Get Site Id based on site name
 		OFF timestamp 	:	
 		YIELD value   	:	
 		yieldPercentage : 	???
-		partialFill		: 	??? (yieldPercentage/100 as mentioned by yaseen )
+		partialFill	: 	??? (yieldPercentage/100 as mentioned by yaseen )
 				
 **** HEAT MAP & HISTOGRAM CHART ****
 
