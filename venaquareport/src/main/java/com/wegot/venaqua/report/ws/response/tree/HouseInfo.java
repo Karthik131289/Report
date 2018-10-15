@@ -1,20 +1,17 @@
-package com.wegot.venaqua.report.ws.response;
+package com.wegot.venaqua.report.ws.response.tree;
 
-import javax.xml.bind.annotation.XmlElement;
-
-public class WaterSource {
+public class HouseInfo {
     private String name;
     private double usage;
 
-    public WaterSource() {
+    public HouseInfo() {
     }
 
-    public WaterSource(String name, double usage) {
+    public HouseInfo(String name, double usage) {
         this.name = name;
         this.usage = usage;
     }
 
-    @XmlElement(required = true)
     public String getName() {
         return name;
     }
@@ -23,7 +20,6 @@ public class WaterSource {
         this.name = name;
     }
 
-    @XmlElement(required = true)
     public double getUsage() {
         return usage;
     }

@@ -1,7 +1,5 @@
 package com.wegot.venaqua.report.ws;
 
-import com.wegot.venaqua.report.ws.exception.ReportException;
-
 import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;

@@ -3,10 +3,14 @@ package com.wegot.venaqua.report.ws;
 import com.wegot.venaqua.report.json.JSONConverter;
 import com.wegot.venaqua.report.ws.db.DBConnection;
 import com.wegot.venaqua.report.ws.db.DBManager;
+import com.wegot.venaqua.report.ws.db.query.HouseUsageEnum;
+import com.wegot.venaqua.report.ws.db.query.HouseUsageQuery;
 import com.wegot.venaqua.report.ws.db.query.SiteUsageByWaterSourceQuery;
 import com.wegot.venaqua.report.ws.exception.ReportException;
 import com.wegot.venaqua.report.ws.handler.auth.AuthenticationHandler;
-import com.wegot.venaqua.report.ws.response.WaterSourceUsageResponse;
+import com.wegot.venaqua.report.ws.response.bubble.HighUsersResponse;
+import com.wegot.venaqua.report.ws.response.pie.WaterSourceUsageResponse;
+import com.wegot.venaqua.report.ws.response.tree.BlockLevelUsageResponse;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,54 +66,70 @@ public class VenAquaReportImpl implements VenAquaReport {
     @Override
     public String getSiteUsageByBlockLevel(String requestInfo) {
         String response = null;
-        System.out.println("**** Request Info ****");
-        System.out.println(requestInfo);
+        log.debug("**** Request Info ****");
+        log.debug(requestInfo);
         try {
-            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
-            System.out.println("**** Parsed Request Info ****");
-            System.out.println("Uid : " + requestInfoObj.getUid());
-            System.out.println("ChartType : " + requestInfoObj.getChartType());
-            System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
 
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteUsageByBlockLevel.json");
-            if (resourceAsStream != null) {
-                response = IOUtils.toString(resourceAsStream);
+            RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
+            InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
+            boolean authenticate = this.authHandler.authenticate(invocationInfo);
+            if (authenticate) {
+                DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
+                HouseUsageQuery<BlockLevelUsageResponse> query = new HouseUsageQuery<>();
+                BlockLevelUsageResponse responseObj = new BlockLevelUsageResponse();
+                responseObj = query.execute(dbConnection.getConnection(), HouseUsageEnum.BLOCKLEVEL, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+                response = JSONConverter.CovertToJsonAsString(responseObj);
             }
 
-        } catch (IOException e) {
+            //InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteUsageByBlockLevel.json");
+            //if (resourceAsStream != null) {
+            //    response = IOUtils.toString(resourceAsStream);
+            //}
+
+        }  catch (ReportException e) {
+            //throw e;
+            e.printStackTrace();
+            response = e.getMessage();
+        } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
         }
-        System.out.println("**** Response Info ****");
-        System.out.println(response);
+        log.debug("**** Response Info ****");
+        log.debug(response);
         return response;
     }
 
     @Override
     public String getHighUsers(String requestInfo) {
         String response = null;
-        System.out.println("**** Request Info ****");
-        System.out.println(requestInfo);
+        log.debug("**** Request Info ****");
+        log.debug(requestInfo);
         try {
-            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
-            System.out.println("**** Parsed Request Info ****");
-            System.out.println("Uid : " + requestInfoObj.getUid());
-            System.out.println("ChartType : " + requestInfoObj.getChartType());
-            System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
-
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("HighUsers.json");
-            if (resourceAsStream != null) {
-                response = IOUtils.toString(resourceAsStream);
+            RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
+            InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
+            boolean authenticate = this.authHandler.authenticate(invocationInfo);
+            if (authenticate) {
+                DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
+                HouseUsageQuery<HighUsersResponse> query = new HouseUsageQuery<>();
+                HighUsersResponse responseObj = new HighUsersResponse();
+                responseObj = query.execute(dbConnection.getConnection(), HouseUsageEnum.HIGHUSERS, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+                response = JSONConverter.CovertToJsonAsString(responseObj);
             }
 
-        } catch (IOException e) {
+            /*InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("HighUsers.json");
+            if (resourceAsStream != null) {
+                response = IOUtils.toString(resourceAsStream);
+            }*/
+        }  catch (ReportException e) {
+            //throw e;
+            e.printStackTrace();
+            response = e.getMessage();
+        }  catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
         }
-        System.out.println("**** Response Info ****");
-        System.out.println(response);
+        log.debug("**** Response Info ****");
+        log.debug(response);
         return response;
     }
 

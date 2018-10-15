@@ -1,7 +1,7 @@
 package com.wegot.venaqua.report.ws.db;
 
 import com.wegot.venaqua.report.ws.exception.ReportException;
-import com.wegot.venaqua.report.ws.response.WaterSource;
+import com.wegot.venaqua.report.ws.response.pie.WaterSource;
 import org.apache.commons.dbutils.BaseResultSetHandler;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;

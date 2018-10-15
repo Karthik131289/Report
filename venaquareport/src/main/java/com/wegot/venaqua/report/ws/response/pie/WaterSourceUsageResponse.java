@@ -1,4 +1,4 @@
-package com.wegot.venaqua.report.ws.response;
+package com.wegot.venaqua.report.ws.response.pie;
 
 import java.util.ArrayList;
 import java.util.List;
