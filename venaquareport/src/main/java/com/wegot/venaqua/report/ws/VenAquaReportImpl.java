@@ -76,8 +76,8 @@ public class VenAquaReportImpl implements VenAquaReport {
             if (authenticate) {
                 DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
                 HouseUsageQuery<BlockLevelUsageResponse> query = new HouseUsageQuery<>();
-                BlockLevelUsageResponse responseObj = new BlockLevelUsageResponse();
-                responseObj = query.execute(dbConnection.getConnection(), HouseUsageEnum.BLOCKLEVEL, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+                BlockLevelUsageResponse responseObj = query.execute(dbConnection.getConnection(), HouseUsageEnum.BLOCKLEVEL, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+                responseObj.setName(requestInfoObj.getUid());
                 response = JSONConverter.CovertToJsonAsString(responseObj);
             }
 
@@ -111,8 +111,8 @@ public class VenAquaReportImpl implements VenAquaReport {
             if (authenticate) {
                 DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
                 HouseUsageQuery<HighUsersResponse> query = new HouseUsageQuery<>();
-                HighUsersResponse responseObj = new HighUsersResponse();
-                responseObj = query.execute(dbConnection.getConnection(), HouseUsageEnum.HIGHUSERS, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+                HighUsersResponse responseObj = query.execute(dbConnection.getConnection(), HouseUsageEnum.HIGHUSERS, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+                responseObj.setName(requestInfoObj.getUid());
                 response = JSONConverter.CovertToJsonAsString(responseObj);
             }
 

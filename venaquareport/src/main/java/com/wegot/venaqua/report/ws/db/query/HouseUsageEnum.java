@@ -2,6 +2,7 @@ package com.wegot.venaqua.report.ws.db.query;
 
 import com.wegot.venaqua.report.ws.response.bubble.HighUsersResponse;
 import com.wegot.venaqua.report.ws.response.bubble.HouseInfo;
+import com.wegot.venaqua.report.ws.response.tree.BlockInfo;
 import com.wegot.venaqua.report.ws.response.tree.BlockLevelUsageResponse;
 import org.apache.commons.dbutils.BaseResultSetHandler;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -12,17 +13,27 @@ import java.util.List;
 
 public enum HouseUsageEnum {
     BLOCKLEVEL("BlockLevel", new BaseResultSetHandler<BlockLevelUsageResponse>() {
-        BlockLevelUsageResponse response = new BlockLevelUsageResponse();
         @Override
         protected BlockLevelUsageResponse handle() throws SQLException {
+            BlockLevelUsageResponse response = new BlockLevelUsageResponse();
             ResultSet resultSet = getAdaptedResultSet();
+            BlockInfo block = null;
             while (resultSet.next()) {
-
+                String blockName = resultSet.getString(2);
+                if (block == null) {
+                    block = response.createAndAddBlock(blockName);
+                }
+                else if (!blockName.equals(block.getName())) {
+                    block = response.createAndAddBlock(blockName);
+                }
+                String houseName = resultSet.getString(3);
+                Integer usage = resultSet.getInt(5);
+                block.createAndAddHouse(houseName, usage.doubleValue());
             }
             return response;
         }
     }),
-    HIGHUSERS("HighUsers" , new BaseResultSetHandler<HighUsersResponse>() {
+    HIGHUSERS("HighUsers", new BaseResultSetHandler<HighUsersResponse>() {
         @Override
         protected HighUsersResponse handle() throws SQLException {
             HighUsersResponse response = new HighUsersResponse();
@@ -31,8 +42,9 @@ public enum HouseUsageEnum {
             while (resultSet.next()) {
                 String blockName = resultSet.getString(2);
                 String houseName = resultSet.getString(3);
-                Long usage = resultSet.getLong(5);
-                HouseInfo house = new HouseInfo(blockName+"-"+houseName, usage.doubleValue());
+                String name = blockName + "-" + houseName;
+                Integer usage = resultSet.getInt(5);
+                HouseInfo house = new HouseInfo(name, usage.doubleValue());
                 houses.add(house);
             }
             return response;

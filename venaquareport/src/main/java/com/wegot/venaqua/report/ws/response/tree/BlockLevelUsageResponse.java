@@ -50,4 +50,24 @@ public class BlockLevelUsageResponse {
         }
         return null;
     }
+
+    public BlockInfo createBlock(String name) {
+        return new BlockInfo(name);
+    }
+
+    public BlockInfo createBlock() {
+        return new BlockInfo();
+    }
+
+    public BlockInfo createAndAddBlock(String name) {
+        BlockInfo blockInfo = new BlockInfo(name);
+        this.blocks.add(blockInfo);
+        return blockInfo;
+    }
+
+    public BlockInfo createAndAddBlock() {
+        BlockInfo blockInfo = new BlockInfo();
+        this.blocks.add(blockInfo);
+        return blockInfo;
+    }
 }

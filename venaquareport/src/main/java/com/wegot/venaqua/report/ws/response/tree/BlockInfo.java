@@ -50,4 +50,24 @@ public class BlockInfo {
         }
         return null;
     }
+
+    public HouseInfo createHouse(String name, double usage) {
+        return new HouseInfo(name, usage);
+    }
+
+    public HouseInfo createHouse() {
+        return new HouseInfo();
+    }
+
+    public HouseInfo createAndAddHouse(String name, double usage) {
+        HouseInfo house = new HouseInfo(name, usage);
+        houses.add(house);
+        return house;
+    }
+
+    public HouseInfo createAndAddHouse() {
+        HouseInfo house = new HouseInfo();
+        houses.add(house);
+        return house;
+    }
 }

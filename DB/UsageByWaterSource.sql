@@ -72,6 +72,9 @@ SELECT t1.id, t1.block_name, t1.site_id, t2.id as house_id, t2.cust_name, t3.id 
 SELECT t1.site_id, t1.id, t1.block_name, t2.cust_name, t3.apart_id, sum(t3.agg_total) as totalUsage from w2_block t1 inner join w2_apart_master t2 on t1.site_id=4 and t2.block_id=t1.id INNER JOIN w2_apart_day_total t3 on t3.apart_id=t2.id and (t3.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' ) group by t3.apart_id;
 /** returns total usage for a house with sub query **/
 SELECT t1.block_name, t1.site_id, t2.cust_name, t3.apart_id, t3.total from w2_block t1 inner join w2_apart_master t2 on t1.site_id=4 and t2.block_id=t1.id INNER JOIN (select apart_id, sum(agg_total) as total from w2_apart_day_total where dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' group by apart_id) t3 on t3.apart_id=t2.id;
+/** Test **/
+SELECT t1.site_id, t1.id, t1.block_name, t2.cust_name, t3.apart_id, t3.agg_total from w2_block t1 inner join w2_apart_master t2 on t1.site_id=4 and t2.block_id=t1.id INNER JOIN w2_apart_day_total t3 on t3.apart_id=t2.id and (t3.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' ) order by t3.apart_id;
+SELECT t1.site_id, t1.block_name, t2.cust_name, t3.apart_id, t3.total from w2_block t1 inner join w2_apart_master t2 on t1.site_id=4 and t2.block_id=t1.id INNER JOIN (select apart_id, sum(agg_total) as total from w2_apart_day_total where dt>='2018-04-01 00:00:00' and dt<'2018-04-30 23:59:59' group by apart_id) t3 on t3.apart_id=t2.id;
 
 
 
