@@ -8,26 +8,14 @@ var appRouter = function (app, soap, prop) {
     });
 
     app.get("/api", function (req, res) {
-        var message = "<html><body>";
-        message = message + "<b>WeGot Data Visuals REST API</b>";
-        message = message + "<br><br><strong>&nbsp; EndPoints : </strong>";
-        message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/usage/watersource </em>";
-        message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/usage/blocklevel </em>";
-        message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/highusers </em>";
-        message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/demand/watertype </em>";
-        message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/pump/yield </em>";
-        message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/trend/watersource </em>";
-        message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/watermap </em>";
-        message = message + "</body></html>";
+        const message = getHomePageBody();
         res.header("content-type", "text/html; charset=utf-8");
         res.status(200);
         res.send(message);
     });
 
     app.post("/site/usage/watersource", function (req, res) {
-        console.log("request URL : " + req.method + " " + req.url);
-        var body = JSON.stringify(req.body);
-        var args = {RequestInfo: body};
+        var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
                 console.error(err);
@@ -49,9 +37,7 @@ var appRouter = function (app, soap, prop) {
     });
 
     app.post("/site/usage/blocklevel", function (req, res) {
-        console.log("request URL : " + req.method + " " + req.url);
-        var body = JSON.stringify(req.body);
-        var args = {RequestInfo: body};
+        var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
                 console.error(err);
@@ -73,9 +59,7 @@ var appRouter = function (app, soap, prop) {
     });
 
     app.post("/site/highusers", function (req, res) {
-        console.log("request URL : " + req.method + " " + req.url);
-        var body = JSON.stringify(req.body);
-        var args = {RequestInfo: body};
+        var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
                 console.error(err);
@@ -97,9 +81,7 @@ var appRouter = function (app, soap, prop) {
     });
 
     app.post("/site/demand/watertype", function (req, res) {
-        console.log("request URL : " + req.method + " " + req.url);
-        var body = JSON.stringify(req.body);
-        var args = {RequestInfo: body};
+        var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
                 console.error(err);
@@ -121,9 +103,7 @@ var appRouter = function (app, soap, prop) {
     });
 
     app.post("/site/pump/yield", function (req, res) {
-        console.log("request URL : " + req.method + " " + req.url);
-        var body = JSON.stringify(req.body);
-        var args = {RequestInfo: body};
+        var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
                 console.error(err);
@@ -145,9 +125,7 @@ var appRouter = function (app, soap, prop) {
     });
 
     app.post("/site/trend/watersource", function (req, res) {
-        console.log("request URL : " + req.method + " " + req.url);
-        var body = JSON.stringify(req.body);
-        var args = {RequestInfo: body};
+        var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
                 console.error(err);
@@ -169,9 +147,7 @@ var appRouter = function (app, soap, prop) {
     });
 
     app.post("/site/watermap", function (req, res) {
-        console.log("request URL : " + req.method + " " + req.url);
-        var body = JSON.stringify(req.body);
-        var args = {RequestInfo: body};
+        var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
                 console.error(err);
@@ -191,6 +167,27 @@ var appRouter = function (app, soap, prop) {
             }
         });
     });
+}
+
+function getHomePageBody() {
+    var message = "<html><body>";
+    message = message + "<b>WeGot Data Visuals REST API</b>";
+    message = message + "<br><br><strong>&nbsp; EndPoints : </strong>";
+    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/usage/watersource </em>";
+    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/usage/blocklevel </em>";
+    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/highusers </em>";
+    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/demand/watertype </em>";
+    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/pump/yield </em>";
+    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/trend/watersource </em>";
+    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/watermap </em>";
+    message = message + "</body></html>";
+    return message;
+}
+
+function getSOAPBody(httpReq) {
+    console.log("request URL : " + httpReq.method + " " + httpReq.url);
+    var body = JSON.stringify(httpReq.body);
+    return {RequestInfo: body};
 }
 
 module.exports = appRouter;
