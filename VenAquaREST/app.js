@@ -14,11 +14,13 @@ app.use(timeout(60000));
 app.use(haltOnTimedout);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.disable('etag');
 
 var routes = require("./routes/routes.js")(app, soap, prop);
 
 var server = app.listen(process.env.PORT || 3000, function () {
-    console.log("Listening on port %s...", server.address().port);
+    console.log("***** WeGot Data Visuals REST API *****");
+    console.log("Server running on port : %s...", server.address().port);
 });
 
 function haltOnTimedout(req, res, next){
