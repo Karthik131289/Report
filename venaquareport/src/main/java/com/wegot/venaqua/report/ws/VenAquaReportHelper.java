@@ -19,11 +19,11 @@ public class VenAquaReportHelper {
     protected static RequestInfo prepareRequestInfoObj(String requestBody) throws ReportException {
         try {
             RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestBody, RequestInfo.class);
-            System.out.println("**** Parsed Request Info ****");
-            System.out.println("Uid : " + requestInfoObj.getUid());
-            System.out.println("ChartType : " + requestInfoObj.getChartType());
-            System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());
+            log.debug("**** Parsed Request Info ****");
+            log.debug("Uid : " + requestInfoObj.getUid());
+            log.debug("ChartType : " + requestInfoObj.getChartType());
+            log.debug("FromDate : " + requestInfoObj.getFromDate());
+            log.debug("ToDate : " + requestInfoObj.getToDate());
             return requestInfoObj;
         } catch (Exception e) {
             throw new ReportException(e);

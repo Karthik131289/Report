@@ -8,13 +8,18 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBConnection {
     public static final String COREDB = "coredb";
     private final Logger log = LoggerFactory.getLogger(DBConnection.class);
     private String name;
     private DataSource dataSource;
-    private Connection connection;
+    private transient List freeConnections = new ArrayList();
+    private transient List inuseConnections = new ArrayList();
+    private long lastUsage;
+    private long inactivityTimeout = 60 * 60 * 1000;
 
     public DBConnection(DataSource dataSource) throws ReportException {
         this.dataSource = dataSource;
@@ -23,25 +28,18 @@ public class DBConnection {
     }
 
     private void initConnection(DataSource dataSource) throws ReportException {
-        this.connection = getDBConnection(dataSource);
-    }
-
-    public void resetConnection(DataSource dataSource) throws ReportException {
-        this.connection = getDBConnection(dataSource);
-        this.name = dataSource.getName();
-        this.dataSource = dataSource;
-    }
-
-    private Connection getDBConnection(DataSource dataSource) throws ReportException {
         try {
+            initInstance();
             String driver = dataSource.getConnectionDriver();
             Class.forName(driver);
 
-            String url = dataSource.getUrl() + "?autoReconnect=true&failOverReadOnly=false&maxReconnects=10";
-            String username = dataSource.getUsername();
-            String password = dataSource.getPassword();
-            Connection connection = DriverManager.getConnection(url, username, password);
-            return connection;
+            checkInactivity();
+            Connection connection = null;
+            if (freeConnections.size() == 0) {
+                connection = createConnection();
+                freeConnections.add(connection);
+            }
+            // TODO: 19-10-2018  create initial connection
         } catch (ClassNotFoundException e) {
             throw new ReportException("Could not find / load driver class for data-source - '" + dataSource.getName() + "'."
                     + e.getMessage(), e);
@@ -49,6 +47,59 @@ public class DBConnection {
             throw new ReportException("Could not create database connection for data-source - '" + dataSource.getName() + "'."
                     + e.getMessage(), e);
         }
+    }
+
+    private Connection getDBConnection() throws ReportException {
+        try {
+            checkInactivity();
+            Connection connection = null;
+            if (freeConnections.size() == 0)
+                connection = createConnection();
+            else
+                connection = (Connection) freeConnections.remove(freeConnections.size() - 1);
+            inuseConnections.add(connection);
+            logStatus(connection, false);
+
+            return connection;
+        } catch (SQLException e) {
+            throw new ReportException(e);
+        }
+    }
+
+    private Connection createConnection() throws SQLException {
+        String url = dataSource.getUrl() + "?autoReconnect=true&failOverReadOnly=false&maxReconnects=10";
+        String username = dataSource.getUsername();
+        String password = dataSource.getPassword();
+        return DriverManager.getConnection(url, username, password);
+    }
+
+    public synchronized void releaseConnection(Connection con) {
+        initInstance();
+        if (inuseConnections.remove(con)) {
+            freeConnections.add(con);
+            logStatus(con, true);
+        }
+        else {
+            log.debug("Connection release error. Attempting to release un-managed connection " + con.hashCode());
+        }
+    }
+
+    public synchronized void releaseConnection(Connection con, boolean corrupted) {
+        initInstance();
+        if (inuseConnections.remove(con)) {
+            if (corrupted) {
+                try {
+                    purgeInfo("Discarding possibly corrupted connection");
+                    con.close();
+                }
+                catch (SQLException e) { }
+            }
+            else
+                freeConnections.add(con);
+        }
+        else
+            log.debug("Connection release error. Attempting to release un-managed connection " + con.hashCode());
+        logStatus(con, true);
     }
 
     public String getName() {
@@ -60,13 +111,97 @@ public class DBConnection {
     }
 
     public Connection getConnection() throws ReportException {
+        Connection connection = null;
         try {
-            if (connection.isClosed())
-                this.connection = getDBConnection(this.dataSource);
-
+            connection = getDBConnection();
+            if (connection.isClosed()) {
+                releaseConnection(connection, true);
+                connection = getDBConnection();
+            }
         } catch (SQLException e) {
-            this.connection = getDBConnection(this.dataSource);
+            releaseConnection(connection, true);
+            connection = getDBConnection();
         }
         return connection;
+    }
+
+    private void initInstance() {
+        if (freeConnections == null) {
+            freeConnections = new ArrayList();
+        }
+        if (inuseConnections == null) {
+            inuseConnections = new ArrayList();
+        }
+    }
+
+    private void checkInactivity() {
+        long currentUsage = System.currentTimeMillis();
+        if (lastUsage != 0 && currentUsage - lastUsage > inactivityTimeout) {
+            closeFreeConnections(null);
+        }
+        lastUsage = currentUsage;
+    }
+
+    private void purgeInfo(String s) {
+        log.debug("[Cleanup]" + s);
+    }
+
+    private SQLException closeInUseConnections(SQLException toThrow) {
+        if (inuseConnections != null) {
+            for (int i = 0; i < inuseConnections.size(); ++i) {
+                Connection con = (Connection) inuseConnections.get(i);
+                try {
+                    con.close();
+                }
+                catch (SQLException e) {
+                    toThrow = e;
+                }
+            }
+            inuseConnections.clear();
+        }
+        return toThrow;
+    }
+
+    private SQLException closeFreeConnections(SQLException toThrow) {
+        if (freeConnections != null) {
+            if (freeConnections.size() > 0)
+                purgeInfo("Purging connections on timeout");
+            for (int i = 0; i < freeConnections.size(); ++i) {
+                Connection con = (Connection) freeConnections.get(i);
+                try {
+                    con.close();
+                }
+                catch (SQLException e) {
+                    toThrow = e;
+                }
+            }
+            freeConnections.clear();
+        }
+        return toThrow;
+    }
+
+    private synchronized void closeAllConnections() throws SQLException {
+        SQLException toThrow = null;
+        toThrow = closeInUseConnections(toThrow);
+        toThrow = closeFreeConnections(toThrow);
+        logStatus(null, true);
+        if (toThrow != null) {
+            throw toThrow;
+        }
+    }
+
+    private void logStatus(Connection con, boolean release) {
+        String str = "";
+        if (con != null) {
+            if (release) {
+                str = "Releasing connection ";
+            }
+            else {
+                str = "Acquiring connection ";
+            }
+            str += con.hashCode() + ". ";
+        }
+        str += "In use = " + inuseConnections.size() + " free = " + freeConnections.size();
+        log.debug(str);
     }
 }

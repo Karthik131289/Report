@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import javax.jws.WebService;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
 
 @WebService(endpointInterface = "com.wegot.venaqua.report.ws.VenAquaReport", serviceName = VenAquaReport.SERVICE_NAME,
         wsdlLocation = "localhost")
@@ -43,8 +44,9 @@ public class VenAquaReportImpl implements VenAquaReport {
             if (authenticate) {
                 DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
                 SiteUsageByWaterSourceQuery query = new SiteUsageByWaterSourceQuery();
-                WaterSourceUsageResponse responseObj = query.execute(dbConnection.getConnection(), requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
-
+                Connection connection = dbConnection.getConnection();
+                WaterSourceUsageResponse responseObj = query.execute(connection, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+                dbConnection.releaseConnection(connection);
                 response = JSONConverter.CovertToJsonAsString(responseObj.getWaterSourceList());
             }
 
@@ -76,7 +78,9 @@ public class VenAquaReportImpl implements VenAquaReport {
             if (authenticate) {
                 DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
                 HouseUsageQuery<BlockLevelUsageResponse> query = new HouseUsageQuery<>();
-                BlockLevelUsageResponse responseObj = query.execute(dbConnection.getConnection(), HouseUsageEnum.BLOCKLEVEL, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+                Connection connection = dbConnection.getConnection();
+                BlockLevelUsageResponse responseObj = query.execute(connection, HouseUsageEnum.BLOCKLEVEL, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+                dbConnection.releaseConnection(connection);
                 responseObj.setName(requestInfoObj.getUid());
                 response = JSONConverter.CovertToJsonAsString(responseObj);
             }
@@ -111,7 +115,9 @@ public class VenAquaReportImpl implements VenAquaReport {
             if (authenticate) {
                 DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
                 HouseUsageQuery<HighUsersResponse> query = new HouseUsageQuery<>();
-                HighUsersResponse responseObj = query.execute(dbConnection.getConnection(), HouseUsageEnum.HIGHUSERS, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+                Connection connection = dbConnection.getConnection();
+                HighUsersResponse responseObj = query.execute(connection, HouseUsageEnum.HIGHUSERS, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+                dbConnection.releaseConnection(connection);
                 responseObj.setName(requestInfoObj.getUid());
                 response = JSONConverter.CovertToJsonAsString(responseObj);
             }
