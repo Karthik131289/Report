@@ -128,10 +128,10 @@ public class VenAquaReportImpl implements VenAquaReport {
     @Override
     public String getSiteDemandByWaterType(String requestInfo) {
         String response = null;
-        System.out.println("**** Request Info ****");
-        System.out.println(requestInfo);
+        log.debug("**** Request Info ****");
+        log.debug(requestInfo);
         try {
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteDemandByWaterType.json");
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/SiteDemandByWaterType.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
             }
@@ -140,18 +140,18 @@ public class VenAquaReportImpl implements VenAquaReport {
             e.printStackTrace();
             response = e.getMessage();
         }
-        System.out.println("**** Response Info ****");
-        System.out.println(response);
+        log.debug("**** Response Info ****");
+        log.debug(response);
         return response;
     }
 
     @Override
     public String getPumpYield(String requestInfo) {
         String response = null;
-        System.out.println("**** Request Info ****");
-        System.out.println(requestInfo);
+        log.debug("**** Request Info ****");
+        log.debug(requestInfo);
         try {
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("PumpYield.json");
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/PumpYield.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
             }
@@ -160,18 +160,18 @@ public class VenAquaReportImpl implements VenAquaReport {
             e.printStackTrace();
             response = e.getMessage();
         }
-        System.out.println("**** Response Info ****");
-        System.out.println(response);
+        log.debug("**** Response Info ****");
+        log.debug(response);
         return response;
     }
 
     @Override
     public String getSiteTrendByWaterSource(String requestInfo) {
         String response = null;
-        System.out.println("**** Request Info ****");
-        System.out.println(requestInfo);
+        log.debug("**** Request Info ****");
+        log.debug(requestInfo);
         try {
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteTrendByWaterSource.json");
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/SiteTrendByWaterSource.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
             }
@@ -180,18 +180,18 @@ public class VenAquaReportImpl implements VenAquaReport {
             e.printStackTrace();
             response = e.getMessage();
         }
-        System.out.println("**** Response Info ****");
-        System.out.println(response);
+        log.debug("**** Response Info ****");
+        log.debug(response);
         return response;
     }
 
     @Override
     public String getSiteWaterMap(String requestInfo) {
         String response = null;
-        System.out.println("**** Request Info ****");
-        System.out.println(requestInfo);
+        log.debug("**** Request Info ****");
+        log.debug(requestInfo);
         try {
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteWaterMap.json");
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/SiteWaterMap.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
             }
@@ -200,8 +200,8 @@ public class VenAquaReportImpl implements VenAquaReport {
             e.printStackTrace();
             response = e.getMessage();
         }
-        System.out.println("**** Response Info ****");
-        System.out.println(response);
+        log.debug("**** Response Info ****");
+        log.debug(response);
         return response;
     }
 }
