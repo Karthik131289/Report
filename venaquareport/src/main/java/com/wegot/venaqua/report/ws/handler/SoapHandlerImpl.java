@@ -6,11 +6,14 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class SoapHandlerImpl implements SOAPHandler<SOAPMessageContext> {
     @Override
     public Set<QName> getHeaders() {
-        return null;
+        TreeSet<QName> headers = new TreeSet();
+
+        return headers;
     }
 
     @Override

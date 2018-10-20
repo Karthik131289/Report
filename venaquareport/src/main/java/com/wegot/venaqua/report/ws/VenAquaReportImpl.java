@@ -49,9 +49,6 @@ public class VenAquaReportImpl implements VenAquaReport {
                 dbConnection.releaseConnection(connection);
                 response = JSONConverter.CovertToJsonAsString(responseObj.getWaterSourceList());
             }
-
-
-            //response = VenAquaReportHelper.dummyResponse();
         } catch (ReportException e) {
             //throw e;
             e.printStackTrace();
@@ -84,12 +81,6 @@ public class VenAquaReportImpl implements VenAquaReport {
                 responseObj.setName(requestInfoObj.getUid());
                 response = JSONConverter.CovertToJsonAsString(responseObj);
             }
-
-            //InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteUsageByBlockLevel.json");
-            //if (resourceAsStream != null) {
-            //    response = IOUtils.toString(resourceAsStream);
-            //}
-
         }  catch (ReportException e) {
             //throw e;
             e.printStackTrace();
@@ -121,11 +112,6 @@ public class VenAquaReportImpl implements VenAquaReport {
                 responseObj.setName(requestInfoObj.getUid());
                 response = JSONConverter.CovertToJsonAsString(responseObj);
             }
-
-            /*InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("HighUsers.json");
-            if (resourceAsStream != null) {
-                response = IOUtils.toString(resourceAsStream);
-            }*/
         }  catch (ReportException e) {
             //throw e;
             e.printStackTrace();
@@ -145,13 +131,6 @@ public class VenAquaReportImpl implements VenAquaReport {
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
         try {
-            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
-            System.out.println("**** Parsed Request Info ****");
-            System.out.println("Uid : " + requestInfoObj.getUid());
-            System.out.println("ChartType : " + requestInfoObj.getChartType());
-            System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
-
             InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteDemandByWaterType.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
@@ -172,18 +151,9 @@ public class VenAquaReportImpl implements VenAquaReport {
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
         try {
-            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
-            System.out.println("**** Parsed Request Info ****");
-            System.out.println("Uid : " + requestInfoObj.getUid());
-            System.out.println("ChartType : " + requestInfoObj.getChartType());
-            System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
-
             InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("PumpYield.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
-                //List<PumpStateAndYieldResponse> pumpStateAndYieldResponses = JSONConverter.CovertToList(response, PumpStateAndYieldResponse.class);
-                //System.out.println(pumpStateAndYieldResponses);
             }
 
         } catch (IOException e) {
@@ -201,13 +171,6 @@ public class VenAquaReportImpl implements VenAquaReport {
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
         try {
-            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
-            System.out.println("**** Parsed Request Info ****");
-            System.out.println("Uid : " + requestInfoObj.getUid());
-            System.out.println("ChartType : " + requestInfoObj.getChartType());
-            System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
-
             InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteTrendByWaterSource.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
@@ -228,13 +191,6 @@ public class VenAquaReportImpl implements VenAquaReport {
         System.out.println("**** Request Info ****");
         System.out.println(requestInfo);
         try {
-            /*RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestInfo, RequestInfo.class);
-            System.out.println("**** Parsed Request Info ****");
-            System.out.println("Uid : " + requestInfoObj.getUid());
-            System.out.println("ChartType : " + requestInfoObj.getChartType());
-            System.out.println("FromDate : " + requestInfoObj.getFromDate());
-            System.out.println("ToDate : " + requestInfoObj.getToDate());*/
-
             InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("SiteWaterMap.json");
             if (resourceAsStream != null) {
                 response = IOUtils.toString(resourceAsStream);
