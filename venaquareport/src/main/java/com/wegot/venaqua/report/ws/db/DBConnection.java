@@ -39,7 +39,6 @@ public class DBConnection {
                 connection = createConnection();
                 freeConnections.add(connection);
             }
-            // TODO: 19-10-2018  create initial connection
         } catch (ClassNotFoundException e) {
             throw new ReportException("Could not find / load driver class for data-source - '" + dataSource.getName() + "'."
                     + e.getMessage(), e);
