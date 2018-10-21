@@ -11,9 +11,9 @@
       <quote-values-containing-separator value="false" />
       <quote-all-values value="false" />
       <value-separator value="" />
-      <file-name value="W2_APART_DAY_TOTAL, W2_BLOCK, W2_APART_MASTER.xls" />
-      <file-location value="D:\Development\WegotProject\Report\WorkingDir\Report" />
-      <scope value="SELECTION" />
+      <file-name value="W2_PUMPS.xls" />
+      <file-location value="D:\Development\WegotProject\Report\WorkingDir\Report\DB\sample" />
+      <scope value="GLOBAL" />
       <destination value="FILE" />
       <format value="EXCEL" />
       <charset value="windows-1252" />
@@ -23,7 +23,11 @@
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
-    <loaded-nodes />
+    <loaded-nodes>
+      <connection connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11">
+        <schema name="prod_we2db" object-types="column, constraint, function, index, procedure, table, dataset trigger, view" />
+      </connection>
+    </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="9a5242b3-d36c-4cf5-8d68-a06017285a11">
@@ -34,7 +38,6 @@
     <connection id="9a5242b3-d36c-4cf5-8d68-a06017285a11" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
-    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_roplants_flow" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_roplants" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_bwell_day_total" active-filter-id="9b178066-30f3-46fb-b294-3f46eb7805b4">
       <filter id="9b178066-30f3-46fb-b294-3f46eb7805b4" name="0 and 8" temporary="false" custom-name="false" type="basic" join-type="AND">
@@ -42,7 +45,13 @@
       </filter>
     </filter-list>
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_builder_qa1" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_site_billing_date" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_apart_master" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_slab_rates_dtl" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_roplants_flow" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_apart_properties" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_pumps" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_borewells" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_apart_day_total" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_apart_month_total" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_block" active-filter-id="EMPTY_FILTER" />

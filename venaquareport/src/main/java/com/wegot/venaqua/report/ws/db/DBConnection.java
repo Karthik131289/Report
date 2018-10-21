@@ -19,7 +19,7 @@ public class DBConnection {
     private transient List freeConnections = new ArrayList();
     private transient List inuseConnections = new ArrayList();
     private long lastUsage;
-    private long inactivityTimeout = 60 * 60 * 1000;
+    private long inactivityTimeout = 60 * 60 * 1000;  // 1hr
 
     public DBConnection(DataSource dataSource) throws ReportException {
         this.dataSource = dataSource;
@@ -34,9 +34,8 @@ public class DBConnection {
             Class.forName(driver);
 
             checkInactivity();
-            Connection connection = null;
             if (freeConnections.size() == 0) {
-                connection = createConnection();
+                Connection connection = createConnection();
                 freeConnections.add(connection);
             }
         } catch (ClassNotFoundException e) {

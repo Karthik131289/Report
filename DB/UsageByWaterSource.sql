@@ -77,14 +77,19 @@ SELECT t1.site_id, t1.id, t1.block_name, t2.cust_name, t3.apart_id, t3.agg_total
 SELECT t1.site_id, t1.block_name, t2.cust_name, t3.apart_id, t3.total from w2_block t1 inner join w2_apart_master t2 on t1.site_id=4 and t2.block_id=t1.id INNER JOIN (select apart_id, sum(agg_total) as total from w2_apart_day_total where dt>='2018-04-01 00:00:00' and dt<'2018-04-30 23:59:59' group by apart_id) t3 on t3.apart_id=t2.id;
 
 
+/****** GANTT CHART ******/
 
+SELECT id, cust_name, pump_id, block_id, site_id  FROM w2_pumps WHERE site_id=4;
 
-
-SELECT * FROM prod_we2db.w2_pumps WHERE site_id=4;
-
-SELECT * FROM prod_we2db.w2_pump_status_log where pump_id = 6 and (dt BETWEEN '2018-09-01 00:01:00' and '2018-09-02 00:01:00');
+SELECT * FROM w2_pump_status_log where pump_id = 1 and (dt BETWEEN '2018-09-01 00:00:01' and '2018-09-01 23:59:59');
 
 select * from w2_bwell_day_total where bwell_id =6;
+
+
+
+
+
+
 
 
 

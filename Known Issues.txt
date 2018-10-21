@@ -1,0 +1,11 @@
+Water Usage chart
+	use group by and sum function in query to avoid unnecessary looping.
+	in select query retrive only total usage column. others are not required for production.
+	
+Tree & Bubble chart
+	for site id - 4, total house count 690 but the query output shows only for 614 houses.
+	
+NodeJS REST:
+	set all headers sent from the client to soap server in request.
+	return all headers from the soap server to client in response.
+	set response code properly
