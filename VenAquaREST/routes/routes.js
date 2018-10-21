@@ -21,7 +21,9 @@ var appRouter = function (app, soap, prop) {
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
+                res.status(500);
                 console.error(err);
+                res.send();
             }
             else {
                 console.info("soap client initiated..");
@@ -33,6 +35,7 @@ var appRouter = function (app, soap, prop) {
                         console.debug("response: " + resp);
                         showResonseHeaders(response);
                         res.header("content-type", "application/json; charset=utf-8");
+                        res.status(200);
                         return res.send(resp);
                     }
                 })
@@ -45,6 +48,7 @@ var appRouter = function (app, soap, prop) {
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
+                res.status(500);
                 console.error(err);
             }
             else {
@@ -56,6 +60,7 @@ var appRouter = function (app, soap, prop) {
                         var resp = JSON.parse(JSON.stringify(response))['return'];
                         console.debug("response: " + resp);
                         res.header("content-type", "application/json; charset=utf-8");
+                        res.status(200);
                         return res.send(resp);
                     }
                 })
@@ -68,6 +73,7 @@ var appRouter = function (app, soap, prop) {
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
+                res.status(500);
                 console.error(err);
             }
             else {
@@ -79,6 +85,7 @@ var appRouter = function (app, soap, prop) {
                         var resp = JSON.parse(JSON.stringify(response))['return'];
                         console.debug("response: " + resp);
                         res.header("content-type", "application/json; charset=utf-8");
+                        res.status(200);
                         return res.send(resp);
                     }
                 })
@@ -91,6 +98,7 @@ var appRouter = function (app, soap, prop) {
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
+                res.status(500);
                 console.error(err);
             }
             else {
@@ -102,6 +110,7 @@ var appRouter = function (app, soap, prop) {
                         var resp = JSON.parse(JSON.stringify(response))['return'];
                         console.debug("response: " + resp);
                         res.header("content-type", "application/json; charset=utf-8");
+                        res.status(200);
                         return res.send(resp);
                     }
                 })
@@ -114,6 +123,7 @@ var appRouter = function (app, soap, prop) {
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
+                res.status(500);
                 console.error(err);
             }
             else {
@@ -125,6 +135,7 @@ var appRouter = function (app, soap, prop) {
                         var resp = JSON.parse(JSON.stringify(response))['return'];
                         console.debug("response: " + resp);
                         res.header("content-type", "application/json; charset=utf-8");
+                        res.status(200);
                         return res.send(resp);
                     }
                 })
@@ -137,6 +148,7 @@ var appRouter = function (app, soap, prop) {
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
+                res.status(500);
                 console.error(err);
             }
             else {
@@ -148,6 +160,7 @@ var appRouter = function (app, soap, prop) {
                         var resp = JSON.parse(JSON.stringify(response))['return'];
                         console.debug("response: " + resp);
                         res.header("content-type", "application/json; charset=utf-8");
+                        res.status(200);
                         return res.send(resp);
                     }
                 })
@@ -160,6 +173,7 @@ var appRouter = function (app, soap, prop) {
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
+                res.status(500);
                 console.error(err);
             }
             else {
@@ -171,6 +185,7 @@ var appRouter = function (app, soap, prop) {
                         var resp = JSON.parse(JSON.stringify(response))['return'];
                         console.debug("response: " + resp);
                         res.header("content-type", "application/json; charset=utf-8");
+                        res.status(200);
                         return res.send(resp);
                     }
                 })
