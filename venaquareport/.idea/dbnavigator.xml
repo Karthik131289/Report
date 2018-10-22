@@ -25,7 +25,7 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11">
-        <schema name="prod_we2db" object-types="column, constraint, function, index, procedure, table, dataset trigger, view" />
+        <schema name="prod_we2db" object-types="column, function, table, view" />
       </connection>
     </loaded-nodes>
   </component>
