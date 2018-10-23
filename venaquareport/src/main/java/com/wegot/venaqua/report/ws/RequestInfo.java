@@ -1,12 +1,18 @@
 package com.wegot.venaqua.report.ws;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Date;
 
 public class RequestInfo {
     private String uid;
     private String chartType;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date fromDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date toDate;
     private Date fromTime;
     private Date toTime;
@@ -15,7 +21,14 @@ public class RequestInfo {
     public RequestInfo() {
 
     }
-    public RequestInfo(String uid, String chartType, Date fromDate, Date toDate, Date fromTime, Date toTime, Date date) {
+    @JsonCreator()
+    public RequestInfo(@JsonProperty(value = "uid", required = false) String uid,
+                       @JsonProperty(value = "chartType", required = true) String chartType,
+                       @JsonProperty(value = "fromDate", required = false)Date fromDate,
+                       @JsonProperty(value = "toDate", required = false)Date toDate,
+                       @JsonProperty(value = "fromTime", required = false)Date fromTime,
+                       @JsonProperty(value = "toTime", required = false)Date toTime,
+                       @JsonProperty(value = "date", required = false)Date date) {
         this.uid = uid;
         this.chartType = chartType;
         this.fromDate = fromDate;
