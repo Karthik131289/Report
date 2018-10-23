@@ -6,7 +6,9 @@ import com.wegot.venaqua.report.ws.db.DBManager;
 import com.wegot.venaqua.report.ws.db.query.HouseUsageEnum;
 import com.wegot.venaqua.report.ws.db.query.HouseUsageQuery;
 import com.wegot.venaqua.report.ws.db.query.SiteUsageByWaterSourceQuery;
+import com.wegot.venaqua.report.ws.exception.ErrorInfo;
 import com.wegot.venaqua.report.ws.exception.ReportException;
+import com.wegot.venaqua.report.ws.exception.RequestException;
 import com.wegot.venaqua.report.ws.handler.auth.AuthenticationHandler;
 import com.wegot.venaqua.report.ws.response.bubble.HighUsersResponse;
 import com.wegot.venaqua.report.ws.response.pie.WaterSourceUsageResponse;
@@ -39,6 +41,7 @@ public class VenAquaReportImpl implements VenAquaReport {
         log.debug(requestInfo);
         try {
             RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
+            VenAquaReportHelper.validateRequestInfo(requestInfoObj);
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
@@ -49,6 +52,11 @@ public class VenAquaReportImpl implements VenAquaReport {
                 dbConnection.releaseConnection(connection);
                 response = JSONConverter.CovertToJsonAsString(responseObj.getWaterSourceList());
             }
+        } catch (RequestException e) {
+            //ErrorInfo errorInfo = new ErrorInfo(400, e.getMessage());
+            //throw new ReportException(e.getMessage(), errorInfo, e);
+            e.printStackTrace();
+            response = e.getMessage();
         } catch (ReportException e) {
             //throw e;
             e.printStackTrace();
@@ -70,6 +78,7 @@ public class VenAquaReportImpl implements VenAquaReport {
         try {
 
             RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
+            VenAquaReportHelper.validateRequestInfo(requestInfoObj);
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
@@ -81,7 +90,12 @@ public class VenAquaReportImpl implements VenAquaReport {
                 responseObj.setName(requestInfoObj.getUid());
                 response = JSONConverter.CovertToJsonAsString(responseObj);
             }
-        }  catch (ReportException e) {
+        } catch (RequestException e) {
+            //ErrorInfo errorInfo = new ErrorInfo(400, e.getMessage());
+            //throw new ReportException(e.getMessage(), errorInfo, e);
+            e.printStackTrace();
+            response = e.getMessage();
+        } catch (ReportException e) {
             //throw e;
             e.printStackTrace();
             response = e.getMessage();
@@ -101,6 +115,7 @@ public class VenAquaReportImpl implements VenAquaReport {
         log.debug(requestInfo);
         try {
             RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
+            VenAquaReportHelper.validateRequestInfo(requestInfoObj);
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
@@ -112,7 +127,12 @@ public class VenAquaReportImpl implements VenAquaReport {
                 responseObj.setName(requestInfoObj.getUid());
                 response = JSONConverter.CovertToJsonAsString(responseObj);
             }
-        }  catch (ReportException e) {
+        } catch (RequestException e) {
+            //ErrorInfo errorInfo = new ErrorInfo(400, e.getMessage());
+            //throw new ReportException(e.getMessage(), errorInfo, e);
+            e.printStackTrace();
+            response = e.getMessage();
+        } catch (ReportException e) {
             //throw e;
             e.printStackTrace();
             response = e.getMessage();

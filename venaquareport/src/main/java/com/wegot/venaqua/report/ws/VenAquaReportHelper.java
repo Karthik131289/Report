@@ -2,6 +2,7 @@ package com.wegot.venaqua.report.ws;
 
 import com.wegot.venaqua.report.json.JSONConverter;
 import com.wegot.venaqua.report.ws.exception.ReportException;
+import com.wegot.venaqua.report.ws.exception.RequestException;
 import com.wegot.venaqua.report.ws.handler.auth.AuthenticationHandler;
 import com.wegot.venaqua.report.ws.handler.auth.DefaultAuthenticationHandler;
 import org.apache.commons.io.IOUtils;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
@@ -28,6 +30,28 @@ public class VenAquaReportHelper {
         } catch (Exception e) {
             throw new ReportException(e);
         }
+    }
+
+    protected static void validateRequestInfo(RequestInfo requestInfo) throws RequestException {
+        String uid = requestInfo.getUid();
+        if (uid == null || uid.isEmpty())
+            throw new RequestException("Invalid uid parameter value.");
+
+        String chartType = requestInfo.getChartType();
+        if (chartType == null || chartType.isEmpty())
+            throw new RequestException("Invalid chartType parameter value.");
+
+        Date fromDate = requestInfo.getFromDate();
+        Date toDate = requestInfo.getToDate();
+        if (fromDate!=null) {
+            if (toDate==null)
+                throw new RequestException("Missing parameter toDate.");
+            else if (fromDate.equals(toDate))
+                    throw new RequestException("Invalid values. Values of fromDate and toDate parameter cannot be equal.");
+            else if(fromDate.after(toDate))
+                throw new RequestException("Invalid values. Value of fromDate cannot be greater than toDate parameter.");
+        } else if (toDate!=null)
+                throw new RequestException("Missing parameter fromDate.");
     }
 
     protected static InvocationInfo prepareInvocationInfo(RequestInfo requestInfo) {
@@ -55,14 +79,5 @@ public class VenAquaReportHelper {
         if (authHandler == null)
             log.debug("Could not initialize authentication handler.");
         return authHandler;
-    }
-
-    protected static String dummyResponse() throws IOException {
-        String response = null;
-        InputStream resourceAsStream = VenAquaReportHelper.class.getClassLoader().getResourceAsStream("SiteUsageByWaterSource.json");
-        if (resourceAsStream != null) {
-            response = IOUtils.toString(resourceAsStream);
-        }
-        return response;
     }
 }
