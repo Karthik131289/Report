@@ -6,6 +6,7 @@ import com.wegot.venaqua.report.ws.db.DBManager;
 import com.wegot.venaqua.report.ws.db.query.HouseUsageEnum;
 import com.wegot.venaqua.report.ws.db.query.HouseUsageQuery;
 import com.wegot.venaqua.report.ws.db.query.SiteUsageByWaterSourceQuery;
+import com.wegot.venaqua.report.ws.exception.AuthException;
 import com.wegot.venaqua.report.ws.exception.ErrorInfo;
 import com.wegot.venaqua.report.ws.exception.ReportException;
 import com.wegot.venaqua.report.ws.exception.RequestException;
@@ -30,12 +31,13 @@ public class VenAquaReportImpl implements VenAquaReport {
     private DBManager dbManager;
 
     public VenAquaReportImpl() throws ReportException {
+        System.setProperty("com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace", "false");
         this.authHandler = VenAquaReportHelper.getAuthHandler();
         this.dbManager = DBManager.getInstance();
     }
 
     @Override
-    public String getSiteUsageByWaterSource(String requestInfo) {
+    public String getSiteUsageByWaterSource(String requestInfo) throws ReportException {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
@@ -52,6 +54,8 @@ public class VenAquaReportImpl implements VenAquaReport {
                 dbConnection.releaseConnection(connection);
                 response = JSONConverter.CovertToJsonAsString(responseObj.getWaterSourceList());
             }
+        } catch (AuthException e) {
+            VenAquaReportHelper.handleAuthException(e);
         } catch (RequestException e) {
             //ErrorInfo errorInfo = new ErrorInfo(400, e.getMessage());
             //throw new ReportException(e.getMessage(), errorInfo, e);
@@ -61,6 +65,7 @@ public class VenAquaReportImpl implements VenAquaReport {
             //throw e;
             e.printStackTrace();
             response = e.getMessage();
+            throw e;
         } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
@@ -136,7 +141,7 @@ public class VenAquaReportImpl implements VenAquaReport {
             //throw e;
             e.printStackTrace();
             response = e.getMessage();
-        }  catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
         }

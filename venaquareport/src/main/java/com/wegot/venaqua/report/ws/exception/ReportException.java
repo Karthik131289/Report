@@ -1,6 +1,8 @@
 package com.wegot.venaqua.report.ws.exception;
 
-//@WebFault(name="ReportException", faultBean = "ErrorInfo")
+import javax.xml.ws.WebFault;
+
+@WebFault(name="ReportException", faultBean = "com.wegot.venaqua.report.ws.exception.ErrorInfo")
 public class ReportException extends Exception {
     private ErrorInfo errorInfo;
 
@@ -41,5 +43,13 @@ public class ReportException extends Exception {
 
     public ErrorInfo getErrorInfo() {
         return errorInfo;
+    }
+
+    public int getErrorCode() {
+        return errorInfo.getErrorCode();
+    }
+
+    public String getErrorMessage() {
+        return errorInfo.getErrorMessage();
     }
 }

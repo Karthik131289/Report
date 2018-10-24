@@ -1,5 +1,11 @@
 package com.wegot.venaqua.report.ws.exception;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "ErrorInfo", propOrder = {"errorMessage", "errorCode"})
 public class ErrorInfo {
     private int errorCode;
     private String errorMessage;

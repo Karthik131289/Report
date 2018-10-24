@@ -1,6 +1,8 @@
 package com.wegot.venaqua.report.ws;
 
 import com.wegot.venaqua.report.json.JSONConverter;
+import com.wegot.venaqua.report.ws.exception.AuthException;
+import com.wegot.venaqua.report.ws.exception.ErrorInfo;
 import com.wegot.venaqua.report.ws.exception.ReportException;
 import com.wegot.venaqua.report.ws.exception.RequestException;
 import com.wegot.venaqua.report.ws.handler.auth.AuthenticationHandler;
@@ -79,5 +81,11 @@ public class VenAquaReportHelper {
         if (authHandler == null)
             log.debug("Could not initialize authentication handler.");
         return authHandler;
+    }
+
+    protected static void handleAuthException(AuthException e) throws ReportException {
+        int errCode = e.getErrorCode() == -1 ? 401 : e.getErrorCode();
+        ErrorInfo errorInfo = new ErrorInfo(errCode, e.getMessage());
+        throw new ReportException(errorInfo.getErrorMessage(), errorInfo, e);
     }
 }
