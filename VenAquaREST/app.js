@@ -4,6 +4,7 @@ var cors = require("cors");
 var bodyParser = require("body-parser");
 var timeout = require('connect-timeout');
 const PropertiesReader = require('properties-reader');
+const xmlConverter = require('xml-js');
 
 /*** Read application.properties ***/
 const prop = PropertiesReader('./resources/application.properties');
@@ -16,7 +17,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.disable('etag');
 
-var routes = require("./routes/routes.js")(app, soap, prop);
+var routes = require("./routes/routes.js")(app, soap, prop, xmlConverter);
 
 var server = app.listen(process.env.PORT || 3000, function () {
     console.log("***** WeGot Data Visuals REST API *****");

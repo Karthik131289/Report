@@ -1,22 +1,23 @@
 {
-	"name": "venaqua-report-rest",
-	"version": "1.0.0",
-	"description": "NodeJS based REST to SOAP service mapper",
-	"main": "app.js",
-	"author": "Karthik",
-	"license": "",
-	"scripts": {
-		"start": "node app.js"
-	},
-	"dependencies": {
-		"body-parser": "^1.18.3",
-		"connect-timeout": "^1.9.0",
-		"cors": "^2.8.4",
-		"express": "^4.16.3",
-		"properties-reader": "0.0.16",
-		"soap": "^0.25.0"
-	},
-	"engines": {
-		"node": "8.12.0"
-	}
+  "name": "venaqua-report-rest",
+  "version": "1.0.0",
+  "description": "NodeJS based REST to SOAP service mapper",
+  "main": "app.js",
+  "author": "Karthik",
+  "license": "",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "connect-timeout": "^1.9.0",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "properties-reader": "0.0.16",
+    "soap": "^0.25.0",
+    "xml-js": "^1.6.8"
+  },
+  "engines": {
+    "node": "8.12.0"
+  }
 }

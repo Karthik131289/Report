@@ -1,4 +1,4 @@
-var appRouter = function (app, soap, prop) {
+var appRouter = function (app, soap, prop, xmlConverter) {
 
     var url = prop.get('soap-server.url');
 
@@ -21,19 +21,17 @@ var appRouter = function (app, soap, prop) {
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
-                res.status(500);
-                console.error(err);
-                res.send();
+                return sendServerInternalError(err, res);
             }
             else {
                 console.info("soap client initiated..");
                 client.VenAquaReport.VenAquaReportImplPort.getSiteUsageByWaterSource(args, function (err, response) {
-                    if (err)
-                        console.error(err);
-                    else {
+                    if (err) {
+                        return sendErrorResponse(err, response, res, xmlConverter);
+                    } else {
                         var resp = JSON.parse(JSON.stringify(response))['return'];
                         console.debug("response: " + resp);
-                        showResonseHeaders(response);
+                        showResponseHeaders(response);
                         res.header("content-type", "application/json; charset=utf-8");
                         res.status(200);
                         return res.send(resp);
@@ -48,14 +46,13 @@ var appRouter = function (app, soap, prop) {
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
-                res.status(500);
-                console.error(err);
+                return sendServerInternalError(err, res);
             }
             else {
                 console.info("soap client initiated..");
                 client.VenAquaReport.VenAquaReportImplPort.getSiteUsageByBlockLevel(args, function (err, response) {
                     if (err)
-                        console.error(err);
+                        return sendErrorResponse(err, response, res, xmlConverter);
                     else {
                         var resp = JSON.parse(JSON.stringify(response))['return'];
                         console.debug("response: " + resp);
@@ -73,14 +70,13 @@ var appRouter = function (app, soap, prop) {
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
-                res.status(500);
-                console.error(err);
+                return sendServerInternalError(err, res);
             }
             else {
                 console.info("soap client initiated..");
                 client.VenAquaReport.VenAquaReportImplPort.getHighUsers(args, function (err, response) {
                     if (err)
-                        console.error(err);
+                        return sendErrorResponse(err, response, res, xmlConverter);
                     else {
                         var resp = JSON.parse(JSON.stringify(response))['return'];
                         console.debug("response: " + resp);
@@ -98,14 +94,13 @@ var appRouter = function (app, soap, prop) {
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
-                res.status(500);
-                console.error(err);
+                return sendServerInternalError(err, res);
             }
             else {
                 console.info("soap client initiated..");
                 client.VenAquaReport.VenAquaReportImplPort.getSiteDemandByWaterType(args, function (err, response) {
                     if (err)
-                        console.error(err);
+                        return sendErrorResponse(err, response, res, xmlConverter);
                     else {
                         var resp = JSON.parse(JSON.stringify(response))['return'];
                         console.debug("response: " + resp);
@@ -123,14 +118,13 @@ var appRouter = function (app, soap, prop) {
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
-                res.status(500);
-                console.error(err);
+                return sendServerInternalError(err, res);
             }
             else {
                 console.info("soap client initiated..");
                 client.VenAquaReport.VenAquaReportImplPort.getPumpYield(args, function (err, response) {
                     if (err)
-                        console.error(err);
+                        return sendErrorResponse(err, response, res, xmlConverter);
                     else {
                         var resp = JSON.parse(JSON.stringify(response))['return'];
                         console.debug("response: " + resp);
@@ -148,14 +142,13 @@ var appRouter = function (app, soap, prop) {
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
-                res.status(500);
-                console.error(err);
+                return sendServerInternalError(err, res);
             }
             else {
                 console.info("soap client initiated..");
                 client.VenAquaReport.VenAquaReportImplPort.getSiteTrendByWaterSource(args, function (err, response) {
                     if (err)
-                        console.error(err);
+                        return sendErrorResponse(err, response, res, xmlConverter);
                     else {
                         var resp = JSON.parse(JSON.stringify(response))['return'];
                         console.debug("response: " + resp);
@@ -173,14 +166,13 @@ var appRouter = function (app, soap, prop) {
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
             if (err) {
-                res.status(500);
-                console.error(err);
+                return sendServerInternalError(err, res);
             }
             else {
                 console.info("soap client initiated..");
                 client.VenAquaReport.VenAquaReportImplPort.getSiteWaterMap(args, function (err, response) {
                     if (err)
-                        console.error(err);
+                        return sendErrorResponse(err, response, res, xmlConverter);
                     else {
                         var resp = JSON.parse(JSON.stringify(response))['return'];
                         console.debug("response: " + resp);
@@ -222,6 +214,26 @@ function logRequestDetails(httpReq) {
 
 function showResonseHeaders(soapRes) {
     console.debug(soapRes);
+}
+
+function sendErrorResponse(err, response, res, xmlConverter) {
+    console.error(err);
+    const soapBody = response.body;
+    const options = {compact: true, spaces: 4};
+    var bodyObj = xmlConverter.xml2js(soapBody, options);
+    var errorInfo = bodyObj['S:Envelope']['S:Body']['S:Fault']['detail']['ns2:ReportException'];
+    const errorMsg = errorInfo.errorMessage._text;
+    const errorCode = errorInfo.errorCode._text;
+    console.error("errorMessage : " + errorMsg);
+    console.error("errorCode : " + errorCode);
+    res.status(errorCode);
+    return res.send(errorMsg);
+}
+
+function sendServerInternalError(err, res) {
+    res.status(500);
+    console.error(err);
+    res.send();
 }
 
 module.exports = appRouter;
