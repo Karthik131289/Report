@@ -83,9 +83,16 @@ public class VenAquaReportHelper {
         return authHandler;
     }
 
-    protected static void handleAuthException(AuthException e) throws ReportException {
-        int errCode = e.getErrorCode() == -1 ? 401 : e.getErrorCode();
-        ErrorInfo errorInfo = new ErrorInfo(errCode, e.getMessage());
-        throw new ReportException(errorInfo.getErrorMessage(), errorInfo, e);
+    protected static void throwReportException(Exception e) throws ReportException {
+        if(e instanceof AuthException) {
+            AuthException ae = (AuthException)e;
+            int errCode = ae.getErrorCode() == -1 ? 401 : ae.getErrorCode();
+            ErrorInfo errorInfo = new ErrorInfo(errCode, ae.getMessage());
+            throw new ReportException(errorInfo.getErrorMessage(), errorInfo, ae);
+        } else if (e instanceof RequestException) {
+            RequestException re = (RequestException)e;
+            ErrorInfo errorInfo = new ErrorInfo(400, re.getMessage());
+            throw new ReportException(re.getMessage(), errorInfo, re);
+        }
     }
 }

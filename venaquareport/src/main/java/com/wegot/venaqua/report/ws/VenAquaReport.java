@@ -18,20 +18,20 @@ public interface VenAquaReport {
     public String getSiteUsageByWaterSource(@WebParam(name = "RequestInfo") String requestInfo) throws ReportException;
 
     @WebMethod
-    public String getSiteUsageByBlockLevel(@WebParam(name = "RequestInfo") String requestInfo);
+    public String getSiteUsageByBlockLevel(@WebParam(name = "RequestInfo") String requestInfo) throws ReportException;
 
     @WebMethod
-    public String getHighUsers(@WebParam(name = "RequestInfo") String requestInfo);
+    public String getHighUsers(@WebParam(name = "RequestInfo") String requestInfo) throws ReportException;
 
     @WebMethod
-    public String getSiteDemandByWaterType(@WebParam(name = "RequestInfo") String requestInfo);
+    public String getSiteDemandByWaterType(@WebParam(name = "RequestInfo") String requestInfo) throws ReportException;
 
     @WebMethod
-    public String getPumpYield(@WebParam(name = "RequestInfo") String requestInfo);
+    public String getPumpYield(@WebParam(name = "RequestInfo") String requestInfo) throws ReportException;
 
     @WebMethod
-    public String getSiteTrendByWaterSource(@WebParam(name = "RequestInfo") String requestInfo);
+    public String getSiteTrendByWaterSource(@WebParam(name = "RequestInfo") String requestInfo) throws ReportException;
 
     @WebMethod
-    public String getSiteWaterMap(@WebParam(name = "RequestInfo") String requestInfo);
+    public String getSiteWaterMap(@WebParam(name = "RequestInfo") String requestInfo) throws ReportException;
 }

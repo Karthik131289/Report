@@ -7,7 +7,6 @@ import com.wegot.venaqua.report.ws.db.query.HouseUsageEnum;
 import com.wegot.venaqua.report.ws.db.query.HouseUsageQuery;
 import com.wegot.venaqua.report.ws.db.query.SiteUsageByWaterSourceQuery;
 import com.wegot.venaqua.report.ws.exception.AuthException;
-import com.wegot.venaqua.report.ws.exception.ErrorInfo;
 import com.wegot.venaqua.report.ws.exception.ReportException;
 import com.wegot.venaqua.report.ws.exception.RequestException;
 import com.wegot.venaqua.report.ws.handler.auth.AuthenticationHandler;
@@ -54,13 +53,9 @@ public class VenAquaReportImpl implements VenAquaReport {
                 dbConnection.releaseConnection(connection);
                 response = JSONConverter.CovertToJsonAsString(responseObj.getWaterSourceList());
             }
-        } catch (AuthException e) {
-            VenAquaReportHelper.handleAuthException(e);
-        } catch (RequestException e) {
-            //ErrorInfo errorInfo = new ErrorInfo(400, e.getMessage());
-            //throw new ReportException(e.getMessage(), errorInfo, e);
-            e.printStackTrace();
-            response = e.getMessage();
+        } catch (AuthException | RequestException e) {
+            log.error(e.getMessage(), e);
+            VenAquaReportHelper.throwReportException(e);
         } catch (ReportException e) {
             //throw e;
             e.printStackTrace();
@@ -76,12 +71,11 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getSiteUsageByBlockLevel(String requestInfo) {
+    public String getSiteUsageByBlockLevel(String requestInfo) throws ReportException {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
         try {
-
             RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
             VenAquaReportHelper.validateRequestInfo(requestInfoObj);
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
@@ -95,11 +89,9 @@ public class VenAquaReportImpl implements VenAquaReport {
                 responseObj.setName(requestInfoObj.getUid());
                 response = JSONConverter.CovertToJsonAsString(responseObj);
             }
-        } catch (RequestException e) {
-            //ErrorInfo errorInfo = new ErrorInfo(400, e.getMessage());
-            //throw new ReportException(e.getMessage(), errorInfo, e);
-            e.printStackTrace();
-            response = e.getMessage();
+        } catch (AuthException | RequestException e) {
+            log.error(e.getMessage(), e);
+            VenAquaReportHelper.throwReportException(e);
         } catch (ReportException e) {
             //throw e;
             e.printStackTrace();
@@ -114,7 +106,7 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getHighUsers(String requestInfo) {
+    public String getHighUsers(String requestInfo) throws ReportException {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
@@ -132,11 +124,9 @@ public class VenAquaReportImpl implements VenAquaReport {
                 responseObj.setName(requestInfoObj.getUid());
                 response = JSONConverter.CovertToJsonAsString(responseObj);
             }
-        } catch (RequestException e) {
-            //ErrorInfo errorInfo = new ErrorInfo(400, e.getMessage());
-            //throw new ReportException(e.getMessage(), errorInfo, e);
-            e.printStackTrace();
-            response = e.getMessage();
+        } catch (AuthException | RequestException e) {
+            log.error(e.getMessage(), e);
+            VenAquaReportHelper.throwReportException(e);
         } catch (ReportException e) {
             //throw e;
             e.printStackTrace();
@@ -151,17 +141,26 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getSiteDemandByWaterType(String requestInfo) {
+    public String getSiteDemandByWaterType(String requestInfo) throws ReportException {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
         try {
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/SiteDemandByWaterType.json");
-            if (resourceAsStream != null) {
-                response = IOUtils.toString(resourceAsStream);
+            RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
+            VenAquaReportHelper.validateRequestInfo(requestInfoObj);
+            InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
+            boolean authenticate = this.authHandler.authenticate(invocationInfo);
+            if (authenticate) {
+                InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/SiteDemandByWaterType.json");
+                if (resourceAsStream != null) {
+                    response = IOUtils.toString(resourceAsStream);
+                }
             }
 
-        } catch (IOException e) {
+        } catch (AuthException | RequestException e) {
+            log.error(e.getMessage(), e);
+            VenAquaReportHelper.throwReportException(e);
+        } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
         }
@@ -171,17 +170,25 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getPumpYield(String requestInfo) {
+    public String getPumpYield(String requestInfo) throws ReportException {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
         try {
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/PumpYield.json");
-            if (resourceAsStream != null) {
-                response = IOUtils.toString(resourceAsStream);
+            RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
+            VenAquaReportHelper.validateRequestInfo(requestInfoObj);
+            InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
+            boolean authenticate = this.authHandler.authenticate(invocationInfo);
+            if (authenticate) {
+                InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/PumpYield.json");
+                if (resourceAsStream != null) {
+                    response = IOUtils.toString(resourceAsStream);
+                }
             }
-
-        } catch (IOException e) {
+        } catch (AuthException | RequestException e) {
+            log.error(e.getMessage(), e);
+            VenAquaReportHelper.throwReportException(e);
+        } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
         }
@@ -191,17 +198,25 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getSiteTrendByWaterSource(String requestInfo) {
+    public String getSiteTrendByWaterSource(String requestInfo) throws ReportException {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
         try {
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/SiteTrendByWaterSource.json");
-            if (resourceAsStream != null) {
-                response = IOUtils.toString(resourceAsStream);
+            RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
+            VenAquaReportHelper.validateRequestInfo(requestInfoObj);
+            InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
+            boolean authenticate = this.authHandler.authenticate(invocationInfo);
+            if (authenticate) {
+                InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/SiteTrendByWaterSource.json");
+                if (resourceAsStream != null) {
+                    response = IOUtils.toString(resourceAsStream);
+                }
             }
-
-        } catch (IOException e) {
+        } catch (AuthException | RequestException e) {
+            log.error(e.getMessage(), e);
+            VenAquaReportHelper.throwReportException(e);
+        } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
         }
@@ -211,17 +226,25 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getSiteWaterMap(String requestInfo) {
+    public String getSiteWaterMap(String requestInfo) throws ReportException {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
         try {
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/SiteWaterMap.json");
-            if (resourceAsStream != null) {
-                response = IOUtils.toString(resourceAsStream);
+            RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
+            VenAquaReportHelper.validateRequestInfo(requestInfoObj);
+            InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
+            boolean authenticate = this.authHandler.authenticate(invocationInfo);
+            if (authenticate) {
+                InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/SiteWaterMap.json");
+                if (resourceAsStream != null) {
+                    response = IOUtils.toString(resourceAsStream);
+                }
             }
-
-        } catch (IOException e) {
+        } catch (AuthException | RequestException e) {
+            log.error(e.getMessage(), e);
+            VenAquaReportHelper.throwReportException(e);
+        } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
         }
