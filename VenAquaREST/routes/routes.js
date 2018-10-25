@@ -212,7 +212,7 @@ function logRequestDetails(httpReq) {
     console.debug("Client Address : %s", httpReq.connection.remoteAddress);
 }
 
-function showResonseHeaders(soapRes) {
+function showResponseHeaders(soapRes) {
     console.debug(soapRes);
 }
 
@@ -221,7 +221,7 @@ function sendErrorResponse(err, response, res, xmlConverter) {
     const soapBody = response.body;
     const options = {compact: true, spaces: 4};
     var bodyObj = xmlConverter.xml2js(soapBody, options);
-    var errorInfo = bodyObj['S:Envelope']['S:Body']['S:Fault']['detail']['ns2:ReportException'];
+    var errorInfo = bodyObj['S:Envelope']['S:Body']['S:Fault']['detail']['ns2:VenaquaException'];
     const errorMsg = errorInfo.errorMessage._text;
     const errorCode = errorInfo.errorCode._text;
     console.error("errorMessage : " + errorMsg);

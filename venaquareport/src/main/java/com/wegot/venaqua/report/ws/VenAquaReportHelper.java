@@ -1,18 +1,12 @@
 package com.wegot.venaqua.report.ws;
 
 import com.wegot.venaqua.report.json.JSONConverter;
-import com.wegot.venaqua.report.ws.exception.AuthException;
-import com.wegot.venaqua.report.ws.exception.ErrorInfo;
-import com.wegot.venaqua.report.ws.exception.ReportException;
-import com.wegot.venaqua.report.ws.exception.RequestException;
+import com.wegot.venaqua.report.ws.exception.*;
 import com.wegot.venaqua.report.ws.handler.auth.AuthenticationHandler;
 import com.wegot.venaqua.report.ws.handler.auth.DefaultAuthenticationHandler;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.ServiceLoader;
@@ -20,7 +14,7 @@ import java.util.ServiceLoader;
 public class VenAquaReportHelper {
     private final static Logger log = LoggerFactory.getLogger(VenAquaReportHelper.class);
 
-    protected static RequestInfo prepareRequestInfoObj(String requestBody) throws ReportException {
+    protected static RequestInfo prepareRequestInfoObj(String requestBody) throws RequestException {
         try {
             RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestBody, RequestInfo.class);
             log.debug("**** Parsed Request Info ****");
@@ -30,7 +24,7 @@ public class VenAquaReportHelper {
             log.debug("ToDate : " + requestInfoObj.getToDate());
             return requestInfoObj;
         } catch (Exception e) {
-            throw new ReportException(e);
+            throw new RequestException("Error occurred while parsing request body.", e);
         }
     }
 
@@ -83,16 +77,19 @@ public class VenAquaReportHelper {
         return authHandler;
     }
 
-    protected static void throwReportException(Exception e) throws ReportException {
+    protected static void throwVenaquaException(Exception e) throws VenaquaException {
         if(e instanceof AuthException) {
             AuthException ae = (AuthException)e;
             int errCode = ae.getErrorCode() == -1 ? 401 : ae.getErrorCode();
             ErrorInfo errorInfo = new ErrorInfo(errCode, ae.getMessage());
-            throw new ReportException(errorInfo.getErrorMessage(), errorInfo, ae);
+            throw new VenaquaException(errorInfo.getErrorMessage(), ae, errorInfo);
         } else if (e instanceof RequestException) {
             RequestException re = (RequestException)e;
             ErrorInfo errorInfo = new ErrorInfo(400, re.getMessage());
-            throw new ReportException(re.getMessage(), errorInfo, re);
+            throw new VenaquaException(re.getMessage(), re, errorInfo);
+        } else if(e instanceof ReportException) {
+            ErrorInfo errorInfo = new ErrorInfo(500, e.getMessage());
+            throw new VenaquaException(errorInfo.getErrorMessage(), e, errorInfo);
         }
     }
 }

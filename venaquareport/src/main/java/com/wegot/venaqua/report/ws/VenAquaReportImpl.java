@@ -9,6 +9,7 @@ import com.wegot.venaqua.report.ws.db.query.SiteUsageByWaterSourceQuery;
 import com.wegot.venaqua.report.ws.exception.AuthException;
 import com.wegot.venaqua.report.ws.exception.ReportException;
 import com.wegot.venaqua.report.ws.exception.RequestException;
+import com.wegot.venaqua.report.ws.exception.VenaquaException;
 import com.wegot.venaqua.report.ws.handler.auth.AuthenticationHandler;
 import com.wegot.venaqua.report.ws.response.bubble.HighUsersResponse;
 import com.wegot.venaqua.report.ws.response.pie.WaterSourceUsageResponse;
@@ -18,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jws.WebService;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 
@@ -36,7 +36,7 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getSiteUsageByWaterSource(String requestInfo) throws ReportException {
+    public String getSiteUsageByWaterSource(String requestInfo) throws VenaquaException {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
@@ -53,14 +53,9 @@ public class VenAquaReportImpl implements VenAquaReport {
                 dbConnection.releaseConnection(connection);
                 response = JSONConverter.CovertToJsonAsString(responseObj.getWaterSourceList());
             }
-        } catch (AuthException | RequestException e) {
+        } catch (AuthException | RequestException | ReportException e) {
             log.error(e.getMessage(), e);
-            VenAquaReportHelper.throwReportException(e);
-        } catch (ReportException e) {
-            //throw e;
-            e.printStackTrace();
-            response = e.getMessage();
-            throw e;
+            VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
@@ -71,7 +66,7 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getSiteUsageByBlockLevel(String requestInfo) throws ReportException {
+    public String getSiteUsageByBlockLevel(String requestInfo) throws VenaquaException {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
@@ -89,13 +84,9 @@ public class VenAquaReportImpl implements VenAquaReport {
                 responseObj.setName(requestInfoObj.getUid());
                 response = JSONConverter.CovertToJsonAsString(responseObj);
             }
-        } catch (AuthException | RequestException e) {
+        } catch (AuthException | RequestException | ReportException e) {
             log.error(e.getMessage(), e);
-            VenAquaReportHelper.throwReportException(e);
-        } catch (ReportException e) {
-            //throw e;
-            e.printStackTrace();
-            response = e.getMessage();
+            VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
@@ -106,7 +97,7 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getHighUsers(String requestInfo) throws ReportException {
+    public String getHighUsers(String requestInfo) throws VenaquaException {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
@@ -124,13 +115,9 @@ public class VenAquaReportImpl implements VenAquaReport {
                 responseObj.setName(requestInfoObj.getUid());
                 response = JSONConverter.CovertToJsonAsString(responseObj);
             }
-        } catch (AuthException | RequestException e) {
+        } catch (AuthException | RequestException | ReportException e) {
             log.error(e.getMessage(), e);
-            VenAquaReportHelper.throwReportException(e);
-        } catch (ReportException e) {
-            //throw e;
-            e.printStackTrace();
-            response = e.getMessage();
+            VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
@@ -141,7 +128,7 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getSiteDemandByWaterType(String requestInfo) throws ReportException {
+    public String getSiteDemandByWaterType(String requestInfo) throws VenaquaException {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
@@ -159,7 +146,7 @@ public class VenAquaReportImpl implements VenAquaReport {
 
         } catch (AuthException | RequestException e) {
             log.error(e.getMessage(), e);
-            VenAquaReportHelper.throwReportException(e);
+            VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
@@ -170,7 +157,7 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getPumpYield(String requestInfo) throws ReportException {
+    public String getPumpYield(String requestInfo) throws VenaquaException {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
@@ -187,7 +174,7 @@ public class VenAquaReportImpl implements VenAquaReport {
             }
         } catch (AuthException | RequestException e) {
             log.error(e.getMessage(), e);
-            VenAquaReportHelper.throwReportException(e);
+            VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
@@ -198,7 +185,7 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getSiteTrendByWaterSource(String requestInfo) throws ReportException {
+    public String getSiteTrendByWaterSource(String requestInfo) throws VenaquaException {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
@@ -215,7 +202,7 @@ public class VenAquaReportImpl implements VenAquaReport {
             }
         } catch (AuthException | RequestException e) {
             log.error(e.getMessage(), e);
-            VenAquaReportHelper.throwReportException(e);
+            VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
@@ -226,7 +213,7 @@ public class VenAquaReportImpl implements VenAquaReport {
     }
 
     @Override
-    public String getSiteWaterMap(String requestInfo) throws ReportException {
+    public String getSiteWaterMap(String requestInfo) throws VenaquaException {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
@@ -243,7 +230,7 @@ public class VenAquaReportImpl implements VenAquaReport {
             }
         } catch (AuthException | RequestException e) {
             log.error(e.getMessage(), e);
-            VenAquaReportHelper.throwReportException(e);
+            VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
             e.printStackTrace();
             response = e.getMessage();
