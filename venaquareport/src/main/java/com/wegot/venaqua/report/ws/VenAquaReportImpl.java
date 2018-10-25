@@ -6,6 +6,7 @@ import com.wegot.venaqua.report.ws.db.DBManager;
 import com.wegot.venaqua.report.ws.db.query.HouseUsageEnum;
 import com.wegot.venaqua.report.ws.db.query.HouseUsageQuery;
 import com.wegot.venaqua.report.ws.db.query.SiteUsageByWaterSourceQuery;
+import com.wegot.venaqua.report.ws.db.query.SiteWaterMapQuery;
 import com.wegot.venaqua.report.ws.exception.AuthException;
 import com.wegot.venaqua.report.ws.exception.ReportException;
 import com.wegot.venaqua.report.ws.exception.RequestException;
@@ -14,6 +15,7 @@ import com.wegot.venaqua.report.ws.handler.auth.AuthenticationHandler;
 import com.wegot.venaqua.report.ws.response.bubble.HighUsersResponse;
 import com.wegot.venaqua.report.ws.response.pie.WaterSourceUsageResponse;
 import com.wegot.venaqua.report.ws.response.tree.BlockLevelUsageResponse;
+import com.wegot.venaqua.report.ws.response.waterMap.WaterMapResponse;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +53,7 @@ public class VenAquaReportImpl implements VenAquaReport {
                 Connection connection = dbConnection.getConnection();
                 WaterSourceUsageResponse responseObj = query.execute(connection, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
                 dbConnection.releaseConnection(connection);
-                response = JSONConverter.CovertToJsonAsString(responseObj.getWaterSourceList());
+                response = JSONConverter.CovertToJsonString(responseObj.getWaterSourceList());
             }
         } catch (AuthException | RequestException | ReportException e) {
             log.error(e.getMessage(), e);
@@ -82,7 +84,7 @@ public class VenAquaReportImpl implements VenAquaReport {
                 BlockLevelUsageResponse responseObj = query.execute(connection, HouseUsageEnum.BLOCKLEVEL, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
                 dbConnection.releaseConnection(connection);
                 responseObj.setName(requestInfoObj.getUid());
-                response = JSONConverter.CovertToJsonAsString(responseObj);
+                response = JSONConverter.CovertToJsonString(responseObj);
             }
         } catch (AuthException | RequestException | ReportException e) {
             log.error(e.getMessage(), e);
@@ -113,7 +115,7 @@ public class VenAquaReportImpl implements VenAquaReport {
                 HighUsersResponse responseObj = query.execute(connection, HouseUsageEnum.HIGHUSERS, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
                 dbConnection.releaseConnection(connection);
                 responseObj.setName(requestInfoObj.getUid());
-                response = JSONConverter.CovertToJsonAsString(responseObj);
+                response = JSONConverter.CovertToJsonString(responseObj);
             }
         } catch (AuthException | RequestException | ReportException e) {
             log.error(e.getMessage(), e);
@@ -223,10 +225,12 @@ public class VenAquaReportImpl implements VenAquaReport {
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
-                InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/SiteWaterMap.json");
-                if (resourceAsStream != null) {
-                    response = IOUtils.toString(resourceAsStream);
-                }
+                DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
+                SiteWaterMapQuery query = new SiteWaterMapQuery();
+                Connection connection = dbConnection.getConnection();
+                WaterMapResponse responseObj = query.execute(connection, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+                dbConnection.releaseConnection(connection);
+                response = JSONConverter.CovertToJsonString(responseObj.getSiteDayUsageList());
             }
         } catch (AuthException | RequestException e) {
             log.error(e.getMessage(), e);

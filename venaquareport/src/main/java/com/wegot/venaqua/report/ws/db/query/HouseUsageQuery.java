@@ -3,12 +3,10 @@ package com.wegot.venaqua.report.ws.db.query;
 import com.wegot.venaqua.report.util.DateTimeUtils;
 import com.wegot.venaqua.report.ws.db.DBHelper;
 import com.wegot.venaqua.report.ws.exception.ReportException;
-import org.apache.commons.dbutils.BaseResultSetHandler;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 

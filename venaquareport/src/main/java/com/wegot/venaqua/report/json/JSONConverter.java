@@ -31,7 +31,7 @@ public class JSONConverter {
         return objectMapper.readValue( jsonData, objectMapper.getTypeFactory().constructCollectionType(List.class, cls));
     }
 
-    public static <T> String CovertToJsonAsString(T obj) throws IOException {
+    public static <T> String CovertToJsonString(T obj) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(obj);
     }

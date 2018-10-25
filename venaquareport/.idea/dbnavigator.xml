@@ -25,7 +25,7 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11">
-        <schema name="prod_we2db" object-types="column, function, table, view" />
+        <schema name="prod_we2db" object-types="column, constraint, function, index, procedure, table, dataset trigger, view" />
       </connection>
     </loaded-nodes>
   </component>
@@ -44,15 +44,31 @@
         <condition column="id" operator="between" value="0 and 8" active="true" />
       </filter>
     </filter-list>
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_water_type" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_builder_qa1" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_site_billing_date" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_apart_master" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_slab_rates_dtl" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_flush" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_roplants_flow" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_apart_properties" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_water_source_type" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_flush_day_total" active-filter-id="" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_alarms" active-filter-id="6174f04e-ff3f-45b4-a992-e634a7e94ad3">
+      <filter id="6174f04e-ff3f-45b4-a992-e634a7e94ad3" name="948" temporary="false" custom-name="false" type="basic" join-type="AND">
+        <condition column="comp_id" operator="=" value="948" active="true" />
+      </filter>
+    </filter-list>
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_pumps" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_borewells" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_site_water_level" active-filter-id="46ad5655-73cb-47cb-a794-7443e2a891df">
+      <filter id="46ad5655-73cb-47cb-a794-7443e2a891df" name="1" temporary="false" custom-name="false" type="basic" join-type="AND">
+        <condition column="water_type_id" operator="=" value="1" active="true" />
+      </filter>
+    </filter-list>
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_apart_day_total" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_site_totals" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_pump_status_log" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_apart_month_total" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="9a5242b3-d36c-4cf5-8d68-a06017285a11" dataset="prod_we2db.w2_block" active-filter-id="EMPTY_FILTER" />
   </component>
