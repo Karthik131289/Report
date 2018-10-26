@@ -50,6 +50,14 @@ public class VenAquaReportHelper {
                 throw new RequestException("Missing parameter fromDate.");
     }
 
+    protected static<T> String convertResponseObjToString(T responseObj) throws ResponseException {
+        try {
+            return JSONConverter.CovertToJsonString(responseObj);
+        } catch (Exception e) {
+            throw new ResponseException(e);
+        }
+    }
+
     protected static InvocationInfo prepareInvocationInfo(RequestInfo requestInfo) {
         InvocationInfo invocationInfo = new InvocationInfo();
         invocationInfo.setRequestInfo(requestInfo);
@@ -87,7 +95,10 @@ public class VenAquaReportHelper {
             RequestException re = (RequestException)e;
             ErrorInfo errorInfo = new ErrorInfo(400, re.getMessage());
             throw new VenaquaException(re.getMessage(), re, errorInfo);
-        } else if(e instanceof ReportException) {
+        } else if(e instanceof ReportException | e instanceof ProcessException | e instanceof ResponseException) {
+            ErrorInfo errorInfo = new ErrorInfo(500, e.getMessage());
+            throw new VenaquaException(errorInfo.getErrorMessage(), e, errorInfo);
+        } else if(e instanceof Exception) {
             ErrorInfo errorInfo = new ErrorInfo(500, e.getMessage());
             throw new VenaquaException(errorInfo.getErrorMessage(), e, errorInfo);
         }

@@ -1,16 +1,12 @@
 package com.wegot.venaqua.report.ws;
 
-import com.wegot.venaqua.report.json.JSONConverter;
 import com.wegot.venaqua.report.ws.db.DBConnection;
 import com.wegot.venaqua.report.ws.db.DBManager;
 import com.wegot.venaqua.report.ws.db.query.HouseUsageEnum;
 import com.wegot.venaqua.report.ws.db.query.HouseUsageQuery;
 import com.wegot.venaqua.report.ws.db.query.SiteUsageByWaterSourceQuery;
 import com.wegot.venaqua.report.ws.db.query.SiteWaterMapQuery;
-import com.wegot.venaqua.report.ws.exception.AuthException;
-import com.wegot.venaqua.report.ws.exception.ReportException;
-import com.wegot.venaqua.report.ws.exception.RequestException;
-import com.wegot.venaqua.report.ws.exception.VenaquaException;
+import com.wegot.venaqua.report.ws.exception.*;
 import com.wegot.venaqua.report.ws.handler.auth.AuthenticationHandler;
 import com.wegot.venaqua.report.ws.response.bubble.HighUsersResponse;
 import com.wegot.venaqua.report.ws.response.pie.WaterSourceUsageResponse;
@@ -53,14 +49,14 @@ public class VenAquaReportImpl implements VenAquaReport {
                 Connection connection = dbConnection.getConnection();
                 WaterSourceUsageResponse responseObj = query.execute(connection, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
                 dbConnection.releaseConnection(connection);
-                response = JSONConverter.CovertToJsonString(responseObj.getWaterSourceList());
+                response = VenAquaReportHelper.convertResponseObjToString(responseObj.getWaterSourceList());
             }
-        } catch (AuthException | RequestException | ReportException e) {
+        }  catch (AuthException | RequestException | ReportException | ResponseException e) {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
-            e.printStackTrace();
-            response = e.getMessage();
+            log.error(e.getMessage(), e);
+            VenAquaReportHelper.throwVenaquaException(e);
         }
         log.debug("**** Response Info ****");
         log.debug(response);
@@ -84,14 +80,14 @@ public class VenAquaReportImpl implements VenAquaReport {
                 BlockLevelUsageResponse responseObj = query.execute(connection, HouseUsageEnum.BLOCKLEVEL, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
                 dbConnection.releaseConnection(connection);
                 responseObj.setName(requestInfoObj.getUid());
-                response = JSONConverter.CovertToJsonString(responseObj);
+                response = VenAquaReportHelper.convertResponseObjToString(responseObj);
             }
-        } catch (AuthException | RequestException | ReportException e) {
+        }  catch (AuthException | RequestException | ReportException | ResponseException e) {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
-            e.printStackTrace();
-            response = e.getMessage();
+            log.error(e.getMessage(), e);
+            VenAquaReportHelper.throwVenaquaException(e);
         }
         log.debug("**** Response Info ****");
         log.debug(response);
@@ -115,14 +111,14 @@ public class VenAquaReportImpl implements VenAquaReport {
                 HighUsersResponse responseObj = query.execute(connection, HouseUsageEnum.HIGHUSERS, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
                 dbConnection.releaseConnection(connection);
                 responseObj.setName(requestInfoObj.getUid());
-                response = JSONConverter.CovertToJsonString(responseObj);
+                response = VenAquaReportHelper.convertResponseObjToString(responseObj);
             }
-        } catch (AuthException | RequestException | ReportException e) {
+        }  catch (AuthException | RequestException | ReportException | ResponseException e) {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
-            e.printStackTrace();
-            response = e.getMessage();
+            log.error(e.getMessage(), e);
+            VenAquaReportHelper.throwVenaquaException(e);
         }
         log.debug("**** Response Info ****");
         log.debug(response);
@@ -150,8 +146,8 @@ public class VenAquaReportImpl implements VenAquaReport {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
-            e.printStackTrace();
-            response = e.getMessage();
+            log.error(e.getMessage(), e);
+            VenAquaReportHelper.throwVenaquaException(e);
         }
         log.debug("**** Response Info ****");
         log.debug(response);
@@ -178,8 +174,8 @@ public class VenAquaReportImpl implements VenAquaReport {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
-            e.printStackTrace();
-            response = e.getMessage();
+            log.error(e.getMessage(), e);
+            VenAquaReportHelper.throwVenaquaException(e);
         }
         log.debug("**** Response Info ****");
         log.debug(response);
@@ -206,8 +202,8 @@ public class VenAquaReportImpl implements VenAquaReport {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
-            e.printStackTrace();
-            response = e.getMessage();
+            log.error(e.getMessage(), e);
+            VenAquaReportHelper.throwVenaquaException(e);
         }
         log.debug("**** Response Info ****");
         log.debug(response);
@@ -230,14 +226,14 @@ public class VenAquaReportImpl implements VenAquaReport {
                 Connection connection = dbConnection.getConnection();
                 WaterMapResponse responseObj = query.execute(connection, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
                 dbConnection.releaseConnection(connection);
-                response = JSONConverter.CovertToJsonString(responseObj.getSiteDayUsageList());
+                response = VenAquaReportHelper.convertResponseObjToString(responseObj.getSiteDayUsageList());
             }
-        } catch (AuthException | RequestException e) {
+        } catch (AuthException | RequestException | ReportException | ProcessException | ResponseException e) {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
-            e.printStackTrace();
-            response = e.getMessage();
+            log.error(e.getMessage(), e);
+            VenAquaReportHelper.throwVenaquaException(e);
         }
         log.debug("**** Response Info ****");
         log.debug(response);
