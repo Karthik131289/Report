@@ -226,8 +226,16 @@ function sendErrorResponse(err, response, res, xmlConverter) {
     const errorCode = errorInfo.errorCode._text;
     console.error("errorMessage : " + errorMsg);
     console.error("errorCode : " + errorCode);
+
+    var errResp = createErrorObj(errorMsg)
+    console.debug("response: " + errResp);
+    res.header("content-type", "application/json; charset=utf-8");
     res.status(errorCode);
-    return res.send(errorMsg);
+    return res.send(errResp);
+}
+
+function createErrorObj(errMsg) {
+    return { "message" : errMsg};
 }
 
 function sendServerInternalError(err, res) {
