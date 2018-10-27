@@ -30,24 +30,28 @@ public class VenAquaReportHelper {
 
     protected static void validateRequestInfo(RequestInfo requestInfo) throws RequestException {
         String uid = requestInfo.getUid();
-        if (uid == null || uid.isEmpty())
-            throw new RequestException("Invalid uid parameter value.");
+        if (uid == null)
+            throw new RequestException("Missing required field - uid");
+        else if(uid.isEmpty())
+            throw new RequestException("Invalid uid field value");
 
         String chartType = requestInfo.getChartType();
-        if (chartType == null || chartType.isEmpty())
-            throw new RequestException("Invalid chartType parameter value.");
+        if (chartType == null)
+            throw new RequestException("Missing required field - chartType");
+        else if(chartType.isEmpty())
+            throw new RequestException("Invalid chartType field value");
 
         Date fromDate = requestInfo.getFromDate();
         Date toDate = requestInfo.getToDate();
         if (fromDate!=null) {
             if (toDate==null)
-                throw new RequestException("Missing parameter toDate.");
+                throw new RequestException("Missing optional field - toDate");
             else if (fromDate.equals(toDate))
-                    throw new RequestException("Invalid values. Values of fromDate and toDate parameter cannot be equal.");
+                    throw new RequestException("Invalid values. Values of fromDate and toDate fields cannot be equal");
             else if(fromDate.after(toDate))
-                throw new RequestException("Invalid values. Value of fromDate cannot be greater than toDate parameter.");
+                throw new RequestException("Invalid values. Value of fromDate cannot be greater than toDate field");
         } else if (toDate!=null)
-                throw new RequestException("Missing parameter fromDate.");
+                throw new RequestException("Missing optional field - fromDate");
     }
 
     protected static<T> String convertResponseObjToString(T responseObj) throws ResponseException {
