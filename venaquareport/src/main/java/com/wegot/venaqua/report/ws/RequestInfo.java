@@ -22,13 +22,13 @@ public class RequestInfo {
 
     }
     @JsonCreator()
-    public RequestInfo(@JsonProperty(value = "uid", required = false) String uid,
-                       @JsonProperty(value = "chartType", required = true) String chartType,
-                       @JsonProperty(value = "fromDate", required = false)Date fromDate,
-                       @JsonProperty(value = "toDate", required = false)Date toDate,
-                       @JsonProperty(value = "fromTime", required = false)Date fromTime,
-                       @JsonProperty(value = "toTime", required = false)Date toTime,
-                       @JsonProperty(value = "date", required = false)Date date) {
+    public RequestInfo(@JsonProperty(value = "uid") String uid,
+                       @JsonProperty(value = "chartType") String chartType,
+                       @JsonProperty(value = "fromDate")Date fromDate,
+                       @JsonProperty(value = "toDate")Date toDate,
+                       @JsonProperty(value = "fromTime")Date fromTime,
+                       @JsonProperty(value = "toTime")Date toTime,
+                       @JsonProperty(value = "date")Date date) {
         this.uid = uid;
         this.chartType = chartType;
         this.fromDate = fromDate;

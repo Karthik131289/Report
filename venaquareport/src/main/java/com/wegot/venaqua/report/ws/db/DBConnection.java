@@ -19,7 +19,6 @@ public class DBConnection {
     private transient List freeConnections = new ArrayList();
     private transient List inuseConnections = new ArrayList();
     private long lastUsage;
-    private long inactivityTimeout = 60 * 60 * 1000;  // 1hr
 
     public DBConnection(DataSource dataSource) throws ReportException {
         this.dataSource = dataSource;
@@ -134,7 +133,7 @@ public class DBConnection {
 
     private void checkInactivity() {
         long currentUsage = System.currentTimeMillis();
-        if (lastUsage != 0 && currentUsage - lastUsage > inactivityTimeout) {
+        if (lastUsage != 0 && currentUsage - lastUsage > dataSource.getInactivityTimeoutMS()) {
             closeFreeConnections(null);
         }
         lastUsage = currentUsage;

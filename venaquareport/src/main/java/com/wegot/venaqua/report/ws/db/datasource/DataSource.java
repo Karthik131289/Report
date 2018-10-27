@@ -12,11 +12,12 @@ public class DataSource {
     private String url;
     private String username;
     private String password;
+    private long inactivityTimeout;
 
     public DataSource() {
     }
 
-    public DataSource(String name, String dialect, String location, String connectionDriver, String url, String username, String password) {
+    public DataSource(String name, String dialect, String location, String connectionDriver, String url, String username, String password, long inactivityTimeout) {
         this.name = name;
         this.dialect = dialect;
         this.location = location;
@@ -24,6 +25,7 @@ public class DataSource {
         this.url = url;
         this.username = username;
         this.password = password;
+        this.inactivityTimeout = inactivityTimeout;
     }
 
     @XmlAttribute(name = "name", required = true)
@@ -89,6 +91,19 @@ public class DataSource {
         this.password = password;
     }
 
+    @XmlAttribute(name = "inactivity-timeout", required = true)
+    public long getInactivityTimeout() {
+        return inactivityTimeout;
+    }
+
+    public long getInactivityTimeoutMS() {
+        return inactivityTimeout * 1000;
+    }
+
+    public void setInactivityTimeout(long inactivityTimeout) {
+        this.inactivityTimeout = inactivityTimeout;
+    }
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("DataSource{");
@@ -99,6 +114,7 @@ public class DataSource {
         sb.append(", url='").append(url).append('\'');
         sb.append(", username='").append(username).append('\'');
         sb.append(", password='").append(password).append('\'');
+        sb.append(", inactivityTimeout='").append(inactivityTimeout).append('\'');
         sb.append('}');
         return sb.toString();
     }
