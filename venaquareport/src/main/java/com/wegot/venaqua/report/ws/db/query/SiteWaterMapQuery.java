@@ -3,11 +3,12 @@ package com.wegot.venaqua.report.ws.db.query;
 import com.wegot.venaqua.report.util.DateTimeUtils;
 import com.wegot.venaqua.report.ws.db.DBHelper;
 import com.wegot.venaqua.report.ws.exception.ProcessException;
-import com.wegot.venaqua.report.ws.exception.ReportException;
 import com.wegot.venaqua.report.ws.response.waterMap.SiteDayUsage;
 import com.wegot.venaqua.report.ws.response.waterMap.WaterMapResponse;
 import org.apache.commons.dbutils.BaseResultSetHandler;
 import org.apache.commons.dbutils.QueryRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -18,17 +19,14 @@ import java.util.Date;
 import java.util.List;
 
 public class SiteWaterMapQuery {
+    private final Logger log = LoggerFactory.getLogger(SiteWaterMapQuery.class);
 
     public SiteWaterMapQuery() {
     }
 
     public WaterMapResponse execute(Connection connection, String siteName, Date fromDate, Date toDate) throws ProcessException {
-        try {
-            Integer siteId = DBHelper.getSiteId(connection, siteName);
-            return getUsage(connection, siteId, fromDate, toDate);
-        } catch (ReportException re) {
-            throw new ProcessException(re);
-        }
+        Integer siteId = DBHelper.getSiteId(connection, siteName);
+        return getUsage(connection, siteId, fromDate, toDate);
     }
 
     private WaterMapResponse getUsage(Connection connection, Integer siteId, Date fromDate, Date toDate) throws ProcessException {
@@ -55,7 +53,7 @@ public class SiteWaterMapQuery {
 
                     dayUsage.setDayUsage(total);
                     dayUsage.setDate(date);
-                    dayUsage.setMonth(month+1);
+                    dayUsage.setMonth(month + 1);
                     dayUsage.setMonthYear(monthYear);
                     dayUsage.setInterval(INTERVAL);
                     dayUsage.setValues(getRandomNumberList(24, total));
@@ -67,13 +65,14 @@ public class SiteWaterMapQuery {
         try {
             return queryRunner.query(connection, QUERY_STR, handler, siteId, from, to);
         } catch (SQLException e) {
-            throw new ProcessException(e);
+            log.error(e.getMessage(), e);
+            throw new ProcessException("Unable to fetch water map details.");
         }
     }
 
     private List<Double> getRandomNumberList(int count, int max) {
         List<Double> numberList = new ArrayList<>();
-        double avg = max/24;
+        double avg = max / 24;
         for (int i = 0; i < count; i++) {
             numberList.add(avg);
         }

@@ -51,7 +51,7 @@ public class VenAquaReportImpl implements VenAquaReport {
                 dbConnection.releaseConnection(connection);
                 response = VenAquaReportHelper.convertResponseObjToString(responseObj.getWaterSourceList());
             }
-        }  catch (AuthException | RequestException | ReportException | ResponseException e) {
+        }  catch (AuthException | RequestException| ProcessException | ResponseException e) {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
@@ -82,7 +82,7 @@ public class VenAquaReportImpl implements VenAquaReport {
                 responseObj.setName(requestInfoObj.getUid());
                 response = VenAquaReportHelper.convertResponseObjToString(responseObj);
             }
-        }  catch (AuthException | RequestException | ReportException | ResponseException e) {
+        }  catch (AuthException | RequestException | ProcessException | ResponseException e) {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
@@ -113,7 +113,7 @@ public class VenAquaReportImpl implements VenAquaReport {
                 responseObj.setName(requestInfoObj.getUid());
                 response = VenAquaReportHelper.convertResponseObjToString(responseObj);
             }
-        }  catch (AuthException | RequestException | ReportException | ResponseException e) {
+        }  catch (AuthException | RequestException | ProcessException | ResponseException e) {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
@@ -228,7 +228,7 @@ public class VenAquaReportImpl implements VenAquaReport {
                 dbConnection.releaseConnection(connection);
                 response = VenAquaReportHelper.convertResponseObjToString(responseObj.getSiteDayUsageList());
             }
-        } catch (AuthException | RequestException | ReportException | ProcessException | ResponseException e) {
+        } catch (AuthException | RequestException | ProcessException | ResponseException e) {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {

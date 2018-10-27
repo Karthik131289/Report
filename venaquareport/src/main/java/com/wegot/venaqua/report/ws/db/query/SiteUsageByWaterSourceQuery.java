@@ -2,12 +2,14 @@ package com.wegot.venaqua.report.ws.db.query;
 
 import com.wegot.venaqua.report.util.DateTimeUtils;
 import com.wegot.venaqua.report.ws.db.DBHelper;
-import com.wegot.venaqua.report.ws.exception.ReportException;
+import com.wegot.venaqua.report.ws.exception.ProcessException;
 import com.wegot.venaqua.report.ws.response.pie.WaterSource;
 import com.wegot.venaqua.report.ws.response.pie.WaterSourceUsageResponse;
 import org.apache.commons.dbutils.BaseResultSetHandler;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -19,9 +21,10 @@ import java.util.List;
 import java.util.TimeZone;
 
 public class SiteUsageByWaterSourceQuery {
+    private final Logger log = LoggerFactory.getLogger(SiteUsageByWaterSourceQuery.class);
     public SiteUsageByWaterSourceQuery() { }
 
-    public WaterSourceUsageResponse execute(Connection connection, String siteName, Date fromDate, Date toDate) throws ReportException {
+    public WaterSourceUsageResponse execute(Connection connection, String siteName, Date fromDate, Date toDate) throws ProcessException {
         Integer siteId = DBHelper.getSiteId(connection, siteName);
         List<WaterSource> waterSourceList = DBHelper.getWaterSourceObject(connection);
         WaterSourceUsageResponse waterSourceUsageResponse = new WaterSourceUsageResponse(waterSourceList);
@@ -56,7 +59,7 @@ public class SiteUsageByWaterSourceQuery {
         return waterSourceUsageResponse;
     }
 
-    private double getUsage(WaterSourceEnum waterSourceEnum, Connection connection, Integer siteId, Date fromDate, Date toDate) throws ReportException {
+    private double getUsage(WaterSourceEnum waterSourceEnum, Connection connection, Integer siteId, Date fromDate, Date toDate) throws ProcessException {
         final String QUERY_STR = waterSourceEnum.getUsageQry();
         QueryRunner queryRunner = new QueryRunner();
         ResultSetHandler<Double> resultHandler = new BaseResultSetHandler<Double>() {
@@ -75,7 +78,8 @@ public class SiteUsageByWaterSourceQuery {
             Date to = DateTimeUtils.addDays(toDate, 1);
             return queryRunner.query(connection, QUERY_STR, resultHandler, siteId, from, to);
         } catch (SQLException e) {
-            throw new ReportException(e);
+            log.error(e.getMessage(), e);
+            throw new ProcessException("Unable to fetch usage details for water source - " + waterSourceEnum.name());
         }
     }
 

@@ -1,10 +1,13 @@
 package com.wegot.venaqua.report.ws.db;
 
+import com.wegot.venaqua.report.ws.exception.ProcessException;
 import com.wegot.venaqua.report.ws.exception.ReportException;
 import com.wegot.venaqua.report.ws.response.pie.WaterSource;
 import org.apache.commons.dbutils.BaseResultSetHandler;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DBHelper {
+    private static final Logger log = LoggerFactory.getLogger(DBHelper.class);
 
     public static Connection getCoreDBConnection() throws ReportException {
         DBManager dbManager = DBManager.getInstance();
@@ -22,7 +26,7 @@ public class DBHelper {
         return dbConnection.getConnection();
     }
 
-    public static Integer getSiteId(Connection dbConnection, String siteName) throws ReportException {
+    public static Integer getSiteId(Connection dbConnection, String siteName) throws ProcessException {
         final String QUERY_STR = "SELECT site_id FROM w2_site_qa1 WHERE site_name=?";
         QueryRunner queryRunner = new QueryRunner();
         ResultSetHandler<Integer> resultHandler = new BaseResultSetHandler<Integer>() {
@@ -45,7 +49,8 @@ public class DBHelper {
         try {
             return queryRunner.query(dbConnection, QUERY_STR, resultHandler, siteName);
         } catch (SQLException e) {
-            throw new ReportException(e);
+            log.error(e.getMessage(), e);
+            throw new ProcessException("Unable to find site details for siteName - " + siteName);
         }
     }
 
@@ -70,7 +75,7 @@ public class DBHelper {
         }
     }
 
-    public static List<WaterSource> getWaterSourceObject(Connection dbConnection) throws ReportException {
+    public static List<WaterSource> getWaterSourceObject(Connection dbConnection) throws ProcessException {
         final String WATER_SOURCE_QUERY = "SELECT * FROM w2_water_source_type;";
         QueryRunner queryRunner = new QueryRunner();
         ResultSetHandler<List<WaterSource>> resultHandler = new BaseResultSetHandler<List<WaterSource>>() {
@@ -90,7 +95,8 @@ public class DBHelper {
         try {
             return queryRunner.query(dbConnection, WATER_SOURCE_QUERY, resultHandler);
         } catch (SQLException e) {
-            throw new ReportException(e);
+            log.error(e.getMessage(), e);
+            throw new ProcessException("Unable to fetch available water sources.");
         }
     }
 
