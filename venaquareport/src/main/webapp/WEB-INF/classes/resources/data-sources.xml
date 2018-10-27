@@ -5,8 +5,9 @@
             dialect="mysql"
             location="mysqldb"
             connection-driver="com.mysql.cj.jdbc.Driver"
-            url="jdbc:mysql://104.211.200.154:3306/prod_we2db"
-            username="wegot"
-            password="Wegot@!23"
+            url="jdbc:mysql://104.211.227.3:3306/we2db"
+            username="wegotdev3"
+            password="wegot@DB3"
+            inactivity-timeout="1800"
     />
 </data-sources>
