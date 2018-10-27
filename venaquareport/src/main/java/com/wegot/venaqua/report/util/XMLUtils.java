@@ -31,7 +31,6 @@ public class XMLUtils {
 
     public static <T> T parseXML(Unmarshaller unmarshaller, InputStream stream) throws ReportException {
         try {
-            //new File("D:\\Development\\WegotProject\\Report\\WorkingDir\\Report\\venaquareport\\src\\main\\webapp\\WEB-INF\\classes\\resources\\data-sources.xml")
             return (T) unmarshaller.unmarshal(stream);
         } catch (JAXBException e) {
             throw new ReportException(e);

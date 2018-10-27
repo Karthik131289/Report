@@ -9,3 +9,11 @@ NodeJS REST:
 	set all headers sent from the client to soap server in request.
 	return all headers from the soap server to client in response.
 	set response code properly
+
+SOAP server:
+	DONE : handle db exceptions properly
+		eg : {
+    "message": "java.sql.SQLException: Could not find id for site Name : Ahad Euphoria1 Query: SELECT site_id FROM w2_site_qa1 WHERE site_name=? Parameters: [Ahad Euphoria1]"
+}
+
+	DONE : change inactivity timeout as configurable.
