@@ -3,8 +3,6 @@ package com.wegot.venaqua.report.ws.db;
 import com.wegot.venaqua.report.util.XMLUtils;
 import com.wegot.venaqua.report.ws.db.datasource.DataSourcePool;
 import com.wegot.venaqua.report.ws.exception.ReportException;
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,12 +10,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
 
 public class DBManager {
     private final Logger log = LoggerFactory.getLogger(DBManager.class);
@@ -79,43 +71,6 @@ public class DBManager {
 
     public DBConnection getDbConnection(String name) {
         return dbConnectionPool.getDBConnection(name);
-    }
-
-    public void test() throws ReportException {
-        DBManager instance = DBManager.getInstance();
-        DBConnection dbConnection = instance.getDbConnection(DBConnection.COREDB);
-        Connection connection = dbConnection.getConnection();
-
-        QueryRunner queryRunner = new QueryRunner();
-        String qry = "SELECT * FROM w2_water_source_type;";
-        ResultSetHandler<List<List<String>>> rsh = new ResultSetHandler<List<List<String>>>() {
-            @Override
-            public List<List<String>> handle(ResultSet resultSet) throws SQLException {
-                final ResultSetMetaData meta = resultSet.getMetaData();
-                final int columnCount = meta.getColumnCount();
-                final List<List<String>> rowList = new LinkedList<List<String>>();
-                while (resultSet.next())
-                {
-                    final List<String> columnList = new LinkedList<String>();
-                    rowList.add(columnList);
-
-                    for (int column = 1; column <= columnCount; ++column)
-                    {
-                        final Object value = resultSet.getObject(column);
-                        columnList.add(String.valueOf(value));
-                    }
-                }
-
-                return rowList;
-            }
-        };
-        Object query = null;
-        try {
-            query = queryRunner.query(connection, qry, rsh);
-            System.out.println("query : " + query);
-        } catch (SQLException e) {
-            throw new ReportException(e);
-        }
     }
 
     public static void main(String args[]) {
