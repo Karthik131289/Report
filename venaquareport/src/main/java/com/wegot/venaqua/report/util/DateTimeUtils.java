@@ -41,6 +41,27 @@ public class DateTimeUtils {
         return c.getTime();
     }
 
+    public static Date adjustToDayStart(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.set(Calendar.HOUR_OF_DAY, 00);
+        c.set(Calendar.MINUTE, 00);
+        c.set(Calendar.SECOND, 00);
+        c.set(Calendar.MILLISECOND, 001);
+        return c.getTime();
+    }
+
+    public static Date adjustToDayEnd(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.set(Calendar.HOUR_OF_DAY, 23);
+        c.set(Calendar.MINUTE, 59);
+        c.set(Calendar.SECOND, 59);
+        c.set(Calendar.MILLISECOND, 999);
+        return c.getTime();
+    }
+
+
     public static void main(String[] args) {
         Date date = new Date(2018, 9, 1, 6, 00, 00);
         System.out.println(LocalToUTC(date).getTime());

@@ -79,11 +79,14 @@ SELECT t1.site_id, t1.block_name, t2.cust_name, t3.apart_id, t3.total from w2_bl
 
 /****** GANTT CHART ******/
 
-SELECT id, cust_name, pump_id, block_id, site_id  FROM w2_pumps WHERE site_id=4;
+SELECT id, cust_name, pump_id, block_id, site_id, block_id  FROM w2_pumps WHERE site_id=4;
 
 SELECT id, pump_id, state, cumulative, site_id, dt FROM w2_pump_status_log where site_id=4 AND pump_id = 4 AND (dt BETWEEN '2018-08-01 00:00:00' and '2018-08-01 23:59:59');
 
 SELECT * from w2_pumps t1 INNER JOIN (SELECT * from w2_pump_status_log where site_id=4 AND (dt BETWEEN '2018-09-01 00:00:00' and '2018-09-01 23:59:59')) t2 on t1.site_id=4 and t1.id = t2.pump_id;
+
+// working one
+SELECT t1.id, t1.pump_id, t1.cust_name, t1.block_id, t2.site_id, t2.state, t2.cumulative, t2.dt from w2_pumps t1 INNER JOIN ( SELECT *  FROM w2_pump_status_log WHERE site_id=4 and (dt BETWEEN '2018-09-01 00:00:00' and '2018-09-01 23:59:59')) t2 on t1.id = t2.pump_id and t1.site_id=4;
 
 SELECT t1.id, t1.pump_id, t1.cust_name, t2.state, t2.site_id, t2.cumulative, t2.dt from w2_pumps t1 INNER JOIN ( SELECT *  FROM w2_pump_status_log WHERE site_id=4 and (dt BETWEEN '2018-09-01 00:00:00' and '2018-09-01 23:59:59') GROUP BY pump_id) t2 on t1.id = t2.pump_id and t1.site_id=4;
 
