@@ -64,7 +64,7 @@ public class DBConnection {
     }
 
     private Connection createConnection() throws SQLException {
-        String url = dataSource.getUrl() + "?autoReconnect=true&failOverReadOnly=false&maxReconnects=10";
+        String url = dataSource.getUrl() + "?autoReconnect=true&failOverReadOnly=false&maxReconnects=10&useSSL=true";
         String username = dataSource.getUsername();
         String password = dataSource.getPassword();
         return DriverManager.getConnection(url, username, password);

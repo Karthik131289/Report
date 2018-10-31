@@ -2,14 +2,12 @@ package com.wegot.venaqua.report.ws;
 
 import com.wegot.venaqua.report.ws.db.DBConnection;
 import com.wegot.venaqua.report.ws.db.DBManager;
-import com.wegot.venaqua.report.ws.db.query.HouseUsageEnum;
-import com.wegot.venaqua.report.ws.db.query.HouseUsageQuery;
-import com.wegot.venaqua.report.ws.db.query.SiteUsageByWaterSourceQuery;
-import com.wegot.venaqua.report.ws.db.query.SiteWaterMapQuery;
+import com.wegot.venaqua.report.ws.db.query.*;
 import com.wegot.venaqua.report.ws.exception.*;
 import com.wegot.venaqua.report.ws.handler.auth.AuthenticationHandler;
 import com.wegot.venaqua.report.ws.response.bubble.HighUsersResponse;
 import com.wegot.venaqua.report.ws.response.pie.WaterSourceUsageResponse;
+import com.wegot.venaqua.report.ws.response.sparkline.WaterSourceTrendResponse;
 import com.wegot.venaqua.report.ws.response.tree.BlockLevelUsageResponse;
 import com.wegot.venaqua.report.ws.response.waterMap.WaterMapResponse;
 import org.apache.commons.io.IOUtils;
@@ -193,10 +191,15 @@ public class VenAquaReportImpl implements VenAquaReport {
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
-                InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/SiteTrendByWaterSource.json");
+                DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
+                Connection connection = dbConnection.getConnection();
+                WaterSourceTrendQuery query = new WaterSourceTrendQuery();
+                WaterSourceTrendResponse responseObj = query.execute(connection, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
+
+                /*InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/SiteTrendByWaterSource.json");
                 if (resourceAsStream != null) {
                     response = IOUtils.toString(resourceAsStream);
-                }
+                }*/
             }
         } catch (AuthException | RequestException e) {
             log.error(e.getMessage(), e);
