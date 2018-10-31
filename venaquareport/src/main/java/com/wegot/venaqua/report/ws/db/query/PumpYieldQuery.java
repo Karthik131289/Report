@@ -34,10 +34,12 @@ public class PumpYieldQuery {
                 return null;
             }
         };
-
+        try {
             return queryRunner.query(connection, QRY_SRT, handler, siteId, from, to, siteId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return null;
     }
 }
