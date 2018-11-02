@@ -21,7 +21,7 @@ public class PumpYieldResponse {
         this.pumpInfos = pumpInfos;
     }
 
-    public void addPumpInfos(PumpInfo pumpInfo) {
+    public void addPumpInfo(PumpInfo pumpInfo) {
         this.pumpInfos.add(pumpInfo);
     }
 }
