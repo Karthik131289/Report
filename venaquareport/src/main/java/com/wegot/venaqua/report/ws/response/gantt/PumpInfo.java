@@ -5,6 +5,7 @@ import java.util.List;
 
 public class PumpInfo {
     private String id;
+    private String pumpId;
     private String label;
     private List<PumpStatus> pumpStatusList = new ArrayList<>();
 
@@ -28,6 +29,14 @@ public class PumpInfo {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getPumpId() {
+        return pumpId;
+    }
+
+    public void setPumpId(String pumpId) {
+        this.pumpId = pumpId;
     }
 
     public String getLabel() {

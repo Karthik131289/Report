@@ -87,7 +87,7 @@ SELECT pump_id, state, cumulative, site_id, dt FROM w2_pump_status_log where sit
 SELECT * from w2_pumps t1 INNER JOIN (SELECT * from w2_pump_status_log where site_id=4 AND (dt BETWEEN '2018-09-01 00:00:00' and '2018-09-01 23:59:59')) t2 on t1.site_id=4 and t1.id = t2.pump_id;
 
 // working one
-SELECT t1.id, t1.pump_id, t1.cust_name, t1.block_id, t2.site_id, t2.state, t2.cumulative, t2.dt from w2_pumps t1 INNER JOIN ( SELECT *  FROM w2_pump_status_log WHERE site_id=4 and (dt BETWEEN '2018-09-01 00:00:00' and '2018-09-01 23:59:59')) t2 on t1.id = t2.pump_id and t1.site_id=4;
+SELECT t1.id, t1.pump_id, t1.cust_name, t1.block_id, t2.site_id, t2.state, t2.cumulative, t2.dt from w2_pumps t1 INNER JOIN ( SELECT *  FROM w2_pump_status_log WHERE site_id=4 and (dt BETWEEN '2018-09-01 00:00:00' and '2018-09-01 23:59:59')) t2 on t1.id = t2.pump_id and t1.site_id=4 order by t2.pump_id,t2.dt asc;
 
 SELECT t1.id, t1.pump_id, t1.cust_name, t2.state, t2.site_id, t2.cumulative, t2.dt from w2_pumps t1 INNER JOIN ( SELECT *  FROM w2_pump_status_log WHERE site_id=4 and (dt BETWEEN '2018-09-01 00:00:00' and '2018-09-01 23:59:59') GROUP BY pump_id) t2 on t1.id = t2.pump_id and t1.site_id=4;
 
@@ -97,10 +97,20 @@ select * from w2_bwell_day_total where bwell_id =6;
 /****** Water Map ******/
 select id, apart_id, agg_total, dt from w2_apart_day_total where apart_id=4 and (dt>='2018-04-01 00:00:00' and dt<'2018-04-30 23:59:59');
 
-
-
-
-
+/****** Sparkline chart ****/
+// WTP
+SELECT sum(t1.day_total) as dayTotal, t1.dt FROM w2_wtp_component_day_total t1 JOIN (SELECT DISTINCT (wtp_id) FROM w2_wtp WHERE site_id=4) t2 ON t1.wtp_id=t2.wtp_id AND (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' ) group by t1.dt order by t1.dt asc;
+// TANKER
+SELECT sum(t1.day_total) as dayTotal, t1.dt FROM w2_tanker_day_total t1 JOIN (SELECT DISTINCT (id) FROM w2_tankers WHERE w2_tankers.site_id=4) t2 ON t1.tanker_id=t2.id AND (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' ) group by t1.dt order by t1.dt asc;
+// MUNICIPAL
+SELECT sum(t1.day_total) as dayTotal, t1.dt FROM w2_municipal_day_total t1 JOIN (SELECT DISTINCT (id) FROM w2_municipal WHERE w2_municipal.site_id=4) t2 ON t1.municipal_id=t2.id AND (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' ) group by t1.dt order by t1.dt asc;
+// FLUSH
+SELECT sum(t1.day_total) as dayTotal, t1.dt FROM w2_flush_day_total t1 JOIN (SELECT DISTINCT (id) FROM w2_flush WHERE w2_flush.site_id=4) t2 ON t1.flush_id=t2.id AND (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' ) group by t1.dt order by t1.dt asc;
+// DOMESTIC
+SELECT sum(t1.day_total) as dayTotal, t1.dt FROM w2_domestic_day_total t1 JOIN (SELECT DISTINCT (id) FROM w2_domestic WHERE w2_domestic.site_id=4) t2 ON t1.domestic_id=t2.id AND (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' ) group by t1.dt order by t1.dt asc;
+// GROUND
+SELECT sum(t1.agg_total) as dayTotal, t1.dt FROM w2_bwell_day_total t1 JOIN (SELECT DISTINCT (id) FROM w2_borewells WHERE w2_borewells.site_id=4) t2 ON t1.bwell_id=t2.id AND (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' ) group by t1.dt order by t1.dt asc;
+// RAIN
 
 
 
