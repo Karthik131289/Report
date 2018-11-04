@@ -195,13 +195,14 @@ public class VenAquaReportImpl implements VenAquaReport {
                 Connection connection = dbConnection.getConnection();
                 WaterSourceTrendQuery query = new WaterSourceTrendQuery();
                 WaterSourceTrendResponse responseObj = query.execute(connection, requestInfoObj.getUid(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
-
+                dbConnection.releaseConnection(connection);
+                response = VenAquaReportHelper.convertResponseObjToString(responseObj.getWaterSources());
                 /*InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/SiteTrendByWaterSource.json");
                 if (resourceAsStream != null) {
                     response = IOUtils.toString(resourceAsStream);
                 }*/
             }
-        } catch (AuthException | RequestException e) {
+        } catch (AuthException | RequestException | ProcessException e) {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.wegot.venaqua.report.ws.db.query;
 
+import com.wegot.venaqua.report.util.DateTimeUtils;
 import com.wegot.venaqua.report.ws.db.DBHelper;
 import com.wegot.venaqua.report.ws.exception.ProcessException;
 import com.wegot.venaqua.report.ws.response.sparkline.WaterSourceTrend;
@@ -11,9 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class WaterSourceTrendQuery {
@@ -24,10 +28,13 @@ public class WaterSourceTrendQuery {
 
     public WaterSourceTrendResponse execute(Connection connection, String siteName, Date fromDate, Date toDate) throws ProcessException {
         Integer siteId = DBHelper.getSiteId(connection, siteName);
-        return getTrend(connection, siteId, fromDate, toDate);
+        Date from = DateTimeUtils.adjustToDayStart(fromDate);
+        Date to = DateTimeUtils.adjustToDayEnd(toDate);
+        Info info = prepareWeeklyInfo(from, to);
+        return getTrend(connection, siteId, from, to, info);
     }
 
-    private WaterSourceTrendResponse getTrend(Connection connection, Integer siteId, Date fromDate, Date toDate) throws ProcessException {
+    private WaterSourceTrendResponse getTrend(Connection connection, Integer siteId, Date fromDate, Date toDate, Info info) throws ProcessException {
         final String WATER_SOURCE_QUERY = "SELECT * FROM w2_water_source_type;";
         QueryRunner queryRunner = new QueryRunner();
         ResultSetHandler<WaterSourceTrendResponse> resultHandler = new BaseResultSetHandler<WaterSourceTrendResponse>() {
@@ -38,9 +45,14 @@ public class WaterSourceTrendQuery {
                 ResultSet resultSet = getAdaptedResultSet();
                 while (resultSet.next()) {
                     String name = resultSet.getString(2);
+                    // TODO: 04-Nov-18 remove below if block once table is ready for Rain water
+                    if (name.equals(WaterSourceTrendEnum.RAINWATER.getDbName()))
+                        continue;
                     WaterSourceTrend waterSource = new WaterSourceTrend();
                     waterSource.setWaterSource(name);
+                    waterSource = applyTrend(waterSource, connection, siteId, fromDate, toDate, info);
                     waterSources.add(waterSource);
+                    clearInfo(info);
                 }
                 return waterSourceTrendResponse;
             }
@@ -53,7 +65,234 @@ public class WaterSourceTrendQuery {
         }
     }
 
-    private void applyTrend() throws ProcessException {
+    private WaterSourceTrend applyTrend(WaterSourceTrend waterSource, Connection connection, Integer siteId, Date fromDate, Date toDate, Info info) throws SQLException {
+        WaterSourceTrendEnum waterSourceEnum = getWaterSourceEnum(waterSource);
+        QueryRunner queryRunner = new QueryRunner();
+        BaseResultSetHandler<WaterSourceTrend> resultHandler = new BaseResultSetHandler<WaterSourceTrend>() {
+            @Override
+            protected WaterSourceTrend handle() throws SQLException {
+                ResultSet resultSet = getAdaptedResultSet();
+                while (resultSet.next()) {
+                    double dayUsage = resultSet.getDouble(waterSourceEnum.getUsageColumn());
+                    Timestamp dt = resultSet.getTimestamp(waterSourceEnum.getDateColumn());
+                    checkAndUpdateUsage(info, waterSource, dayUsage, dt);
+                }
 
+                List<WeeklyInfo> weeklyInfo = info.getWeeklyInfo();
+                double totalUsage = 0;
+                double finalWeekUsage = 0;
+                for (WeeklyInfo week : weeklyInfo) {
+                    Double usage = week.getTotalUsage();
+                    log.trace("Weekly Usage : {} for Dt range - {} to {}", usage, week.getStartDate(), week.getEndDate());
+                    totalUsage = totalUsage + usage;
+                    log.trace("Overall Usage : {}", totalUsage);
+                    waterSource.addWeeklyTrend(usage);
+                    if (week.isFinalWeek()) {
+                        finalWeekUsage = usage;
+                    }
+                }
+
+                double performance = (totalUsage == 0.0D ? 0.0D : Math.round((finalWeekUsage / totalUsage) * 100.0D));
+                waterSource.setPerformance(performance);
+
+                return waterSource;
+            }
+        };
+        log.trace("Fetching usage for water source : {}", waterSourceEnum.getDbName());
+        return queryRunner.query(connection, waterSourceEnum.getQuery(), resultHandler, siteId, fromDate, toDate);
+    }
+
+    private WaterSourceTrendEnum getWaterSourceEnum(WaterSourceTrend waterSourceTrend) {
+        String name = waterSourceTrend.getWaterSource();
+        if (WaterSourceTrendEnum.WTP.getDbName().equals(name))
+            return WaterSourceTrendEnum.WTP;
+        else if (WaterSourceTrendEnum.TANKER.getDbName().equals(name))
+            return WaterSourceTrendEnum.TANKER;
+        else if (WaterSourceTrendEnum.DOMESTIC.getDbName().equals(name))
+            return WaterSourceTrendEnum.DOMESTIC;
+        else if (WaterSourceTrendEnum.FLUSH.getDbName().equals(name))
+            return WaterSourceTrendEnum.FLUSH;
+        else if (WaterSourceTrendEnum.GROUND.getDbName().equals(name))
+            return WaterSourceTrendEnum.GROUND;
+        else if (WaterSourceTrendEnum.MUNICIPAL.getDbName().equals(name))
+            return WaterSourceTrendEnum.MUNICIPAL;
+        else if (WaterSourceTrendEnum.RAINWATER.getDbName().equals(name))
+            return WaterSourceTrendEnum.RAINWATER;
+        else
+            return null;
+    }
+
+    private void checkAndUpdateUsage(Info info, WaterSourceTrend waterSource, double dayUsage, Timestamp dt) {
+        List<WeeklyInfo> weeklyInfo = info.getWeeklyInfo();
+        Date date = new Date(dt.getTime());
+        log.trace("Record date - date : {} usage : {}", date, dayUsage);
+        for (WeeklyInfo week : weeklyInfo) {
+            if (DateTimeUtils.isWithinRange(date, week.getStartDate(), week.getEndDate())) {
+                log.trace("Week range : {} to {}", week.getStartDate(), week.getEndDate());
+                log.trace("Weekly total usage(previous) : {}", week.getTotalUsage());
+                week.addTotalUsage(dayUsage);
+                log.trace("Weekly total usage(current) : {}", week.getTotalUsage());
+                if (week.isFinalWeek()) {
+                    waterSource.addFinalWeekTrend(dayUsage);
+                    log.trace("Final Week Trend : {}", waterSource.getFinalWeekTrend());
+                }
+            }
+        }
+    }
+
+    private void applyWeeklyTrend(WaterSourceTrend waterSource, List<Double> dayList) {
+        Double weeklyTotal = dayList.stream()
+                .mapToDouble(a -> a)
+                .sum();
+        waterSource.addWeeklyTrend(weeklyTotal);
+    }
+
+    private Info prepareWeeklyInfo(Date fromDate, Date toDate) {
+        log.trace("preparing week info...");
+        Info info = new Info();
+
+        log.trace("Requested Date range : {} to {}", fromDate, toDate);
+        Date calcFromDate = DateTimeUtils.getStartDateOfWeek(fromDate);
+        Date calcToDate = DateTimeUtils.getEndDateOfWeek(toDate);
+        log.trace("Calculated Date range : {} to {}", calcFromDate, calcToDate);
+
+        long between = DateTimeUtils.findDateDiff(calcFromDate, calcToDate);
+        log.trace("Total No of days : {}", between);
+        info.setWeekCount(between / 7);
+        info.setDayCount(between % 7);
+        log.trace("Total No of weeks and days : {} & {}", info.getWeekCount(), info.getDayCount());
+        long totalWeek = info.getDayCount() == 0 ? info.getWeekCount() : info.getWeekCount() + 1;
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(calcFromDate);
+        log.trace("Calendar initial value set to : {}", cal.getTime());
+        for (int weekCounter = 0, dayInc = 7; weekCounter < totalWeek; weekCounter++) {
+            WeeklyInfo weeklyInfo = new WeeklyInfo();
+            weeklyInfo.setStartDate(DateTimeUtils.getStartDateOfWeek(cal));
+            weeklyInfo.setEndDate(DateTimeUtils.getEndDateOfWeek(cal));
+            log.trace("Week start : {}", weeklyInfo.getStartDate());
+            log.trace("Week end : {}", weeklyInfo.getEndDate());
+            if (weekCounter == totalWeek - 1)
+                weeklyInfo.setFinalWeek(true);
+
+            info.addWeeklyInfo(weeklyInfo);
+            cal.add(Calendar.DATE, dayInc);
+            log.trace("Cal inc for next week : {}", cal.getTime());
+        }
+        return info;
+    }
+
+    private void clearInfo(Info info) {
+        List<WeeklyInfo> weeklyInfo = info.getWeeklyInfo();
+        for (WeeklyInfo weekInfo : weeklyInfo) {
+            weekInfo.resetTotalUsage();
+        }
+    }
+
+    public static void main(String[] args) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_WEEK, cal.getActualMinimum(Calendar.DAY_OF_WEEK));
+        Date firstDayOfTheWeek = cal.getTime();
+        cal.set(Calendar.DAY_OF_WEEK, cal.getActualMaximum(Calendar.DAY_OF_WEEK));
+        Date lastDayOfTheWeek = cal.getTime();
+        System.out.println(firstDayOfTheWeek);
+        System.out.println(lastDayOfTheWeek);
+
+        double total = 0D;
+        double finalVal = 0D;
+        double ercent = (finalVal / total) * 100D;
+        System.out.println(ercent);
+    }
+
+    class Info {
+        private List<WeeklyInfo> weeklyInfo = new ArrayList<>();
+        private long weekCount;
+        private long dayCount;
+
+        public Info() {
+        }
+
+        public List<WeeklyInfo> getWeeklyInfo() {
+            return weeklyInfo;
+        }
+
+        public void setWeeklyInfo(List<WeeklyInfo> weeklyInfo) {
+            this.weeklyInfo = weeklyInfo;
+        }
+
+        public void addWeeklyInfo(WeeklyInfo weeklyInfo) {
+            this.weeklyInfo.add(weeklyInfo);
+        }
+
+        public long getWeekCount() {
+            return weekCount;
+        }
+
+        public void setWeekCount(long weekCount) {
+            this.weekCount = weekCount;
+        }
+
+        public long getDayCount() {
+            return dayCount;
+        }
+
+        public void setDayCount(long dayCount) {
+            this.dayCount = dayCount;
+        }
+    }
+
+    class WeeklyInfo {
+        private Date startDate;
+        private Date endDate;
+        private Double totalUsage = 0D;
+        private boolean finalWeek = false;
+
+        public WeeklyInfo() {
+        }
+
+        public WeeklyInfo(Date startDate, Date endDate) {
+            this.startDate = startDate;
+            this.endDate = endDate;
+        }
+
+        public Date getStartDate() {
+            return startDate;
+        }
+
+        public void setStartDate(Date startDate) {
+            this.startDate = startDate;
+        }
+
+        public Date getEndDate() {
+            return endDate;
+        }
+
+        public void setEndDate(Date endDate) {
+            this.endDate = endDate;
+        }
+
+        public Double getTotalUsage() {
+            return totalUsage;
+        }
+
+        public void setTotalUsage(Double totalUsage) {
+            this.totalUsage = totalUsage;
+        }
+
+        public void addTotalUsage(Double dayUsage) {
+            this.totalUsage = totalUsage + dayUsage;
+        }
+
+        public void resetTotalUsage() {
+            this.totalUsage = 0D;
+        }
+
+        public boolean isFinalWeek() {
+            return finalWeek;
+        }
+
+        public void setFinalWeek(boolean isfinalWeek) {
+            this.finalWeek = isfinalWeek;
+        }
     }
 }

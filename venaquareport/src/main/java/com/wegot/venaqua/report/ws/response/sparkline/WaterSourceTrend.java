@@ -6,7 +6,7 @@ import java.util.List;
 public class WaterSourceTrend {
     private String waterSource;
     private List<Double> weeklyTrend = new ArrayList<>();
-    private int performance;
+    private double performance;
     private List<Double> finalWeekTrend = new ArrayList<>();
 
     public WaterSourceTrend() {
@@ -39,11 +39,11 @@ public class WaterSourceTrend {
         this.weeklyTrend.add(value);
     }
 
-    public int getPerformance() {
+    public double getPerformance() {
         return performance;
     }
 
-    public void setPerformance(int performance) {
+    public void setPerformance(double performance) {
         this.performance = performance;
     }
 

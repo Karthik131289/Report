@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 public class DateTimeUtils {
     public static Date LocalToUTC(Date date) {
@@ -37,7 +38,7 @@ public class DateTimeUtils {
 		c.set(Calendar.HOUR_OF_DAY, 23);  
         c.set(Calendar.MINUTE, 59);  
         c.set(Calendar.SECOND, 59);  
-        c.set(Calendar.MILLISECOND, 0);
+        c.set(Calendar.MILLISECOND, 999);
         return c.getTime();
     }
 
@@ -47,7 +48,7 @@ public class DateTimeUtils {
         c.set(Calendar.HOUR_OF_DAY, 00);
         c.set(Calendar.MINUTE, 00);
         c.set(Calendar.SECOND, 00);
-        c.set(Calendar.MILLISECOND, 001);
+        c.set(Calendar.MILLISECOND, 000);
         return c.getTime();
     }
 
@@ -61,6 +62,50 @@ public class DateTimeUtils {
         return c.getTime();
     }
 
+    public static boolean isWithinRange(Date date, Date from, Date to) {
+        return !(date.before(from) || date.after(to));
+    }
+
+    public static Date getStartDateOfWeek(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return getStartDateOfWeek(cal);
+    }
+
+    public static Date getStartDateOfWeek(Calendar cal) {
+        cal.set(Calendar.DAY_OF_WEEK, cal.getActualMinimum(Calendar.DAY_OF_WEEK));
+        cal.set(Calendar.HOUR_OF_DAY, 00);
+        cal.set(Calendar.MINUTE, 00);
+        cal.set(Calendar.SECOND, 00);
+        cal.set(Calendar.MILLISECOND, 000);
+        return cal.getTime();
+    }
+
+    public static Date getEndDateOfWeek(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return getEndDateOfWeek(cal);
+    }
+
+    public static Date getEndDateOfWeek(Calendar cal) {
+        cal.set(Calendar.DAY_OF_WEEK, cal.getActualMaximum(Calendar.DAY_OF_WEEK));
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
+        return cal.getTime();
+    }
+
+    public static long findDateDiff(Date from, Date to) {
+        long duration  = to.getTime() - from.getTime();
+        return TimeUnit.MILLISECONDS.toDays(duration);
+    }
+
+    public static long getWeekOfYear(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal.get(Calendar.WEEK_OF_YEAR);
+    }
 
     public static void main(String[] args) {
         Date date = new Date(2018, 9, 1, 6, 00, 00);
