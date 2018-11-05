@@ -26,8 +26,8 @@ public class WaterSourceTrendQuery {
     public WaterSourceTrendQuery() {
     }
 
-    public WaterSourceTrendResponse execute(Connection connection, String siteName, Date fromDate, Date toDate) throws ProcessException {
-        Integer siteId = DBHelper.getSiteId(connection, siteName);
+    public WaterSourceTrendResponse execute(Connection connection, Integer siteId, Date fromDate, Date toDate) throws ProcessException {
+        String siteName = DBHelper.getSiteName(connection, siteId);
         Date from = DateTimeUtils.adjustToDayStart(fromDate);
         Date to = DateTimeUtils.adjustToDayEnd(toDate);
         Info info = prepareWeeklyInfo(from, to);

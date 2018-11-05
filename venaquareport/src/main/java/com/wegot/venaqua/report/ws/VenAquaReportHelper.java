@@ -18,7 +18,7 @@ public class VenAquaReportHelper {
         try {
             RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestBody, RequestInfo.class);
             log.debug("**** Parsed Request Info ****");
-            log.debug("Uid : " + requestInfoObj.getUid());
+            log.debug("SiteId : " + requestInfoObj.getSiteId());
             log.debug("ChartType : " + requestInfoObj.getChartType());
             log.debug("FromDate : " + requestInfoObj.getFromDate());
             log.debug("ToDate : " + requestInfoObj.getToDate());
@@ -29,11 +29,11 @@ public class VenAquaReportHelper {
     }
 
     protected static void validateRequestInfo(RequestInfo requestInfo) throws RequestException {
-        String uid = requestInfo.getUid();
-        if (uid == null)
-            throw new RequestException("Missing required field - uid");
-        else if(uid.isEmpty())
-            throw new RequestException("Invalid uid field value");
+        Integer siteId = requestInfo.getSiteId();
+        if (siteId == null)
+            throw new RequestException("Missing required field - siteId");
+        else if(siteId<0)
+            throw new RequestException("Invalid siteId field value");
 
         String chartType = requestInfo.getChartType();
         if (chartType == null)

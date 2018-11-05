@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.Date;
 
 public class RequestInfo {
-    private String uid;
+    private Integer siteId;
     private String chartType;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date fromDate;
@@ -22,14 +22,14 @@ public class RequestInfo {
 
     }
     @JsonCreator()
-    public RequestInfo(@JsonProperty(value = "uid") String uid,
+    public RequestInfo(@JsonProperty(value = "siteId") Integer siteId,
                        @JsonProperty(value = "chartType") String chartType,
                        @JsonProperty(value = "fromDate")Date fromDate,
                        @JsonProperty(value = "toDate")Date toDate,
                        @JsonProperty(value = "fromTime")Date fromTime,
                        @JsonProperty(value = "toTime")Date toTime,
                        @JsonProperty(value = "date")Date date) {
-        this.uid = uid;
+        this.siteId = siteId;
         this.chartType = chartType;
         this.fromDate = fromDate;
         this.toDate = toDate;
@@ -39,12 +39,12 @@ public class RequestInfo {
     }
 
     @XmlElement(required = true)
-    public String getUid() {
-        return uid;
+    public Integer getSiteId() {
+        return siteId;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setSiteId(Integer siteId) {
+        this.siteId = siteId;
     }
 
     @XmlElement(required = true)

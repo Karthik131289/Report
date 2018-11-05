@@ -24,8 +24,8 @@ public class SiteWaterMapQuery {
     public SiteWaterMapQuery() {
     }
 
-    public WaterMapResponse execute(Connection connection, String siteName, Date fromDate, Date toDate) throws ProcessException {
-        Integer siteId = DBHelper.getSiteId(connection, siteName);
+    public WaterMapResponse execute(Connection connection, Integer siteId, Date fromDate, Date toDate) throws ProcessException {
+        String siteName = DBHelper.getSiteName(connection, siteId);
         return getUsage(connection, siteId, fromDate, toDate);
     }
 

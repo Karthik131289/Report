@@ -1,7 +1,6 @@
 package com.wegot.venaqua.report.ws.db.query;
 
 import com.wegot.venaqua.report.util.DateTimeUtils;
-import com.wegot.venaqua.report.ws.db.DBHelper;
 import com.wegot.venaqua.report.ws.exception.ProcessException;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -18,8 +17,7 @@ public class HouseUsageQuery<T> {
     public HouseUsageQuery() {
     }
 
-    public T execute(Connection connection, HouseUsageEnum usageEnum, String siteName, Date fromDate, Date toDate) throws ProcessException {
-        Integer siteId = DBHelper.getSiteId(connection, siteName);
+    public T execute(Connection connection, HouseUsageEnum usageEnum, Integer siteId, Date fromDate, Date toDate) throws ProcessException {
         T response = getUsage(connection, usageEnum, siteId, fromDate, toDate);
         return response;
     }

@@ -54,6 +54,34 @@ public class DBHelper {
         }
     }
 
+    public static String getSiteName(Connection dbConnection, Integer siteId) throws ProcessException {
+        final String QUERY_STR = "SELECT site_name FROM w2_site_qa1 WHERE site_id=?";
+        QueryRunner queryRunner = new QueryRunner();
+        ResultSetHandler<String> resultHandler = new BaseResultSetHandler<String>() {
+            @Override
+            protected String handle() throws SQLException {
+                String siteName = null;
+                ResultSet resultSet = getAdaptedResultSet();
+                while (resultSet.next()) {
+                    if (siteName == null) {
+                        siteName = resultSet.getString(1);
+                    } else
+                        throw new SQLException("More than one record found for site Id : " + siteId);
+                }
+
+                if (siteName == null)
+                    throw new SQLException("Could not find name for site Id : " + siteId);
+                return siteName;
+            }
+        };
+        try {
+            return queryRunner.query(dbConnection, QUERY_STR, resultHandler, siteId);
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+            throw new ProcessException("Unable to find site details for siteId - " + siteId);
+        }
+    }
+
     public static Map<String, Integer> getWaterSourceMap(Connection dbConnection) throws ReportException {
         final String WATER_SOURCE_QUERY = "SELECT * FROM w2_water_source_type;";
         QueryRunner queryRunner = new QueryRunner();

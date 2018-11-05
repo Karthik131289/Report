@@ -24,8 +24,8 @@ public class SiteUsageByWaterSourceQuery {
     private final Logger log = LoggerFactory.getLogger(SiteUsageByWaterSourceQuery.class);
     public SiteUsageByWaterSourceQuery() { }
 
-    public WaterSourceUsageResponse execute(Connection connection, String siteName, Date fromDate, Date toDate) throws ProcessException {
-        Integer siteId = DBHelper.getSiteId(connection, siteName);
+    public WaterSourceUsageResponse execute(Connection connection, Integer siteId, Date fromDate, Date toDate) throws ProcessException {
+        String siteName = DBHelper.getSiteName(connection, siteId);
         List<WaterSource> waterSourceList = DBHelper.getWaterSourceObject(connection);
         WaterSourceUsageResponse waterSourceUsageResponse = new WaterSourceUsageResponse(waterSourceList);
 
