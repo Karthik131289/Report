@@ -50,7 +50,7 @@ public class VenAquaReportImpl implements VenAquaReport {
                 dbConnection.releaseConnection(connection);
                 response = VenAquaReportHelper.convertResponseObjToString(responseObj.getWaterSourceList());
             }
-        }  catch (AuthException | RequestException| ProcessException | ResponseException e) {
+        } catch (AuthException | RequestException | ProcessException | ResponseException e) {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
@@ -82,7 +82,7 @@ public class VenAquaReportImpl implements VenAquaReport {
                 responseObj.setName(siteName);
                 response = VenAquaReportHelper.convertResponseObjToString(responseObj);
             }
-        }  catch (AuthException | RequestException | ProcessException | ResponseException e) {
+        } catch (AuthException | RequestException | ProcessException | ResponseException e) {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
@@ -114,7 +114,7 @@ public class VenAquaReportImpl implements VenAquaReport {
                 responseObj.setName(siteName);
                 response = VenAquaReportHelper.convertResponseObjToString(responseObj);
             }
-        }  catch (AuthException | RequestException | ProcessException | ResponseException e) {
+        } catch (AuthException | RequestException | ProcessException | ResponseException e) {
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {

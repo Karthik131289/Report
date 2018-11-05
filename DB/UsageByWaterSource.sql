@@ -52,7 +52,13 @@ SELECT * FROM w2_bwell_day_total WHERE bwell_id=1 AND (dt BETWEEN '2018-04-01 00
 SELECT t1.id, t1.bwell_id, t1.agg_total, t1.dt FROM w2_bwell_day_total t1 JOIN (SELECT DISTINCT (id) FROM w2_borewells WHERE w2_borewells.site_id=4) t2 ON t1.bwell_id=t2.id AND (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' );
 /******************************************************/
 
-/** Rain Water not available **/
+/** Rain water - Get component id for site-4**/
+SELECT * FROM w2_rain_water where site_id=4;
+/** Get Rain water Day Total between date range 2018-04-01 to 2018-04-30**/
+SELECT * FROM w2_rain_water_day_total WHERE rain_water_id=1 AND (dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' );
+
+SELECT t1.id, t1.rain_water_id, t1.day_total, t1.dt FROM w2_rain_water_day_total t1 JOIN (SELECT DISTINCT (id) FROM w2_rain_water WHERE w2_rain_water.site_id=4) t2 ON t1.rain_water_id=t2.id AND (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' );
+/******************************************************/
 
 
 /** Get Block Ids and names for site-4 **/
@@ -111,7 +117,7 @@ SELECT sum(t1.day_total) as dayTotal, t1.dt FROM w2_domestic_day_total t1 JOIN (
 // GROUND
 SELECT sum(t1.agg_total) as dayTotal, t1.dt FROM w2_bwell_day_total t1 JOIN (SELECT DISTINCT (id) FROM w2_borewells WHERE w2_borewells.site_id=4) t2 ON t1.bwell_id=t2.id AND (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-05-01 23:59:59' ) group by t1.dt order by t1.dt asc;
 // RAIN
-
+SELECT sum(t1.day_total) as dayTotal, t1.dt FROM w2_rain_water_day_total t1 JOIN (SELECT DISTINCT (id) FROM w2_rain_water WHERE w2_rain_water.site_id=4) t2 ON t1.rain_water_id=t2.id AND (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' ) group by t1.dt order by t1.dt asc;
 
 
 

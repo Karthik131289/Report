@@ -35,8 +35,7 @@ public class SiteUsageByWaterSourceQuery {
         double domesticUsage = getUsage(WaterSourceEnum.DOMESTIC, connection, siteId, fromDate, toDate);
         double municipalUsage = getUsage(WaterSourceEnum.MUNICIPAL, connection, siteId, fromDate, toDate);
         double flushUsage = getUsage(WaterSourceEnum.FLUSH, connection, siteId, fromDate, toDate);
-        // TODO: 13-Oct-18 uncomment below line to query Rain water usage. Add query in Enum.
-        //double rainWaterUsage = getUsage(WaterSourceEnum.RAINWATER, connection, siteId, fromDate, toDate);
+        double rainWaterUsage = getUsage(WaterSourceEnum.RAINWATER, connection, siteId, fromDate, toDate);
 
         for (WaterSource source : waterSourceUsageResponse.getWaterSourceList()) {
              if(WaterSourceEnum.WTP.getDbName().equals(source.getName())) {
@@ -52,7 +51,7 @@ public class SiteUsageByWaterSourceQuery {
              } else if(WaterSourceEnum.FLUSH.getDbName().equals(source.getName())) {
                  source.setUsage(flushUsage);
              } else if(WaterSourceEnum.RAINWATER.getDbName().equals(source.getName())) {
-                 source.setUsage(0.0);
+                 source.setUsage(rainWaterUsage);
              }
         }
 

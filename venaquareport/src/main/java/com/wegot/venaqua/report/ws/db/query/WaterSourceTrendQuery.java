@@ -45,19 +45,17 @@ public class WaterSourceTrendQuery {
                 ResultSet resultSet = getAdaptedResultSet();
                 while (resultSet.next()) {
                     String name = resultSet.getString(2);
-                    // TODO: 04-Nov-18 remove below if block once table is ready for Rain water
-                    if (name.equals(WaterSourceTrendEnum.RAINWATER.getDbName()))
-                        continue;
+
                     WaterSourceTrend waterSource = new WaterSourceTrend();
                     waterSource.setWaterSource(name);
                     waterSource = applyTrend(waterSource, connection, siteId, fromDate, toDate, info);
                     waterSources.add(waterSource);
-                    clearInfo(info);
                 }
                 return waterSourceTrendResponse;
             }
         };
         try {
+            log.debug("fetching available water sources...");
             return queryRunner.query(connection, WATER_SOURCE_QUERY, resultHandler);
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
@@ -85,11 +83,12 @@ public class WaterSourceTrendQuery {
                     Double usage = week.getTotalUsage();
                     log.trace("Weekly Usage : {} for Dt range - {} to {}", usage, week.getStartDate(), week.getEndDate());
                     totalUsage = totalUsage + usage;
-                    log.trace("Overall Usage : {}", totalUsage);
                     waterSource.addWeeklyTrend(usage);
                     if (week.isFinalWeek()) {
                         finalWeekUsage = usage;
                     }
+                    log.debug("reset weekly usage to 0");
+                    week.resetTotalUsage();
                 }
 
                 double performance = (totalUsage == 0.0D ? 0.0D : Math.round((finalWeekUsage / totalUsage) * 100.0D));
@@ -140,13 +139,6 @@ public class WaterSourceTrendQuery {
         }
     }
 
-    private void applyWeeklyTrend(WaterSourceTrend waterSource, List<Double> dayList) {
-        Double weeklyTotal = dayList.stream()
-                .mapToDouble(a -> a)
-                .sum();
-        waterSource.addWeeklyTrend(weeklyTotal);
-    }
-
     private Info prepareWeeklyInfo(Date fromDate, Date toDate) {
         log.trace("preparing week info...");
         Info info = new Info();
@@ -165,43 +157,17 @@ public class WaterSourceTrendQuery {
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(calcFromDate);
-        log.trace("Calendar initial value set to : {}", cal.getTime());
         for (int weekCounter = 0, dayInc = 7; weekCounter < totalWeek; weekCounter++) {
             WeeklyInfo weeklyInfo = new WeeklyInfo();
             weeklyInfo.setStartDate(DateTimeUtils.getStartDateOfWeek(cal));
             weeklyInfo.setEndDate(DateTimeUtils.getEndDateOfWeek(cal));
-            log.trace("Week start : {}", weeklyInfo.getStartDate());
-            log.trace("Week end : {}", weeklyInfo.getEndDate());
             if (weekCounter == totalWeek - 1)
                 weeklyInfo.setFinalWeek(true);
 
             info.addWeeklyInfo(weeklyInfo);
             cal.add(Calendar.DATE, dayInc);
-            log.trace("Cal inc for next week : {}", cal.getTime());
         }
         return info;
-    }
-
-    private void clearInfo(Info info) {
-        List<WeeklyInfo> weeklyInfo = info.getWeeklyInfo();
-        for (WeeklyInfo weekInfo : weeklyInfo) {
-            weekInfo.resetTotalUsage();
-        }
-    }
-
-    public static void main(String[] args) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_WEEK, cal.getActualMinimum(Calendar.DAY_OF_WEEK));
-        Date firstDayOfTheWeek = cal.getTime();
-        cal.set(Calendar.DAY_OF_WEEK, cal.getActualMaximum(Calendar.DAY_OF_WEEK));
-        Date lastDayOfTheWeek = cal.getTime();
-        System.out.println(firstDayOfTheWeek);
-        System.out.println(lastDayOfTheWeek);
-
-        double total = 0D;
-        double finalVal = 0D;
-        double ercent = (finalVal / total) * 100D;
-        System.out.println(ercent);
     }
 
     class Info {
