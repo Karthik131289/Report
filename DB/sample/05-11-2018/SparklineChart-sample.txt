@@ -1,0 +1,111 @@
+host : https://venaqua-report-rest.herokuapp.com
+
+**** Request **** 
+url  : {{host}}/site/trend/watersource
+body :
+	{
+		"siteId" : 4,
+		"chartType" : "sparkline chart",
+		"fromDate" : "2018-04-1",
+		"toDate" : "2018-04-14"
+	}
+
+**** Response ****
+body :
+	[
+		{
+			"waterSource": "Ground",
+			"weeklyTrend": [
+				698074,
+				584664
+			],
+			"performance": 46,
+			"finalWeekTrend": [
+				90752,
+				84947,
+				26208,
+				141465,
+				48782,
+				110493,
+				82017
+			]
+		},
+		{
+			"waterSource": "Municipal",
+			"weeklyTrend": [
+				0,
+				0
+			],
+			"performance": 0,
+			"finalWeekTrend": []
+		},
+		{
+			"waterSource": "Tanker",
+			"weeklyTrend": [
+				3934400,
+				582500
+			],
+			"performance": 13,
+			"finalWeekTrend": [
+				70300,
+				88500,
+				90600,
+				89300,
+				89300,
+				62600,
+				91900
+			]
+		},
+		{
+			"waterSource": "Rain Water",
+			"weeklyTrend": [
+				8000,
+				7000
+			],
+			"performance": 47,
+			"finalWeekTrend": [
+				1000,
+				1000,
+				1000,
+				1000,
+				1000,
+				1000,
+				1000
+			]
+		},
+		{
+			"waterSource": "WTP",
+			"weeklyTrend": [
+				2394600,
+				2054300
+			],
+			"performance": 46,
+			"finalWeekTrend": [
+				261500,
+				295000,
+				260300,
+				336600,
+				294000,
+				246700,
+				360200
+			]
+		},
+		{
+			"waterSource": "Domestic",
+			"weeklyTrend": [
+				0,
+				0
+			],
+			"performance": 0,
+			"finalWeekTrend": []
+		},
+		{
+			"waterSource": "Flush",
+			"weeklyTrend": [
+				0,
+				0
+			],
+			"performance": 0,
+			"finalWeekTrend": []
+		}
+	]

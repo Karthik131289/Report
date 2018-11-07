@@ -1,0 +1,44 @@
+host : https://venaqua-report-rest.herokuapp.com
+
+**** Request **** 
+url  : {{host}}/site/usage/watersource
+body :
+	{
+		"siteId" : 4,
+		"chartType" : "pie chart",
+		"fromDate" : "2018-04-01",
+		"toDate" : "2018-04-30"
+	}
+
+**** Response ****
+body :
+	[
+		{
+			"name": "Ground",
+			"usage": 1962596
+		},
+		{
+			"name": "Municipal",
+			"usage": 23
+		},
+		{
+			"name": "Tanker",
+			"usage": 10557800
+		},
+		{
+			"name": "Rain Water",
+			"usage": 31000
+		},
+		{
+			"name": "WTP",
+			"usage": 6220282
+		},
+		{
+			"name": "Domestic",
+			"usage": 0
+		},
+		{
+			"name": "Flush",
+			"usage": 0
+		}
+	]
