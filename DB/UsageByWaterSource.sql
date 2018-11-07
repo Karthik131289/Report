@@ -97,7 +97,9 @@ SELECT t1.id, t1.pump_id, t1.cust_name, t1.block_id, t2.site_id, t2.state, t2.cu
 
 SELECT t1.id, t1.pump_id, t1.cust_name, t2.state, t2.site_id, t2.cumulative, t2.dt from w2_pumps t1 INNER JOIN ( SELECT *  FROM w2_pump_status_log WHERE site_id=4 and (dt BETWEEN '2018-09-01 00:00:00' and '2018-09-01 23:59:59') GROUP BY pump_id) t2 on t1.id = t2.pump_id and t1.site_id=4;
 
-select * from w2_bwell_day_total where bwell_id =6;
+SELECT * FROM w2_bwell_day_total WHERE bwell_id =6;
+
+select t1.bwell_id, t1.agg_total, t1.dt, t2.cust_name, t2.pump_id from w2_bwell_day_total t1 inner join w2_pumps t2 on t2.site_id=4 and t2.id=t1.bwell_id and (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-02 23:59:59') order by t2.id, t1.dt;
 
 
 /****** Water Map ******/

@@ -1,5 +1,7 @@
 package com.wegot.venaqua.report.ws.response.gantt;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +9,8 @@ public class PumpInfo {
     private String id;
     private String pumpId;
     private String label;
+    @JsonIgnore( value = false)
+    private double totalUsage;
     private List<PumpStatus> pumpStatusList = new ArrayList<>();
 
     public PumpInfo() {
@@ -45,6 +49,14 @@ public class PumpInfo {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public double getTotalUsage() {
+        return totalUsage;
+    }
+
+    public void setTotalUsage(double totalUsage) {
+        this.totalUsage = totalUsage;
     }
 
     public List<PumpStatus> getPumpStatusList() {

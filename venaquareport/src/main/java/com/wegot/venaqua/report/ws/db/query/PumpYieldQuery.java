@@ -27,22 +27,34 @@ public class PumpYieldQuery {
     }
 
     private PumpYieldResponse preparePumpYieldResponse(Connection connection, Integer siteId, Date date) throws ProcessException {
-        final String QRY_STR = "SELECT id, pump_id, cust_name, block_id, site_id FROM w2_pumps WHERE site_id=?";
+        //final String QRY_STR = "SELECT id, pump_id, cust_name, block_id, site_id FROM w2_pumps WHERE site_id=?";
+        final String QRY_STR = "select t1.bwell_id, t1.agg_total, t1.dt, t2.cust_name, t2.pump_id from w2_bwell_day_total t1 " +
+                "inner join w2_pumps t2 on t2.site_id=? and t2.id=t1.bwell_id and (t1.dt BETWEEN ? and ?) order by t2.id, t1.dt;";
         QueryRunner queryRunner = new QueryRunner();
         BaseResultSetHandler<PumpYieldResponse> handler = new BaseResultSetHandler<PumpYieldResponse>() {
             @Override
             protected PumpYieldResponse handle() throws SQLException {
                 PumpYieldResponse response = new PumpYieldResponse();
                 ResultSet resultSet = getAdaptedResultSet();
+                int lastId = 0;
+                int currId = 0;
+                double usage = 0.0;
+                double dayTotal = 0.0;
                 while (resultSet.next()) {
+                    currId = resultSet.getInt(1);
+                    dayTotal = resultSet.getDouble(2);
+
+
+
+                    String pumpId = resultSet.getString(2);
+                    String customName = resultSet.getString(3);
+
                     PumpInfo pumpInfo = new PumpInfo();
                     response.addPumpInfo(pumpInfo);
 
-                    Integer id = resultSet.getInt(1);
                     pumpInfo.setId(Integer.toString(id));
-                    String pumpId = resultSet.getString(2);
                     pumpInfo.setPumpId(pumpId);
-                    pumpInfo.setLabel(resultSet.getString(3));
+                    pumpInfo.setLabel(customName);
 
                     List<PumpStatus> statusList = getPumpStatus(connection, siteId, id, date);
                     pumpInfo.setPumpStatusList(statusList);
@@ -58,7 +70,7 @@ public class PumpYieldQuery {
         }
     }
 
-    private List<PumpStatus> getPumpStatus(Connection connection, Integer siteId, Integer id, Date date) throws SQLException {
+    private List<PumpStatus> getPumpStatus(Connection connection, Integer siteId, Integer pumpId, Date date) throws SQLException {
         final String QRY_SRT = "SELECT pump_id, site_id, state, cumulative, dt FROM w2_pump_status_log WHERE " +
                 "site_id=? AND pump_id=? AND (dt BETWEEN ? and ?) ORDER BY pump_id, dt ASC;";
 
@@ -81,6 +93,6 @@ public class PumpYieldQuery {
                 return response;
             }
         };
-        return queryRunner.query(connection, QRY_SRT, handler, siteId, id, from, to);
+        return queryRunner.query(connection, QRY_SRT, handler, siteId, pumpId, from, to);
     }
 }
