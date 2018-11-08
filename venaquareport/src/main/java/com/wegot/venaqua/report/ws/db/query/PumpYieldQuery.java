@@ -28,33 +28,32 @@ public class PumpYieldQuery {
 
     private PumpYieldResponse preparePumpYieldResponse(Connection connection, Integer siteId, Date date) throws ProcessException {
         //final String QRY_STR = "SELECT id, pump_id, cust_name, block_id, site_id FROM w2_pumps WHERE site_id=?";
-        final String QRY_STR = "select t1.bwell_id, t1.agg_total, t1.dt, t2.cust_name, t2.pump_id from w2_bwell_day_total t1 " +
-                "inner join w2_pumps t2 on t2.site_id=? and t2.id=t1.bwell_id and (t1.dt BETWEEN ? and ?) order by t2.id, t1.dt;";
+        final String QRY_STR = "select t1.bwell_id, sum(t1.agg_total) as total, t2.cust_name, t2.pump_id from w2_bwell_day_total t1 inner join w2_pumps t2 on t2.site_id=? and t2.id=t1.bwell_id and (dt>=? and dt<?) group by t1.bwell_id";
+        Date fromDate = DateTimeUtils.getStartDateOfWeek(date);
+        Date toDate = DateTimeUtils.getEndDateOfWeek(date);
         QueryRunner queryRunner = new QueryRunner();
         BaseResultSetHandler<PumpYieldResponse> handler = new BaseResultSetHandler<PumpYieldResponse>() {
             @Override
             protected PumpYieldResponse handle() throws SQLException {
                 PumpYieldResponse response = new PumpYieldResponse();
                 ResultSet resultSet = getAdaptedResultSet();
-                int lastId = 0;
-                int currId = 0;
-                double usage = 0.0;
-                double dayTotal = 0.0;
+                int id;
+                double total;
+                String custName;
+                String pumpId;
                 while (resultSet.next()) {
-                    currId = resultSet.getInt(1);
-                    dayTotal = resultSet.getDouble(2);
-
-
-
-                    String pumpId = resultSet.getString(2);
-                    String customName = resultSet.getString(3);
+                    id = resultSet.getInt(1);
+                    total = resultSet.getDouble(2);
+                    custName = resultSet.getString(3);
+                    pumpId = resultSet.getString(4);
 
                     PumpInfo pumpInfo = new PumpInfo();
                     response.addPumpInfo(pumpInfo);
 
                     pumpInfo.setId(Integer.toString(id));
                     pumpInfo.setPumpId(pumpId);
-                    pumpInfo.setLabel(customName);
+                    pumpInfo.setLabel(custName);
+                    pumpInfo.setTotalUsage(total);
 
                     List<PumpStatus> statusList = getPumpStatus(connection, siteId, id, date);
                     pumpInfo.setPumpStatusList(statusList);
@@ -63,7 +62,7 @@ public class PumpYieldQuery {
             }
         };
         try {
-            return queryRunner.query(connection, QRY_STR, handler, siteId);
+            return queryRunner.query(connection, QRY_STR, handler, siteId, fromDate, toDate);
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
             throw new ProcessException("Unable to fetch pump details for site id - " + siteId);

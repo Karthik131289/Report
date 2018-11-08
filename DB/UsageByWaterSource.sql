@@ -99,8 +99,11 @@ SELECT t1.id, t1.pump_id, t1.cust_name, t2.state, t2.site_id, t2.cumulative, t2.
 
 SELECT * FROM w2_bwell_day_total WHERE bwell_id =6;
 
-select t1.bwell_id, t1.agg_total, t1.dt, t2.cust_name, t2.pump_id from w2_bwell_day_total t1 inner join w2_pumps t2 on t2.site_id=4 and t2.id=t1.bwell_id and (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-02 23:59:59') order by t2.id, t1.dt;
+select t1.bwell_id, t1.agg_total, t2.cust_name, t2.pump_id from w2_bwell_day_total t1 inner join w2_pumps t2 on t2.site_id=4 and t2.id=t1.bwell_id and (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-02 23:59:59') order by t2.id, t1.dt ;
 
+// final one
+select t1.bwell_id, sum(t1.agg_total) as total, t2.cust_name, t2.pump_id from w2_bwell_day_total t1 inner join w2_pumps t2 on t2.site_id=4 and t2.id=t1.bwell_id and (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-02 23:59:59') group by t1.bwell_id;
+SELECT pump_id, state, cumulative, site_id, dt FROM w2_pump_status_log where site_id=4 AND pump_id = 4 AND (dt BETWEEN '2018-08-01 00:00:00' and '2018-08-01 23:59:59');
 
 /****** Water Map ******/
 select id, apart_id, agg_total, dt from w2_apart_day_total where apart_id=4 and (dt>='2018-04-01 00:00:00' and dt<'2018-04-30 23:59:59');
