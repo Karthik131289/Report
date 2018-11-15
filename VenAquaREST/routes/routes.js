@@ -16,6 +16,42 @@ var appRouter = function (app, soap, prop, xmlConverter) {
         res.send(message);
     });
 
+    app.get("/health", function (req, res) {
+        logRequestDetails(req);
+        var message = "Health Check : api not running healthily...";
+        soap.createClient(url, function (err, client) {
+            if (err) {
+                message = "Health Check : could not init soap clent...";
+                console.error(message);
+                res.status(200);
+                res.header('content-type', 'text/plain; charset=utf-8');
+                res.send(message);
+            }
+            else {
+                console.info("soap client initiated..");
+                var body = "{\"siteId\": 4,\"chartType\": \"pie chart\",\"fromDate\": \"2018-04-01\",\"toDate\": \"2018-04-05\"}";
+                var args = {RequestInfo: body};
+                client.VenAquaReport.VenAquaReportImplPort.getSiteUsageByWaterSource(args, function (err, response) {
+                    if (err) {
+                        message = "Health Check : error occured in soap request...";
+                        console.error(message);
+                        res.status(200);
+                        res.header('content-type', 'text/plain; charset=utf-8');
+                        res.send(message);
+                    } else {
+                        var resp = JSON.parse(JSON.stringify(response))['return'];
+                        console.debug("response: " + resp);
+                        message = "Health Check : success...";
+                        console.error(message);
+                        res.status(200);
+                        res.header('content-type', 'text/plain; charset=utf-8');
+                        res.send(message);
+                    }
+                })
+            }
+        });
+    });
+
     app.post("/site/usage/watersource", function (req, res) {
         logRequestDetails(req);
         var args = getSOAPBody(req);
