@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 
 public class DBManager {
