@@ -1,5 +1,6 @@
 package com.wegot.venaqua.report.ws.db.query;
 
+import com.wegot.venaqua.report.ws.response.bubble.Children;
 import com.wegot.venaqua.report.ws.response.bubble.HighUsersResponse;
 import com.wegot.venaqua.report.ws.response.bubble.HouseInfo;
 import com.wegot.venaqua.report.ws.response.tree.BlockInfo;
@@ -28,6 +29,7 @@ public enum HouseUsageEnum {
                 }
                 String houseName = resultSet.getString(3);
                 Integer usage = resultSet.getInt(5);
+                usage = usage <0 ? 0 : usage;
                 block.createAndAddHouse(houseName, usage.doubleValue());
             }
             return response;
@@ -37,14 +39,16 @@ public enum HouseUsageEnum {
         @Override
         protected HighUsersResponse handle() throws SQLException {
             HighUsersResponse response = new HighUsersResponse();
-            List<HouseInfo> houses = response.getHouses();
+            List<Children> childrenList = response.getChildren();
+            Children children = new Children();
+            childrenList.add(children);
+            List<HouseInfo> houses = children.getHouses();
             ResultSet resultSet = getAdaptedResultSet();
             while (resultSet.next()) {
-                String blockName = resultSet.getString(2);
                 String houseName = resultSet.getString(3);
-                String name = blockName + "-" + houseName;
                 Integer usage = resultSet.getInt(5);
-                HouseInfo house = new HouseInfo(name, usage.doubleValue());
+                usage = usage<0? 0 : usage;
+                HouseInfo house = new HouseInfo(houseName, usage.doubleValue());
                 houses.add(house);
             }
             return response;

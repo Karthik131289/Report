@@ -11,7 +11,7 @@ const prop = PropertiesReader('./resources/application.properties');
 
 var app = express();
 app.use(cors());
-app.use(timeout(60000));
+app.use(timeout(180000));
 app.use(haltOnTimedout);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

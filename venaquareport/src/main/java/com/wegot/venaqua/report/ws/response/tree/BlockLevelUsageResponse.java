@@ -1,10 +1,13 @@
 package com.wegot.venaqua.report.ws.response.tree;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class BlockLevelUsageResponse {
     private String name;
+    @JsonProperty("children")
     private List<BlockInfo> blocks = new ArrayList<>();
 
     public BlockLevelUsageResponse() {

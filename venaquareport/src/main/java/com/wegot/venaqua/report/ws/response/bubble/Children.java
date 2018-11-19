@@ -1,23 +1,19 @@
-package com.wegot.venaqua.report.ws.response.tree;
+package com.wegot.venaqua.report.ws.response.bubble;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockInfo {
-    private String name;
+public class Children {
+    private String name = "Houses";
     @JsonProperty("children")
     private List<HouseInfo> houses = new ArrayList<>();
 
-    public BlockInfo() {
+    public Children() {
     }
 
-    public BlockInfo(String name) {
-        this.name = name;
-    }
-
-    public BlockInfo(String name, List<HouseInfo> houses) {
+    public Children(String name, List<HouseInfo> houses) {
         this.name = name;
         this.houses = houses;
     }
@@ -47,30 +43,10 @@ public class BlockInfo {
     }
 
     public HouseInfo getHouse(String name) {
-        for (HouseInfo house : houses) {
+        for (HouseInfo house : this.houses) {
             if (house.getName().equals(name))
                 return house;
         }
         return null;
-    }
-
-    public HouseInfo createHouse(String name, double usage) {
-        return new HouseInfo(name, usage);
-    }
-
-    public HouseInfo createHouse() {
-        return new HouseInfo();
-    }
-
-    public HouseInfo createAndAddHouse(String name, double usage) {
-        HouseInfo house = new HouseInfo(name, usage);
-        houses.add(house);
-        return house;
-    }
-
-    public HouseInfo createAndAddHouse() {
-        HouseInfo house = new HouseInfo();
-        houses.add(house);
-        return house;
     }
 }

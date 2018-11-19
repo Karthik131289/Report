@@ -1,7 +1,10 @@
 package com.wegot.venaqua.report.ws.response.bubble;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class HouseInfo {
     private String name;
+    @JsonProperty("size")
     private double usage;
 
     public HouseInfo() {

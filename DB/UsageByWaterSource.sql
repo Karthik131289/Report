@@ -67,7 +67,7 @@ SELECT * FROM w2_block WHERE site_id=4;
 SELECT * FROM w2_apart_master WHERE block_id=7;
 SELECT id, cust_name, block_id FROM w2_apart_master WHERE block_id=16;
 /** Get House's day consumption based on house id for a date range **/
-SELECT * FROM w2_apart_day_total WHERE apart_id=20 AND (dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' );
+SELECT * FROM w2_apart_day_total WHERE apart_id=20 AND (dt BETWEEN '2018-10-01 00:00:00' and '2018-10-30 23:59:59' );
 
 
 SELECT * FROM w2_apart_day_total t4 JOIN (SELECT * FROM w2_apart_master t1 JOIN (SELECT * FROM w2_block WHERE w2_block.site_id=4) t2 ON t1.block_id=t2.id) t3  ON t4.apart_id=t3.id AND (t4.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' );

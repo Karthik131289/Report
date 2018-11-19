@@ -133,7 +133,7 @@ public class DBConnection {
 
     private void checkInactivity() {
         long currentUsage = System.currentTimeMillis();
-        if (lastUsage != 0 && currentUsage - lastUsage > dataSource.getInactivityTimeoutMS()) {
+        if (lastUsage != 0 && ((currentUsage - lastUsage) > dataSource.getInactivityTimeoutMS())) {
             closeFreeConnections(null);
         }
         lastUsage = currentUsage;

@@ -8,6 +8,6 @@
             url="jdbc:mysql://104.211.227.3:3306/we2db"
             username="wegotdev3"
             password="wegot@DB3"
-            inactivity-timeout="1800"
+            inactivity-timeout="420"
     />
 </data-sources>

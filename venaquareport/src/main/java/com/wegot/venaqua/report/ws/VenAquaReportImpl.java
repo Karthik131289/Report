@@ -168,15 +168,15 @@ public class VenAquaReportImpl implements VenAquaReport {
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
                 DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
-                Connection connection = dbConnection.getConnection();
+                //Connection connection = dbConnection.getConnection();
                 PumpYieldQuery query = new PumpYieldQuery();
-                PumpYieldResponse responseObj = query.execute(connection, requestInfoObj.getSiteId(), requestInfoObj.getDate());
-                dbConnection.releaseConnection(connection);
-                response = VenAquaReportHelper.convertResponseObjToString(responseObj);
-                /* InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/PumpYield.json");
+                //PumpYieldResponse responseObj = query.execute(connection, requestInfoObj.getSiteId(), requestInfoObj.getDate());
+                //dbConnection.releaseConnection(connection);
+                //response = VenAquaReportHelper.convertResponseObjToString(responseObj);
+                 InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/PumpYield.json");
                 if (resourceAsStream != null) {
                     response = IOUtils.toString(resourceAsStream);
-                }*/
+                }
             }
         } catch (AuthException | RequestException e) {
             log.error(e.getMessage(), e);

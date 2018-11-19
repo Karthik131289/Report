@@ -1,7 +1,10 @@
 package com.wegot.venaqua.report.ws.response.tree;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class HouseInfo {
     private String name;
+    @JsonProperty("value")
     private double usage;
 
     public HouseInfo() {

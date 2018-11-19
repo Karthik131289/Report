@@ -24,6 +24,8 @@ import java.util.List;
 
 public class PumpYieldQuery {
     private final Logger log = LoggerFactory.getLogger(PumpYieldQuery.class);
+    private final String QRY_SRT = "SELECT pump_id, site_id, state, cumulative, dt FROM w2_pump_status_log WHERE " +
+            "site_id=? AND pump_id=? AND (dt BETWEEN ? and ?) ORDER BY pump_id, dt ASC;";
 
     public PumpYieldResponse execute(Connection connection, Integer siteId, Date date) throws ProcessException {
         String siteName = DBHelper.getSiteName(connection, siteId);
@@ -79,14 +81,12 @@ public class PumpYieldQuery {
     }
 
     private List<PumpStatus> getPumpStatus(Connection connection, Integer siteId, Integer pumpId, Date date, double weeklyYield) throws SQLException {
-        final String QRY_SRT = "SELECT pump_id, site_id, state, cumulative, dt FROM w2_pump_status_log WHERE " +
-                "site_id=? AND pump_id=? AND (dt BETWEEN ? and ?) ORDER BY pump_id, dt ASC;";
-
         Date from = DateTimeUtils.adjustToDayStart(date);
         Date to = DateTimeUtils.adjustToDayEnd(date);
         StatementConfiguration.Builder builder = new StatementConfiguration.Builder();
         StatementConfiguration configuration = builder.fetchDirection(ResultSet.FETCH_FORWARD)
                 .fetchSize(100)
+                .maxRows(200)
                 .build();
         QueryRunner queryRunner = new QueryRunner(configuration);
         BaseResultSetHandler<List<PumpStatus>> handler = new BaseResultSetHandler<List<PumpStatus>>() {
