@@ -1,22 +1,23 @@
 var appRouter = function (app, soap, prop, xmlConverter) {
 
     var url = prop.get('soap-server.url');
+    const basePath = prop.get('base-path');
 
-    app.get("/", function (req, res) {
+    app.get( basePath + "/", function (req, res) {
         res.status(200);
         res.header('content-type', 'text/plain; charset=utf-8');
         res.send('welcome to WeGot Data Visuals REST API');
     });
 
-    app.get("/api", function (req, res) {
+    app.get( basePath + "/api", function (req, res) {
         logRequestDetails(req);
-        const message = getHomePageBody();
+        const message = getHomePageBody(basePath);
         res.status(200);
         res.header('content-type', 'text/html; charset=utf-8');
         res.send(message);
     });
 
-    app.get("/health", function (req, res) {
+    app.get( basePath + "/health", function (req, res) {
         logRequestDetails(req);
         var message = "Health Check : api not running healthily...";
 		console.info("Connecting soap-server : " + url);
@@ -53,7 +54,7 @@ var appRouter = function (app, soap, prop, xmlConverter) {
         });
     });
 
-    app.post("/site/usage/watersource", function (req, res) {
+    app.post( basePath + "/site/usage/watersource", function (req, res) {
         logRequestDetails(req);
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
@@ -78,7 +79,7 @@ var appRouter = function (app, soap, prop, xmlConverter) {
         });
     });
 
-    app.post("/site/usage/blocklevel", function (req, res) {
+    app.post( basePath + "/site/usage/blocklevel", function (req, res) {
         logRequestDetails(req);
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
@@ -102,7 +103,7 @@ var appRouter = function (app, soap, prop, xmlConverter) {
         });
     });
 
-    app.post("/site/highusers", function (req, res) {
+    app.post( basePath + "/site/highusers", function (req, res) {
         logRequestDetails(req);
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
@@ -126,7 +127,7 @@ var appRouter = function (app, soap, prop, xmlConverter) {
         });
     });
 
-    app.post("/site/demand/watertype", function (req, res) {
+    app.post( basePath + "/site/demand/watertype", function (req, res) {
         logRequestDetails(req);
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
@@ -150,7 +151,7 @@ var appRouter = function (app, soap, prop, xmlConverter) {
         });
     });
 
-    app.post("/site/pump/yield", function (req, res) {
+    app.post( basePath + "/site/pump/yield", function (req, res) {
         logRequestDetails(req);
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
@@ -174,7 +175,7 @@ var appRouter = function (app, soap, prop, xmlConverter) {
         });
     });
 
-    app.post("/site/trend/watersource", function (req, res) {
+    app.post( basePath + "/site/trend/watersource", function (req, res) {
         logRequestDetails(req);
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
@@ -198,7 +199,7 @@ var appRouter = function (app, soap, prop, xmlConverter) {
         });
     });
 
-    app.post("/site/watermap", function (req, res) {
+    app.post( basePath + "/site/watermap", function (req, res) {
         logRequestDetails(req);
         var args = getSOAPBody(req);
         soap.createClient(url, function (err, client) {
@@ -223,17 +224,17 @@ var appRouter = function (app, soap, prop, xmlConverter) {
     });
 }
 
-function getHomePageBody() {
+function getHomePageBody(basePath) {
     var message = "<html><body>";
     message = message + "<b>WeGot Data Visuals REST API</b>";
     message = message + "<br><br><strong>&nbsp; EndPoints : </strong>";
-    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/usage/watersource </em>";
-    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/usage/blocklevel </em>";
-    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/highusers </em>";
-    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/demand/watertype </em>";
-    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/pump/yield </em>";
-    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/trend/watersource </em>";
-    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> /site/watermap </em>";
+    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> " + basePath + "/site/usage/watersource </em>";
+    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> " + basePath + "/site/usage/blocklevel </em>";
+    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> " + basePath + "/site/highusers </em>";
+    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> " + basePath + "/site/demand/watertype </em>";
+    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> " + basePath + "/site/pump/yield </em>";
+    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> " + basePath + "/site/trend/watersource </em>";
+    message = message + "<br>&nbsp;&nbsp;&nbsp; POST &nbsp;<em> " + basePath + "/site/watermap </em>";
     message = message + "</body></html>";
     return message;
 }
