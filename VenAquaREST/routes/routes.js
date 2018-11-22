@@ -19,6 +19,7 @@ var appRouter = function (app, soap, prop, xmlConverter) {
     app.get("/health", function (req, res) {
         logRequestDetails(req);
         var message = "Health Check : api not running healthily...";
+		console.info("Connecting soap-server : " + url);
         soap.createClient(url, function (err, client) {
             if (err) {
                 message = "Health Check : could not init soap clent...";
