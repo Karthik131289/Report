@@ -7,7 +7,7 @@ const PropertiesReader = require('properties-reader');
 const xmlConverter = require('xml-js');
 
 /*** Read application.properties ***/
-const prop = PropertiesReader('./resources/application.properties');
+const prop = PropertiesReader('application.properties');
 
 var app = express();
 app.use(cors());

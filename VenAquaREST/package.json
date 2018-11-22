@@ -2,11 +2,11 @@
   "name": "venaqua-report-rest",
   "version": "1.0.0",
   "description": "NodeJS based REST to SOAP service mapper",
-  "main": "app.js",
+  "main": "venaqua-report.js",
   "author": "Karthik",
   "license": "",
   "scripts": {
-    "start": "node app.js"
+    "start": "node venaqua-report.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
