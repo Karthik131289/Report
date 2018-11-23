@@ -20,6 +20,8 @@ import java.util.List;
 
 public class SiteWaterMapQuery {
     private final Logger log = LoggerFactory.getLogger(SiteWaterMapQuery.class);
+    private final static String QRY_STR = "select id, time_group, usage_quantity from w2_site_timely_usage where " +
+            "site_id = ? and (time_group>=? and time_group<?)";
 
     public SiteWaterMapQuery() {
     }
@@ -31,7 +33,7 @@ public class SiteWaterMapQuery {
 
     private WaterMapResponse getUsage(Connection connection, Integer siteId, Date fromDate, Date toDate) throws ProcessException {
         final String QUERY_STR = "select id, agg_total, dt from w2_apart_day_total where apart_id=? and (dt>=? and dt<?);";
-        final int INTERVAL = 1;
+        final int INTERVAL = 2;
         Date from = DateTimeUtils.subDays(fromDate, 1);
         Date to = DateTimeUtils.addDays(toDate, 1);
 
@@ -56,7 +58,7 @@ public class SiteWaterMapQuery {
                     dayUsage.setMonth(month + 1);
                     dayUsage.setMonthYear(monthYear);
                     dayUsage.setInterval(INTERVAL);
-                    dayUsage.setValues(getRandomNumberList(24, total));
+                    dayUsage.setValues(getDayBreakUpdetails(connection, siteId, dt));
                     siteDayUsageList.add(dayUsage);
                 }
                 return response;
@@ -77,5 +79,25 @@ public class SiteWaterMapQuery {
             numberList.add(avg);
         }
         return numberList;
+    }
+
+    private List<Double> getDayBreakUpdetails(Connection connection, Integer siteId, Date date) throws SQLException {
+        Date from = DateTimeUtils.adjustToDayStart(date);
+        Date to = DateTimeUtils.adjustToDayEnd(date);
+        QueryRunner queryRunner = new QueryRunner();
+        BaseResultSetHandler<List<Double>> handler = new BaseResultSetHandler<List<Double>>() {
+            @Override
+            protected List<Double> handle() throws SQLException {
+                List<Double> hourlyUsage = new ArrayList<>();
+                ResultSet resultSet = super.getAdaptedResultSet();
+                while (resultSet.next()) {
+                    double usage = resultSet.getDouble(3);
+                    usage = usage < 0 ? 0 : usage;
+                    hourlyUsage.add(usage);
+                }
+                return hourlyUsage;
+            }
+        };
+        return queryRunner.query(connection, QRY_STR, handler, siteId, from, to);
     }
 }
