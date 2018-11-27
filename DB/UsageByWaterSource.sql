@@ -82,6 +82,8 @@ SELECT t1.block_name, t1.site_id, t2.cust_name, t3.apart_id, t3.total from w2_bl
 SELECT t1.site_id, t1.id, t1.block_name, t2.cust_name, t3.apart_id, t3.agg_total from w2_block t1 inner join w2_apart_master t2 on t1.site_id=4 and t2.block_id=t1.id INNER JOIN w2_apart_day_total t3 on t3.apart_id=t2.id and (t3.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' ) order by t3.apart_id;
 SELECT t1.site_id, t1.block_name, t2.cust_name, t3.apart_id, t3.total from w2_block t1 inner join w2_apart_master t2 on t1.site_id=4 and t2.block_id=t1.id INNER JOIN (select apart_id, sum(agg_total) as total from w2_apart_day_total where dt>='2018-04-01 00:00:00' and dt<'2018-04-30 23:59:59' group by apart_id) t3 on t3.apart_id=t2.id;
 
+// final one
+SELECT t1.site_id, t1.block_name, t2.cust_name, t3.apart_id, t3.total from w2_block t1 inner join w2_apart_master t2 on t1.site_id=4 and t2.block_id=t1.id INNER JOIN (select apart_id, sum(agg_total) as total from w2_apart_day_total where dt>='2018-04-01 00:00:00' and dt<'2018-04-30 23:59:59' group by apart_id) t3 on t3.apart_id=t2.id;
 
 /****** GANTT CHART ******/
 
@@ -106,8 +108,10 @@ select t1.bwell_id, sum(t1.agg_total) as total, t2.cust_name, t2.pump_id from w2
 SELECT pump_id, state, cumulative, dt FROM w2_pump_status_log where site_id=4 AND pump_id = 2 AND (dt BETWEEN '2018-09-01 00:00:00' and '2018-09-01 23:59:59');
 
 /****** Water Map ******/
-select id, apart_id, agg_total, dt from w2_apart_day_total where apart_id=4 and (dt>='2018-04-01 00:00:00' and dt<'2018-04-30 23:59:59');
-select id, time_group, usage_quantity from w2_site_timely_usage where site_id = 4 and (time_group>='2018-07-01 00:00:00' and time_group<'2018-07-01 23:59:59');
+select id, apart_id, agg_total, dt from w2_apart_day_total where apart_id=4 and (dt>='2018-09-01 00:00:00' and dt<'2018-11-30 23:59:59') order by dt;
+select id, time_group, usage_quantity from w2_site_timely_usage where site_id = 4 and (time_group>='2018-10-01 00:00:00' and time_group<'2018-10-01 23:59:59');
+
+call sp_site_day_usage(4, '2018-09-01 00:00:00', '2018-11-30 23:59:59');
 
 /****** Sparkline chart ****/
 // WTP

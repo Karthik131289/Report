@@ -22,7 +22,9 @@ import java.util.TimeZone;
 
 public class SiteUsageByWaterSourceQuery {
     private final Logger log = LoggerFactory.getLogger(SiteUsageByWaterSourceQuery.class);
-    public SiteUsageByWaterSourceQuery() { }
+
+    public SiteUsageByWaterSourceQuery() {
+    }
 
     public WaterSourceUsageResponse execute(Connection connection, Integer siteId, Date fromDate, Date toDate) throws ProcessException {
         String siteName = DBHelper.getSiteName(connection, siteId);
@@ -37,24 +39,26 @@ public class SiteUsageByWaterSourceQuery {
         double flushUsage = getUsage(WaterSourceEnum.FLUSH, connection, siteId, fromDate, toDate);
         double rainWaterUsage = getUsage(WaterSourceEnum.RAINWATER, connection, siteId, fromDate, toDate);
 
+        double usage = 0.0D;
         for (WaterSource source : waterSourceUsageResponse.getWaterSourceList()) {
-             if(WaterSourceEnum.WTP.getDbName().equals(source.getName())) {
-                source.setUsage(wtpUsage);
-             } else if(WaterSourceEnum.TANKER.getDbName().equals(source.getName())) {
-                 source.setUsage(tankerUsage);
-             } else if(WaterSourceEnum.GROUND.getDbName().equals(source.getName())) {
-                 source.setUsage(groundUsage);
-             } else if(WaterSourceEnum.DOMESTIC.getDbName().equals(source.getName())) {
-                 source.setUsage(domesticUsage);
-             } else if(WaterSourceEnum.MUNICIPAL.getDbName().equals(source.getName())) {
-                 source.setUsage(municipalUsage);
-             } else if(WaterSourceEnum.FLUSH.getDbName().equals(source.getName())) {
-                 source.setUsage(flushUsage);
-             } else if(WaterSourceEnum.RAINWATER.getDbName().equals(source.getName())) {
-                 source.setUsage(rainWaterUsage);
-             }
+            if (WaterSourceEnum.WTP.getDbName().equals(source.getName())) {
+                usage = wtpUsage < 0.0D ? 0.0D : wtpUsage;
+            } else if (WaterSourceEnum.TANKER.getDbName().equals(source.getName())) {
+                usage = tankerUsage < 0.0D ? 0.0D : tankerUsage;
+            } else if (WaterSourceEnum.GROUND.getDbName().equals(source.getName())) {
+                usage = groundUsage < 0.0D ? 0.0D : groundUsage;
+            } else if (WaterSourceEnum.DOMESTIC.getDbName().equals(source.getName())) {
+                usage = domesticUsage < 0.0D ? 0.0D : domesticUsage;
+            } else if (WaterSourceEnum.MUNICIPAL.getDbName().equals(source.getName())) {
+                usage = municipalUsage < 0.0D ? 0.0D : municipalUsage;
+            } else if (WaterSourceEnum.FLUSH.getDbName().equals(source.getName())) {
+                usage = flushUsage < 0.0D ? 0.0D : flushUsage;
+            } else if (WaterSourceEnum.RAINWATER.getDbName().equals(source.getName())) {
+                usage = rainWaterUsage < 0.0D ? 0.0D : rainWaterUsage;
+            }
+            log.trace("Setting total usage - " + usage + " to water source - " + source.getName());
+            source.setUsage(usage);
         }
-
         return waterSourceUsageResponse;
     }
 
@@ -63,6 +67,7 @@ public class SiteUsageByWaterSourceQuery {
         QueryRunner queryRunner = new QueryRunner();
         ResultSetHandler<Double> resultHandler = new BaseResultSetHandler<Double>() {
             Double res = 0.0;
+
             @Override
             protected Double handle() throws SQLException {
                 ResultSet resultSet = getAdaptedResultSet();
@@ -75,6 +80,7 @@ public class SiteUsageByWaterSourceQuery {
         try {
             Date from = DateTimeUtils.subDays(fromDate, 1);
             Date to = DateTimeUtils.addDays(toDate, 1);
+            log.trace("Fetching usage for water source - " + waterSourceEnum.name());
             return queryRunner.query(connection, QUERY_STR, resultHandler, siteId, from, to);
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
@@ -87,10 +93,10 @@ public class SiteUsageByWaterSourceQuery {
         System.out.println(date);
 
         Date fromDt = new Date(2018, 03, 01, 00, 00, 00);
-        System.out.println( fromDt.getTime());
+        System.out.println(fromDt.getTime());
 
         Date toDt = new Date(2018, 03, 30, 00, 00, 00);
-        System.out.println( toDt.getTime());
+        System.out.println(toDt.getTime());
         //System.out.println( new Date("").getTime());
 
         java.util.Date javaDate = new java.util.Date();
@@ -112,12 +118,12 @@ public class SiteUsageByWaterSourceQuery {
         fromDt = dateFormatGmt.parse(frmDtStr);
         System.out.println(fromDt);
         System.out.println(fromDt.getTime());
-        System.out.println( "From DT in UTC : " + dateFormatGmt.format(fromDt));
+        System.out.println("From DT in UTC : " + dateFormatGmt.format(fromDt));
         String toDtStr = "2018-APR-30 23:59:59";
         toDt = dateFormatGmt.parse(toDtStr);
         System.out.println(toDt);
         System.out.println(toDt.getTime());
-        System.out.println( "To DT in UTC : " + dateFormatGmt.format(toDt));
+        System.out.println("To DT in UTC : " + dateFormatGmt.format(toDt));
 
         SimpleDateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
     }

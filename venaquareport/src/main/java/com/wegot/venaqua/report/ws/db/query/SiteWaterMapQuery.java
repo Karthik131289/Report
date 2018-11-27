@@ -32,10 +32,11 @@ public class SiteWaterMapQuery {
     }
 
     private WaterMapResponse getUsage(Connection connection, Integer siteId, Date fromDate, Date toDate) throws ProcessException {
-        final String QUERY_STR = "select id, agg_total, dt from w2_apart_day_total where apart_id=? and (dt>=? and dt<?);";
+        //final String QUERY_STR = "select id, agg_total, dt from w2_apart_day_total where apart_id=? and (dt>=? and dt<?);";
+        final String QUERY_STR = "call sp_site_day_usage(?, ?, ?)";
         final int INTERVAL = 2;
-        Date from = DateTimeUtils.subDays(fromDate, 1);
-        Date to = DateTimeUtils.addDays(toDate, 1);
+        Date from = DateTimeUtils.adjustToDayStart(fromDate);
+        Date to = DateTimeUtils.adjustToDayEnd(toDate);
 
         QueryRunner queryRunner = new QueryRunner();
         BaseResultSetHandler<WaterMapResponse> handler = new BaseResultSetHandler<WaterMapResponse>() {
@@ -47,8 +48,8 @@ public class SiteWaterMapQuery {
                 ResultSet resultSet = getAdaptedResultSet();
                 while (resultSet.next()) {
                     SiteDayUsage dayUsage = new SiteDayUsage();
+                    Date dt = resultSet.getDate(1);
                     int total = resultSet.getInt(2);
-                    Date dt = resultSet.getDate(3);
                     int date = dt.getDate();
                     int month = dt.getMonth();
                     String monthYear = format.format(dt);
@@ -82,6 +83,7 @@ public class SiteWaterMapQuery {
     }
 
     private List<Double> getDayBreakUpdetails(Connection connection, Integer siteId, Date date) throws SQLException {
+        log.debug("fetching day breakup for site usage...");
         Date from = DateTimeUtils.adjustToDayStart(date);
         Date to = DateTimeUtils.adjustToDayEnd(date);
         QueryRunner queryRunner = new QueryRunner();
@@ -92,6 +94,7 @@ public class SiteWaterMapQuery {
                 ResultSet resultSet = super.getAdaptedResultSet();
                 while (resultSet.next()) {
                     double usage = resultSet.getDouble(3);
+                    java.sql.Date time = resultSet.getDate(2);
                     usage = usage < 0 ? 0 : usage;
                     hourlyUsage.add(usage);
                 }

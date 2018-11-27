@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 public class DateTimeUtils {
     public static Date LocalToUTC(Date date) {
@@ -66,6 +65,14 @@ public class DateTimeUtils {
         return !(date.before(from) || date.after(to));
     }
 
+    public static boolean isSameDate(Date date, Date toCompare) {
+        if(toCompare.getYear() == date.getYear())
+            if(toCompare.getMonth() == date.getMonth())
+                if(toCompare.getDate() == date.getDate())
+                    return true;
+        return false;
+    }
+
     public static Date getStartDateOfWeek(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -97,8 +104,12 @@ public class DateTimeUtils {
     }
 
     public static long findDateDiff(Date from, Date to) {
-        long duration  = to.getTime() - from.getTime();
-        return TimeUnit.MILLISECONDS.toDays(duration);
+        long diff  = to.getTime() - from.getTime();
+        long secs = diff / 1000 % 60;
+        long mins = diff / (60 * 1000) % 60;
+        long hrs = diff / (60 * 60 * 1000) % 24;
+        long days = diff / (24 * 60 * 60 * 1000);
+        return ( (secs>0 || mins>0 || hrs>0)? (days+1) : days);
     }
 
     public static long getWeekOfYear(Date date) {

@@ -73,25 +73,29 @@ public class WaterSourceTrendQuery {
                 while (resultSet.next()) {
                     double dayUsage = resultSet.getDouble(waterSourceEnum.getUsageColumn());
                     Timestamp dt = resultSet.getTimestamp(waterSourceEnum.getDateColumn());
-                    checkAndUpdateUsage(info, waterSource, dayUsage, dt);
+                    checkAndUpdateUsage(info, dayUsage, dt);
                 }
 
                 List<WeeklyInfo> weeklyInfo = info.getWeeklyInfo();
                 double totalUsage = 0;
                 double finalWeekUsage = 0;
+                int weekCount = 0;
                 for (WeeklyInfo week : weeklyInfo) {
+                    weekCount++;
                     Double usage = week.getTotalUsage();
                     log.trace("Weekly Usage : {} for Dt range - {} to {}", usage, week.getStartDate(), week.getEndDate());
                     totalUsage = totalUsage + usage;
                     waterSource.addWeeklyTrend(usage);
                     if (week.isFinalWeek()) {
                         finalWeekUsage = usage;
+                        applyFinalWeekTrend(week, waterSource);
+                        log.trace("Final Week Trend : {}", waterSource.getFinalWeekTrend());
                     }
                     log.debug("reset weekly usage to 0");
                     week.resetTotalUsage();
                 }
-
-                double performance = (totalUsage == 0.0D ? 0.0D : Math.round((finalWeekUsage / totalUsage) * 100.0D));
+                double avgUsage = (totalUsage == 0.0D ? 0.0D : (totalUsage / weekCount));
+                double performance = (totalUsage == 0.0D ? 0.0D : Math.round(((finalWeekUsage - avgUsage) / totalUsage) * 100.0D));
                 waterSource.setPerformance(performance);
 
                 return waterSource;
@@ -99,6 +103,15 @@ public class WaterSourceTrendQuery {
         };
         log.trace("Fetching usage for water source : {}", waterSourceEnum.getDbName());
         return queryRunner.query(connection, waterSourceEnum.getQuery(), resultHandler, siteId, fromDate, toDate);
+    }
+
+    private void applyFinalWeekTrend(WeeklyInfo week, WaterSourceTrend waterSource) {
+        List<DayInfo> finalWeekInfo = week.getFinalWeekTrend();
+        List<Double> finalWeekTrend = waterSource.getFinalWeekTrend();
+        for (DayInfo dayInfo : finalWeekInfo) {
+            finalWeekTrend.add(dayInfo.getUsage());
+            dayInfo.resetTotalUsage();
+        }
     }
 
     private WaterSourceTrendEnum getWaterSourceEnum(WaterSourceTrend waterSourceTrend) {
@@ -121,7 +134,7 @@ public class WaterSourceTrendQuery {
             return null;
     }
 
-    private void checkAndUpdateUsage(Info info, WaterSourceTrend waterSource, double dayUsage, Timestamp dt) {
+    private void checkAndUpdateUsage(Info info, double dayUsage, Timestamp dt) {
         List<WeeklyInfo> weeklyInfo = info.getWeeklyInfo();
         Date date = new Date(dt.getTime());
         log.trace("Record date - date : {} usage : {}", date, dayUsage);
@@ -132,9 +145,18 @@ public class WaterSourceTrendQuery {
                 week.addTotalUsage(dayUsage);
                 log.trace("Weekly total usage(current) : {}", week.getTotalUsage());
                 if (week.isFinalWeek()) {
-                    waterSource.addFinalWeekTrend(dayUsage);
-                    log.trace("Final Week Trend : {}", waterSource.getFinalWeekTrend());
+                    updateFinalWeekTrend(week, date, dayUsage);
                 }
+            }
+        }
+    }
+
+    private void updateFinalWeekTrend(WeeklyInfo week, Date date, double dayUsage) {
+        List<DayInfo> finalWeekTrend = week.getFinalWeekTrend();
+        for (DayInfo day : finalWeekTrend) {
+            if (DateTimeUtils.isSameDate(date, day.getDate())) {
+                log.trace("Set final week trend for Date : {} usage as {}", date, dayUsage);
+                day.addUsage(dayUsage);
             }
         }
     }
@@ -161,13 +183,38 @@ public class WaterSourceTrendQuery {
             WeeklyInfo weeklyInfo = new WeeklyInfo();
             weeklyInfo.setStartDate(DateTimeUtils.getStartDateOfWeek(cal));
             weeklyInfo.setEndDate(DateTimeUtils.getEndDateOfWeek(cal));
-            if (weekCounter == totalWeek - 1)
+            if (weekCounter == totalWeek - 1) {
                 weeklyInfo.setFinalWeek(true);
+                prepareFinalWeekInfo(weeklyInfo, toDate);
+            }
 
             info.addWeeklyInfo(weeklyInfo);
             cal.add(Calendar.DATE, dayInc);
         }
         return info;
+    }
+
+    private void prepareFinalWeekInfo(WeeklyInfo weeklyInfo, Date toDate) {
+        log.trace("preparing final week day info...");
+        Date fromDate = DateTimeUtils.getStartDateOfWeek(toDate);
+        log.trace("FinalWeek Start : " + fromDate);
+        log.trace("FinalWeek End : " + toDate);
+        long days = DateTimeUtils.findDateDiff(fromDate, toDate);
+        log.trace("No of days : " + days);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(fromDate);
+        List<DayInfo> finalWeekTrend = weeklyInfo.getFinalWeekTrend();
+        for (int i = 0, dayInc = 1; i < days; i++) {
+            DayInfo dayInfo = new DayInfo();
+            finalWeekTrend.add(dayInfo);
+
+            Date date = cal.getTime();
+            log.trace("Creating DayInfo for " + date);
+            dayInfo.setDate(date);
+            dayInfo.setUsage(0.0D);
+
+            cal.add(Calendar.DATE, dayInc);
+        }
     }
 
     class Info {
@@ -212,6 +259,7 @@ public class WaterSourceTrendQuery {
         private Date endDate;
         private Double totalUsage = 0D;
         private boolean finalWeek = false;
+        private List<DayInfo> finalWeekTrend = new ArrayList<>();
 
         public WeeklyInfo() {
         }
@@ -259,6 +307,51 @@ public class WaterSourceTrendQuery {
 
         public void setFinalWeek(boolean isfinalWeek) {
             this.finalWeek = isfinalWeek;
+        }
+
+        public List<DayInfo> getFinalWeekTrend() {
+            return finalWeekTrend;
+        }
+
+        public void setFinalWeekTrend(List<DayInfo> finalWeekTrend) {
+            this.finalWeekTrend = finalWeekTrend;
+        }
+    }
+
+    class DayInfo {
+        private Date date;
+        private double usage = 0.0D;
+
+        public DayInfo() {
+        }
+
+        public DayInfo(Date date, double usage) {
+            this.date = date;
+            this.usage = usage;
+        }
+
+        public Date getDate() {
+            return date;
+        }
+
+        public void setDate(Date date) {
+            this.date = date;
+        }
+
+        public double getUsage() {
+            return usage;
+        }
+
+        public void setUsage(double usage) {
+            this.usage = usage;
+        }
+
+        public void addUsage(Double dayUsage) {
+            this.usage = this.usage + dayUsage;
+        }
+
+        public void resetTotalUsage() {
+            this.usage = 0.0D;
         }
     }
 }
