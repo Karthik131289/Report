@@ -38,20 +38,24 @@ public class VenAquaReportImpl implements VenAquaReport {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
+        DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
+        Connection connection = null;
         try {
             RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
             VenAquaReportHelper.validateRequestInfo(requestInfoObj);
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
-                DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
                 SiteUsageByWaterSourceQuery query = new SiteUsageByWaterSourceQuery();
-                Connection connection = dbConnection.getConnection();
+                connection = dbConnection.getConnection();
                 WaterSourceUsageResponse responseObj = query.execute(connection, requestInfoObj.getSiteId(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
                 dbConnection.releaseConnection(connection);
                 response = VenAquaReportHelper.convertResponseObjToString(responseObj.getWaterSourceList());
             }
         } catch (AuthException | RequestException | ProcessException | ResponseException e) {
+            if (e instanceof ProcessException && connection != null) {
+                dbConnection.releaseConnection(connection, true);
+            }
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
@@ -68,15 +72,16 @@ public class VenAquaReportImpl implements VenAquaReport {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
+        DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
+        Connection connection = null;
         try {
             RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
             VenAquaReportHelper.validateRequestInfo(requestInfoObj);
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
-                DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
                 HouseUsageQuery<BlockLevelUsageResponse> query = new HouseUsageQuery<>();
-                Connection connection = dbConnection.getConnection();
+                connection = dbConnection.getConnection();
                 String siteName = DBHelper.getSiteName(connection, requestInfoObj.getSiteId());
                 BlockLevelUsageResponse responseObj = query.execute(connection, HouseUsageEnum.BLOCKLEVEL, requestInfoObj.getSiteId(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
                 dbConnection.releaseConnection(connection);
@@ -84,6 +89,9 @@ public class VenAquaReportImpl implements VenAquaReport {
                 response = VenAquaReportHelper.convertResponseObjToString(responseObj);
             }
         } catch (AuthException | RequestException | ProcessException | ResponseException e) {
+            if (e instanceof ProcessException && connection != null) {
+                dbConnection.releaseConnection(connection, true);
+            }
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
@@ -100,15 +108,16 @@ public class VenAquaReportImpl implements VenAquaReport {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
+        DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
+        Connection connection = null;
         try {
             RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
             VenAquaReportHelper.validateRequestInfo(requestInfoObj);
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
-                DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
                 HouseUsageQuery<HighUsersResponse> query = new HouseUsageQuery<>();
-                Connection connection = dbConnection.getConnection();
+                connection = dbConnection.getConnection();
                 String siteName = DBHelper.getSiteName(connection, requestInfoObj.getSiteId());
                 HighUsersResponse responseObj = query.execute(connection, HouseUsageEnum.HIGHUSERS, requestInfoObj.getSiteId(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
                 dbConnection.releaseConnection(connection);
@@ -116,6 +125,9 @@ public class VenAquaReportImpl implements VenAquaReport {
                 response = VenAquaReportHelper.convertResponseObjToString(responseObj);
             }
         } catch (AuthException | RequestException | ProcessException | ResponseException e) {
+            if (e instanceof ProcessException && connection != null) {
+                dbConnection.releaseConnection(connection, true);
+            }
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
@@ -173,7 +185,7 @@ public class VenAquaReportImpl implements VenAquaReport {
                 //PumpYieldResponse responseObj = query.execute(connection, requestInfoObj.getSiteId(), requestInfoObj.getDate());
                 //dbConnection.releaseConnection(connection);
                 //response = VenAquaReportHelper.convertResponseObjToString(responseObj);
-                 InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/PumpYield.json");
+                InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/PumpYield.json");
                 if (resourceAsStream != null) {
                     response = IOUtils.toString(resourceAsStream);
                 }
@@ -195,20 +207,24 @@ public class VenAquaReportImpl implements VenAquaReport {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
+        DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
+        Connection connection = null;
         try {
             RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
             VenAquaReportHelper.validateRequestInfo(requestInfoObj);
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
-                DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
-                Connection connection = dbConnection.getConnection();
+                connection = dbConnection.getConnection();
                 WaterSourceTrendQuery query = new WaterSourceTrendQuery();
                 WaterSourceTrendResponse responseObj = query.execute(connection, requestInfoObj.getSiteId(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
                 dbConnection.releaseConnection(connection);
                 response = VenAquaReportHelper.convertResponseObjToString(responseObj.getWaterSources());
             }
-        } catch (AuthException | RequestException | ProcessException e) {
+        } catch (AuthException | RequestException | ProcessException | ResponseException e) {
+            if (e instanceof ProcessException && connection != null) {
+                dbConnection.releaseConnection(connection, true);
+            }
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {
@@ -225,20 +241,24 @@ public class VenAquaReportImpl implements VenAquaReport {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
+        DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
+        Connection connection = null;
         try {
             RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
             VenAquaReportHelper.validateRequestInfo(requestInfoObj);
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
-                DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
                 SiteWaterMapQuery query = new SiteWaterMapQuery();
-                Connection connection = dbConnection.getConnection();
+                connection = dbConnection.getConnection();
                 WaterMapResponse responseObj = query.execute(connection, requestInfoObj.getSiteId(), requestInfoObj.getFromDate(), requestInfoObj.getToDate());
                 dbConnection.releaseConnection(connection);
                 response = VenAquaReportHelper.convertResponseObjToString(responseObj.getSiteDayUsageList());
             }
         } catch (AuthException | RequestException | ProcessException | ResponseException e) {
+            if (e instanceof ProcessException && connection != null) {
+                dbConnection.releaseConnection(connection, true);
+            }
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {

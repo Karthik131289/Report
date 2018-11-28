@@ -109,7 +109,7 @@ SELECT pump_id, state, cumulative, dt FROM w2_pump_status_log where site_id=4 AN
 
 /****** Water Map ******/
 select id, apart_id, agg_total, dt from w2_apart_day_total where apart_id=4 and (dt>='2018-09-01 00:00:00' and dt<'2018-11-30 23:59:59') order by dt;
-select id, time_group, usage_quantity from w2_site_timely_usage where site_id = 4 and (time_group>='2018-10-01 00:00:00' and time_group<'2018-10-01 23:59:59');
+select id, time_group, usage_quantity from w2_site_timely_usage where site_id = 4 and (time_group>='2017-10-01 00:00:00' and time_group<'2018-10-31 23:59:59') order by time_group asc;
 
 call sp_site_day_usage(4, '2018-09-01 00:00:00', '2018-11-30 23:59:59');
 

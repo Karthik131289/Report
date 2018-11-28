@@ -89,7 +89,9 @@ public class DBConnection {
                     purgeInfo("Discarding possibly corrupted connection");
                     con.close();
                 }
-                catch (SQLException e) { }
+                catch (SQLException e) {
+                    log.error("Error occurred while closing corrupted connection. Error : " + e.getMessage(), e);
+                }
             }
             else
                 freeConnections.add(con);
