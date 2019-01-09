@@ -109,9 +109,9 @@ SELECT pump_id, state, cumulative, dt FROM w2_pump_status_log where site_id=4 AN
 
 /****** Water Map ******/
 select id, apart_id, agg_total, dt from w2_apart_day_total where apart_id=4 and (dt>='2018-09-01 00:00:00' and dt<'2018-11-30 23:59:59') order by dt;
-select id, time_group, usage_quantity from w2_site_timely_usage where site_id = 4 and (time_group>='2017-10-01 00:00:00' and time_group<'2018-10-31 23:59:59') order by time_group asc;
+select id, time_group, usage_quantity from w2_site_timely_usage where site_id = 4 and (time_group>='2017-10-01 00:00:00' and time_group<'2018-11-31 23:59:59') order by time_group asc;
 
-call sp_site_day_usage(4, '2018-09-01 00:00:00', '2018-11-30 23:59:59');
+call sp_site_day_usage(4, '2017-10-01 00:00:00', '2018-11-30 23:59:59');
 
 /****** Sparkline chart ****/
 // WTP
@@ -130,4 +130,17 @@ SELECT sum(t1.agg_total) as dayTotal, t1.dt FROM w2_bwell_day_total t1 JOIN (SEL
 SELECT sum(t1.day_total) as dayTotal, t1.dt FROM w2_rain_water_day_total t1 JOIN (SELECT DISTINCT (id) FROM w2_rain_water WHERE w2_rain_water.site_id=4) t2 ON t1.rain_water_id=t2.id AND (t1.dt BETWEEN '2018-04-01 00:00:00' and '2018-04-30 23:59:59' ) group by t1.dt order by t1.dt asc;
 
 
+/***** Usage Chart *****/
+SELECT id, type_name FROM w2_water_type;
+
+SELECT * FROM w2_timely_water_type WHERE site_id = 4 AND time_group>='2018-04-01 00:00:00' ;
+
+create table w2_timely_water_type(
+   id int(11) NOT NULL AUTO_INCREMENT,
+   site_id int(11) NOT NULL,
+   water_type_id int(11) NOT NULL,
+   dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   time_interval int(11),
+   PRIMARY KEY ( id )
+);
 

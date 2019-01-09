@@ -11,6 +11,7 @@ import com.wegot.venaqua.report.ws.response.gantt.PumpYieldResponse;
 import com.wegot.venaqua.report.ws.response.pie.WaterSourceUsageResponse;
 import com.wegot.venaqua.report.ws.response.sparkline.WaterSourceTrendResponse;
 import com.wegot.venaqua.report.ws.response.tree.BlockLevelUsageResponse;
+import com.wegot.venaqua.report.ws.response.usage.WaterTypeDemandResponse;
 import com.wegot.venaqua.report.ws.response.waterMap.WaterMapResponse;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -144,19 +145,32 @@ public class VenAquaReportImpl implements VenAquaReport {
         String response = null;
         log.debug("**** Request Info ****");
         log.debug(requestInfo);
+        DBConnection dbConnection = dbManager.getDbConnection(DBConnection.COREDB);
+        Connection connection = null;
         try {
             RequestInfo requestInfoObj = VenAquaReportHelper.prepareRequestInfoObj(requestInfo);
             VenAquaReportHelper.validateRequestInfo(requestInfoObj);
             InvocationInfo invocationInfo = VenAquaReportHelper.prepareInvocationInfo(requestInfoObj);
             boolean authenticate = this.authHandler.authenticate(invocationInfo);
             if (authenticate) {
+                connection = dbConnection.getConnection();
+                WaterTypeDemandQuery query = new WaterTypeDemandQuery();
+                WaterTypeDemandResponse responseObj = query.execute(connection, requestInfoObj.getSiteId(),
+                        requestInfoObj.getFromDate(), requestInfoObj.getToDate(), requestInfoObj.getFromTime(),
+                        requestInfoObj.getToTime());
+                dbConnection.releaseConnection(connection);
+                response = VenAquaReportHelper.convertResponseObjToString(responseObj);
+
                 InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("/resources/sample/SiteDemandByWaterType.json");
                 if (resourceAsStream != null) {
                     response = IOUtils.toString(resourceAsStream);
                 }
             }
 
-        } catch (AuthException | RequestException e) {
+        } catch (AuthException | RequestException | ProcessException /*| ResponseException*/ e) {
+            if (e instanceof ProcessException && connection != null) {
+                dbConnection.releaseConnection(connection, true);
+            }
             log.error(e.getMessage(), e);
             VenAquaReportHelper.throwVenaquaException(e);
         } catch (Exception e) {

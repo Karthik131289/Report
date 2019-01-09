@@ -28,8 +28,8 @@ public enum HouseUsageEnum {
                     block = response.createAndAddBlock(blockName);
                 }
                 String houseName = resultSet.getString(3);
-                Integer usage = resultSet.getInt(5);
-                usage = usage <0 ? 0 : usage;
+                Double usage = resultSet.getDouble(5);
+                usage = sanitizeUsage(usage);
                 block.createAndAddHouse(houseName, usage.doubleValue());
             }
             return response;
@@ -46,8 +46,8 @@ public enum HouseUsageEnum {
             ResultSet resultSet = getAdaptedResultSet();
             while (resultSet.next()) {
                 String houseName = resultSet.getString(3);
-                Integer usage = resultSet.getInt(5);
-                usage = usage<0? 0 : usage;
+                Double usage = resultSet.getDouble(5);
+                usage = sanitizeUsage(usage);
                 HouseInfo house = new HouseInfo(houseName, usage.doubleValue());
                 houses.add(house);
             }
@@ -66,6 +66,13 @@ public enum HouseUsageEnum {
 
     public ResultSetHandler getHandler() {
         return handler;
+    }
+
+    private static double sanitizeUsage(double usage) {
+        double result = usage<0? 0 : usage;
+        // todo check this condition
+        result = result>5000 ? 0 : result;
+        return result;
     }
 
     private String name;

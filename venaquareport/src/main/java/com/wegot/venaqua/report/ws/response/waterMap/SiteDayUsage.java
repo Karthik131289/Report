@@ -1,12 +1,16 @@
 package com.wegot.venaqua.report.ws.response.waterMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SiteDayUsage {
     private int month;
     private int date;
     private String monthYear;
+    private Date dt;
     private double dayUsage;
     private int interval;
     private List<Double> values = new ArrayList<>();
@@ -40,6 +44,15 @@ public class SiteDayUsage {
 
     public void setMonthYear(String monthYear) {
         this.monthYear = monthYear;
+    }
+
+    @JsonIgnore()
+    public Date getDt() {
+        return dt;
+    }
+
+    public void setDt(Date dt) {
+        this.dt = dt;
     }
 
     public double getDayUsage() {

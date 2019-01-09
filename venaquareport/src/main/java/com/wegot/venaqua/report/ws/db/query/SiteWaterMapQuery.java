@@ -28,16 +28,27 @@ public class SiteWaterMapQuery {
 
     public WaterMapResponse execute(Connection connection, Integer siteId, Date fromDate, Date toDate) throws ProcessException {
         String siteName = DBHelper.getSiteName(connection, siteId);
-        WaterMapResponse waterMapResponse = getDayUsage(connection, siteId, fromDate, toDate);
+        Date from = DateTimeUtils.adjustToDayStart(fromDate);
+        Date to = DateTimeUtils.adjustToDayEnd(toDate);
+        WaterMapResponse waterMapResponse = getDayUsage(connection, siteId, from, to);
+        List<DayInfo> dayInfoList = getDayBreakUpdetails2(connection, siteId, from, to);
+        List<SiteDayUsage> siteDayUsageList = waterMapResponse.getSiteDayUsageList();
+        log.debug("Updating hourly usage in water map response");
+        for (SiteDayUsage siteDayUsage : siteDayUsageList) {
+            for (DayInfo dayInfo : dayInfoList) {
+                if(DateTimeUtils.isSameDate(siteDayUsage.getDt(), dayInfo.getDate())) {
+                    siteDayUsage.setValues(dayInfo.getHourlyData());
+                    dayInfoList.remove(dayInfo);
+                    break;
+                }
+            }
+        }
         return waterMapResponse;
     }
 
     private WaterMapResponse getDayUsage(Connection connection, Integer siteId, Date fromDate, Date toDate) throws ProcessException {
-        //final String QUERY_STR = "select id, agg_total, dt from w2_apart_day_total where apart_id=? and (dt>=? and dt<?);";
-        final String QUERY_STR = "call sp_site_day_usage(?, ?, ?)";
-        final int INTERVAL = 2;
-        Date from = DateTimeUtils.adjustToDayStart(fromDate);
-        Date to = DateTimeUtils.adjustToDayEnd(toDate);
+        final String QUERY_STR = "call sp_site_daytotal_usage(?, ?, ?)";
+        final int INTERVAL = 2;  // 2Hrs
 
         QueryRunner queryRunner = new QueryRunner();
         BaseResultSetHandler<WaterMapResponse> handler = new BaseResultSetHandler<WaterMapResponse>() {
@@ -59,15 +70,15 @@ public class SiteWaterMapQuery {
                     dayUsage.setDate(date);
                     dayUsage.setMonth(month + 1);
                     dayUsage.setMonthYear(monthYear);
+                    dayUsage.setDt(dt);
                     dayUsage.setInterval(INTERVAL);
-                    //dayUsage.setValues(getDayBreakUpdetails(connection, siteId, dt));
                     siteDayUsageList.add(dayUsage);
                 }
                 return response;
             }
         };
         try {
-            return queryRunner.query(connection, QUERY_STR, handler, siteId, from, to);
+            return queryRunner.query(connection, QUERY_STR, handler, siteId, fromDate, toDate);
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
             throw new ProcessException("Unable to fetch water map details.");
@@ -105,26 +116,38 @@ public class SiteWaterMapQuery {
         return queryRunner.query(connection, QRY_STR, handler, siteId, from, to);
     }
 
-    private List<Double> getDayBreakUpdetails2(Connection connection, Integer siteId, Date fromDate, Date toDate) throws SQLException {
+    private List<DayInfo> getDayBreakUpdetails2(Connection connection, Integer siteId, Date fromDate, Date toDate) throws ProcessException {
         log.debug("fetching day breakup for site usage...");
-        Date from = DateTimeUtils.adjustToDayStart(fromDate);
-        Date to = DateTimeUtils.adjustToDayEnd(toDate);
         QueryRunner queryRunner = new QueryRunner();
         BaseResultSetHandler<List<DayInfo>> handler = new BaseResultSetHandler<List<DayInfo>>() {
             @Override
             protected List<DayInfo> handle() throws SQLException {
                 List<DayInfo> dayInfos = new ArrayList<>();
                 ResultSet resultSet = super.getAdaptedResultSet();
+                DayInfo dayInfo = null;
+                Date prevTime = new Date();
                 while (resultSet.next()) {
                     double usage = resultSet.getDouble(3);
-                    java.sql.Date time = resultSet.getDate(2);
                     usage = usage < 0 ? 0 : usage;
-                    dayInfos.add(usage);
+                    java.sql.Date currTime = resultSet.getDate(2);
+
+                    if(!DateTimeUtils.isSameDate(prevTime, currTime)) {
+                        dayInfo = new DayInfo();
+                        dayInfo.setDate(currTime);
+                        dayInfos.add(dayInfo);
+                    }
+                    dayInfo.addHourlyData(usage);
+                    prevTime = currTime;
                 }
                 return dayInfos;
             }
         };
-        return queryRunner.query(connection, QRY_STR, handler, siteId, from, to);
+        try {
+            return queryRunner.query(connection, QRY_STR, handler, siteId, fromDate, toDate);
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+            throw new ProcessException("Unable to fetch hourly usage for water map.");
+        }
     }
 
     class DayInfo {

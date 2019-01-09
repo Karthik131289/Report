@@ -18,10 +18,7 @@ public class VenAquaReportHelper {
         try {
             RequestInfo requestInfoObj = JSONConverter.CovertToObject(requestBody, RequestInfo.class);
             log.debug("**** Parsed Request Info ****");
-            log.debug("SiteId : " + requestInfoObj.getSiteId());
-            log.debug("ChartType : " + requestInfoObj.getChartType());
-            log.debug("FromDate : " + requestInfoObj.getFromDate());
-            log.debug("ToDate : " + requestInfoObj.getToDate());
+            log.debug(requestInfoObj.toJson());
             return requestInfoObj;
         } catch (Exception e) {
             throw new RequestException("Error occurred while parsing request body.", e);
